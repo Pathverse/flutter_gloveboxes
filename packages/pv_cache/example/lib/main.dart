@@ -26,8 +26,9 @@ class CacheVisualTestPage extends StatefulWidget {
 }
 
 class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
-  late PVCache cache;
+  PVCache? cache;
   final keyController = TextEditingController();
+  final collectionController = TextEditingController();
 
   String? selectedPreset = '1. Normal';
   Map<String, dynamic> allEntries = {};
@@ -88,12 +89,46 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
     debugPrint('🚀 Cache initialized successfully');
   }
 
+  /// Ensure cache is initialized before use
+  Future<PVCache> _ensureCache() async {
+    if (cache == null) {
+      cache = await PVCache.getInstance(debug: true);
+    }
+    return cache!;
+  }
+
+  /// Get cache options with collection support
+  CacheOptions _getOptionsWithCollection() {
+    if (selectedPreset == null) return const CacheOptions();
+
+    final preset = presets[selectedPreset]!;
+    final baseOptions = preset['options'] as CacheOptions;
+
+    // If collection field is specified, use it
+    final collection = collectionController.text.trim();
+    if (collection.isNotEmpty) {
+      return CacheOptions(
+        group: collection,
+        useCollection: true,
+        sensitive: baseOptions.sensitive,
+        depends: baseOptions.depends,
+        lifetime: baseOptions.lifetime,
+        lru: baseOptions.lru,
+        lruInCount: baseOptions.lruInCount,
+        encrypted: baseOptions.encrypted,
+      );
+    }
+
+    return baseOptions;
+  }
+
   Future<void> _refreshEntries() async {
-    final keys = await cache.getAllKeys();
+    final cacheInstance = await _ensureCache();
+    final keys = await cacheInstance.getAllKeys();
     final map = <String, dynamic>{};
     for (final k in keys) {
       try {
-        map[k] = await cache.getWithOptions(k);
+        map[k] = await cacheInstance.getWithOptions(k);
       } catch (e) {
         map[k] = 'Error: $e';
       }
@@ -111,7 +146,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
     try {
       final preset = presets[selectedPreset]!;
       final value = preset['value'];
-      final options = preset['options'] as CacheOptions;
+      final options = _getOptionsWithCollection();
 
       // Auto-setup master key for sensitive presets
       if (options.depends == 'master_key') {
@@ -120,7 +155,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
         await _setupExpiringKey();
       }
 
-      await cache.putWithOptions(key, value, options: options);
+      await (await _ensureCache()).putWithOptions(key, value, options: options);
 
       debugPrint('✅ PUT: $key = $value');
       debugPrint('   Options: $options');
@@ -129,7 +164,8 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
       }
 
       setState(() {
-        lastAction = 'Put $key with preset: $selectedPreset';
+        lastAction =
+            'Put $key with preset: $selectedPreset${collectionController.text.isNotEmpty ? ' (collection: ${collectionController.text})' : ''}';
       });
       await _refreshEntries();
     } catch (e) {
@@ -145,8 +181,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
     if (key.isEmpty || selectedPreset == null) return;
 
     try {
-      final preset = presets[selectedPreset]!;
-      final options = preset['options'] as CacheOptions;
+      final options = _getOptionsWithCollection();
 
       // Auto-setup master key for sensitive presets if needed
       if (options.depends == 'master_key') {
@@ -155,13 +190,17 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
         await _setupExpiringKey();
       }
 
-      final value = await cache.getWithOptions(key, options: options);
+      final value = await (await _ensureCache()).getWithOptions(
+        key,
+        options: options,
+      );
 
       debugPrint('📖 GET: $key = $value');
       debugPrint('   Options: $options');
 
       setState(() {
-        lastAction = 'Get $key: $value';
+        lastAction =
+            'Get $key: $value${collectionController.text.isNotEmpty ? ' (collection: ${collectionController.text})' : ''}';
       });
     } catch (e) {
       debugPrint('❌ GET Error: $key -> $e');
@@ -176,16 +215,16 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
     if (key.isEmpty || selectedPreset == null) return;
 
     try {
-      final preset = presets[selectedPreset]!;
-      final options = preset['options'] as CacheOptions;
+      final options = _getOptionsWithCollection();
 
-      await cache.deleteWithOptions(key, options: options);
+      await (await _ensureCache()).deleteWithOptions(key, options: options);
 
-      debugPrint('�️ DELETE: $key');
+      debugPrint('🗑️ DELETE: $key');
       debugPrint('   Options: $options');
 
       setState(() {
-        lastAction = 'Deleted $key';
+        lastAction =
+            'Deleted $key${collectionController.text.isNotEmpty ? ' (collection: ${collectionController.text})' : ''}';
       });
       await _refreshEntries();
     } catch (e) {
@@ -198,7 +237,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
 
   Future<void> _clear() async {
     try {
-      await cache.clear();
+      await (await _ensureCache()).clear();
       debugPrint('🧹 CLEAR: All cache cleared');
       setState(() {
         lastAction = 'Cleared all cache';
@@ -218,7 +257,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
       const masterKey = 'master_key';
       final permanentKey =
           'permanent_key_${DateTime.now().millisecondsSinceEpoch}';
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         masterKey,
         permanentKey,
         options: const CacheOptions(encrypted: true),
@@ -243,7 +282,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
       // Store an expiring master key (3 seconds)
       const expiringKey = 'expiring_master_key';
       final temporaryKey = 'temp_key_${DateTime.now().millisecondsSinceEpoch}';
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         expiringKey,
         temporaryKey,
         options: const CacheOptions(encrypted: true, lifetime: 3),
@@ -269,18 +308,21 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
     try {
       // Test 1: Normal value
       debugPrint('\n1️⃣ Test: Normal Value Storage');
-      await cache.putWithOptions('test_normal', 'simple_value');
-      final normal = await cache.getWithOptions('test_normal');
+      await (await _ensureCache()).putWithOptions(
+        'test_normal',
+        'simple_value',
+      );
+      final normal = await (await _ensureCache()).getWithOptions('test_normal');
       debugPrint('   Result: $normal');
 
       // Test 2: Encrypted value
       debugPrint('\n2️⃣ Test: Encrypted Storage');
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         'test_encrypted',
         'secret_data',
         options: const CacheOptions(encrypted: true),
       );
-      final encrypted = await cache.getWithOptions(
+      final encrypted = await (await _ensureCache()).getWithOptions(
         'test_encrypted',
         options: const CacheOptions(encrypted: true),
       );
@@ -289,8 +331,8 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
       // Test 3: JSON object
       debugPrint('\n3️⃣ Test: JSON Object Storage');
       final jsonData = {'name': 'Alice', 'age': 25, 'role': 'developer'};
-      await cache.putWithOptions('test_json', jsonData);
-      final json = await cache.getWithOptions('test_json');
+      await (await _ensureCache()).putWithOptions('test_json', jsonData);
+      final json = await (await _ensureCache()).getWithOptions('test_json');
       debugPrint('   Result: $json');
 
       // Test 4: JSON with sensitive fields
@@ -304,7 +346,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
         'apiKey': 'sensitive_api_key',
       };
 
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         'test_sensitive',
         sensitiveJson,
         options: const CacheOptions(
@@ -313,7 +355,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
         ),
       );
 
-      final sensitive = await cache.getWithOptions(
+      final sensitive = await (await _ensureCache()).getWithOptions(
         'test_sensitive',
         options: const CacheOptions(
           sensitive: ['password', 'apiKey'],
@@ -324,17 +366,17 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
 
       // Test 5: LRU tracking
       debugPrint('\n5️⃣ Test: LRU Tracking');
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         'test_lru',
         'lru_value',
         options: const CacheOptions(lru: true, lruInCount: 0),
       );
       // Access it multiple times to test tracking
-      await cache.getWithOptions(
+      await (await _ensureCache()).getWithOptions(
         'test_lru',
         options: const CacheOptions(lru: true, lruInCount: 0),
       );
-      await cache.getWithOptions(
+      await (await _ensureCache()).getWithOptions(
         'test_lru',
         options: const CacheOptions(lru: true, lruInCount: 0),
       );
@@ -342,25 +384,29 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
 
       // Test 6: Expiry of key-value
       debugPrint('\n6️⃣ Test: Key-Value Expiry (3s)');
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         'test_expiry',
         'will_expire_soon',
         options: const CacheOptions(lifetime: 3),
       );
-      final beforeExpiry = await cache.getWithOptions('test_expiry');
+      final beforeExpiry = await (await _ensureCache()).getWithOptions(
+        'test_expiry',
+      );
       debugPrint('   Before expiry: $beforeExpiry');
 
       debugPrint('   Waiting 4 seconds for expiry...');
       await Future.delayed(const Duration(seconds: 4));
 
-      final afterExpiry = await cache.getWithOptions('test_expiry');
+      final afterExpiry = await (await _ensureCache()).getWithOptions(
+        'test_expiry',
+      );
       debugPrint('   After expiry: $afterExpiry (should be null)');
 
       // Test 7: Expiry caused by master key expiry
       debugPrint('\n7️⃣ Test: Sensitive Data Expiry via Master Key');
       await _setupExpiringKey(); // Setup expiring master key (3s)
 
-      await cache.putWithOptions(
+      await (await _ensureCache()).putWithOptions(
         'test_key_expiry',
         {'public': 'visible', 'secret': 'will_fail_when_key_expires'},
         options: const CacheOptions(
@@ -369,7 +415,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
         ),
       );
 
-      final beforeKeyExpiry = await cache.getWithOptions(
+      final beforeKeyExpiry = await (await _ensureCache()).getWithOptions(
         'test_key_expiry',
         options: const CacheOptions(
           sensitive: ['secret'],
@@ -381,7 +427,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
       debugPrint('   Waiting 4 seconds for master key expiry...');
       await Future.delayed(const Duration(seconds: 4));
 
-      final afterKeyExpiry = await cache.getWithOptions(
+      final afterKeyExpiry = await (await _ensureCache()).getWithOptions(
         'test_key_expiry',
         options: const CacheOptions(
           sensitive: ['secret'],
@@ -458,6 +504,18 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
             ),
             const SizedBox(height: 16),
 
+            // Collection input field
+            TextField(
+              controller: collectionController,
+              decoration: const InputDecoration(
+                labelText: 'Collection (optional)',
+                border: OutlineInputBorder(),
+                hintText: 'e.g., user_data, app_settings, temporary',
+                helperText: 'Leave empty for default collection',
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // Action buttons
             Wrap(
               spacing: 8,
@@ -526,7 +584,7 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Preset Details: $selectedPreset',
+                        'Configuration Details: $selectedPreset',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -534,7 +592,17 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
                       ),
                       const SizedBox(height: 8),
                       Text('Value: ${presets[selectedPreset]!['value']}'),
-                      Text('Options: ${presets[selectedPreset]!['options']}'),
+                      Text(
+                        'Base Options: ${presets[selectedPreset]!['options']}',
+                      ),
+                      if (collectionController.text.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Collection Override: ${collectionController.text}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text('Final Options: ${_getOptionsWithCollection()}'),
+                      ],
                     ],
                   ),
                 ),

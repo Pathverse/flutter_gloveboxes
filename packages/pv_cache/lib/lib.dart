@@ -1,3 +1,3 @@
-export 'src/cache.dart';
-export 'src/options.dart';
-export 'src/worker/custom_wrapper.dart';
+export 'src/core/cache.dart';
+export 'src/core/options.dart';
+export 'src/core/wrapper.dart';

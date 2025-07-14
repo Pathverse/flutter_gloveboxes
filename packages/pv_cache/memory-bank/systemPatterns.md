@@ -1,11 +1,31 @@
 # System Patterns: PV Cache
 
-## Architecture Overview
+##### 2. Simplified Box Structure (NEW)
+- **Decision**: Use direct box naming for better compatibility
+- **Rationale**: Improved web platform support and initialization reliability
+- **Implementation**: 
+  - Data boxes use consistent naming pattern
+  - Metadata box uses dedicated naming for fast access
+  - Simplified initialization sequence
 
-### Core System Design
+#### 3. Simplified Orchestrator Pattern
+- **Decision**: Main wrapper becomes a simple delegator
+- **Rationale**: Single entry point with clear responsibility delegation
+- **Implementation**: Minimal wrapper that delegates to appropriate components
+
+#### 4. Component Specialization
+- **Decision**: Each component handles one aspect of functionality
+- **Rationale**: Single responsibility principle and easier maintenance
+- **Implementation**: Focused modules with clear boundariese Overview
+
+### Core System Design (Updated)
 ```
 PVCache (Singleton)
-├── CacheWrapper (Custom Implementation Layer)
+├── CacheWrapper (Simple Orchestrator)
+    ├── CacheStorage (Core Operations)
+    ├── CacheEncryption (Crypto Operations)
+    ├── CacheTracking (LRU/LFU Management)
+    └── CacheUtils (Shared Utilities)
 ├── Hive LazyBox (Primary Storage)
 ├── Hive SubscriberBox (Metadata/LRU Tracking)
 └── Flutter Secure Storage (Encryption Keys)
@@ -13,45 +33,58 @@ PVCache (Singleton)
 
 ### Key Architectural Decisions
 
-#### 1. Singleton Pattern for Cache Instance
-- **Decision**: Use singleton pattern for PVCache instance
-- **Rationale**: Ensures consistent state across app, prevents multiple storage instances
-- **Implementation**: `PVCache.getInstance()` with null-safe lazy initialization
+#### 1. Component-Based Architecture (IMPLEMENTED)
+- **Decision**: Split monolithic wrapper into focused components
+- **Rationale**: Better maintainability, testability, and separation of concerns
+- **Implementation**: Four specialized classes + simplified orchestrator
 
-#### 2. Wrapper-Based Options System
-- **Decision**: CacheWrapper handles all CacheOptions logic
-- **Rationale**: Separates concerns, allows complex option combinations without polluting main API
-- **Implementation**: `CacheWrapper.store/get/delete` methods process options
+#### 2. Simplified Box Structure (NEW)
+- **Decision**: Use direct box naming instead of collection parameters
+- **Rationale**: Better web compatibility and initialization reliability
+- **Implementation**: 
+  - Data boxes: `__pv_cache__box_{name}` (LazyBox for memory efficiency)
+  - Metadata box: `__pv_cache__meta` (Regular Box for fast access)
+  - Consistent naming pattern across all storage
 
-#### 3. Dual Box Strategy
-- **Decision**: Separate boxes for data (`lazyBox`) and metadata (`subscriberBox`)
-- **Rationale**: Optimizes performance, enables LRU tracking without data corruption
-- **Implementation**: Main storage in lazyBox, LRU counters and metadata in subscriberBox
+#### 3. Simplified Orchestrator Pattern
+- **Decision**: CacheWrapper becomes a simple delegator
+- **Rationale**: Single entry point with clear responsibility delegation
+- **Implementation**: 22-line wrapper that delegates to appropriate components
+
+#### 4. Component Specialization
+- **Decision**: Each component handles one aspect of caching
+- **Rationale**: Single responsibility principle and easier maintenance
+- **Components**:
+  - `CacheStorage`: All storage operations and metadata
+  - `CacheEncryption`: Cryptographic operations and key management
+  - `CacheTracking`: LRU/LFU tracking and eviction
+  - `CacheUtils`: Pattern matching and utilities
 
 ## Component Relationships
 
-### PVCache → CacheWrapper Flow
+### PVCache → Component Flow (Updated)
 ```dart
 PVCache.putWithOptions(key, value, options)
   ↓
 CacheWrapper.store(key, value, options)
   ↓
-- Process encryption (if options.encrypted)
-- Handle sensitive fields (if options.sensitive)
-- Apply expiry logic (if options.lifetime)
-- Update LRU tracking (if options.lru)
+CacheStorage.store(key, value, options)
+  ↓
+- CacheUtils.validateOptions(options)
+- CacheUtils.matchesSensitive(key, patterns)
+- CacheEncryption.encryptWithPrivateKey(...) [if needed]
+- CacheTracking.updateOnStore(key, options)
   ↓
 Store in appropriate Hive box
 ```
 
-### CacheOptions Processing Pattern
+### Component Interaction Pattern (Updated)
 ```dart
-CacheOptions validation → 
-Security checks → 
-Storage strategy selection → 
-Data transformation → 
-Storage execution → 
-Metadata updates
+Component Dependencies:
+Main Component → Supporting Components
+Encryption Component → (isolated, no dependencies)
+Tracking Component → (isolated, minimal dependencies)
+Utilities Component → (isolated, pure utilities)
 ```
 
 ## Design Patterns in Use

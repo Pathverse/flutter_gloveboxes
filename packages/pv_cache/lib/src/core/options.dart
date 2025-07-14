@@ -5,6 +5,9 @@ class CacheOptions {
   /// Defaults to 'default' if not specified
   final String? group;
 
+  /// if group is specified, whether to use collection for this group
+  final bool useCollection;
+
   /// List of sensitive key patterns
   /// Keys matching these patterns will be handled with extra security measures
   final List<String>? sensitive;
@@ -40,6 +43,7 @@ class CacheOptions {
   /// 4. lruInCount only used when lru is true
   const CacheOptions({
     this.group,
+    this.useCollection = true,
     this.sensitive,
     this.depends,
     this.lifetime,
