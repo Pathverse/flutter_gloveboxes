@@ -1,0 +1,26 @@
+name: pv_webenv_test
+description: "test package for pv_webenv"
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  pv_webenv:
+    path: ../pv_webenv
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  assets:
+    - envs/
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec

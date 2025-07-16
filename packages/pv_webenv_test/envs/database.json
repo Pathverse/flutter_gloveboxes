@@ -1,0 +1,15 @@
+{
+  "host": "localhost",
+  "port": 5432,
+  "name": "test_db",
+  "ssl_enabled": false,
+  "credentials": {
+    "username": "test_user",
+    "password": "test_pass"
+  },
+  "connection_pool": {
+    "min_connections": 5,
+    "max_connections": 20,
+    "timeout": 30.5
+  }
+}
