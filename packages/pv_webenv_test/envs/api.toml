@@ -1,0 +1,19 @@
+[api]
+base_url = "https://api.example.com"
+version = "v1"
+timeout = 60
+enabled = true
+
+[api.auth]
+type = "bearer"
+token_url = "/auth/token"
+refresh_enabled = true
+
+[api.endpoints]
+users = "/users"
+orders = "/orders"
+products = "/products"
+
+[rate_limiting]
+requests_per_minute = 100
+burst_limit = 10
