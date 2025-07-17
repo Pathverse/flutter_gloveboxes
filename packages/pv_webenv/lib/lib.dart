@@ -1,4 +1,4 @@
 /// Web environment management package for Flutter
-library pv_webenv;
+library;
 
 export 'core.dart';

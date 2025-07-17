@@ -10,7 +10,7 @@ class JSONParser extends PVEnvBaseParser {
     for (var lineContent in lines) {
       if (!lineContent.trim().startsWith('//') &&
           lineContent.trim().isNotEmpty) {
-        line += lineContent + '\n';
+        line += '$lineContent\n';
       }
     }
 

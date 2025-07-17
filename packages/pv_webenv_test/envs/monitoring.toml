@@ -1,0 +1,14 @@
+# Monitoring configuration
+enabled = true
+metrics_port = 9090
+health_check_interval = 30
+
+[logging]
+level = "info"
+format = "json"
+output = "stdout"
+
+[alerts]
+email_enabled = true
+slack_enabled = false
+webhook_url = "https://hooks.slack.com/example" 

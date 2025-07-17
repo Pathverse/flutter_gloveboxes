@@ -6,6 +6,7 @@ A flexible configuration management package for Flutter applications that suppor
 
 - **Multiple Format Support**: Load configurations from ENV, JSON, and TOML files
 - **File References**: Use `{{filename}}` patterns to reference and merge other configuration files
+- **Prefix Support**: Use `<<filename>>` patterns to load files with automatic key prefixing
 - **Asset-Based Loading**: Load configurations from Flutter assets at runtime
 - **Singleton Access**: Global access to configuration values with `env['key']`
 - **Deep Merging**: Automatic merging of nested configuration structures
@@ -65,13 +66,27 @@ void main() async {
 
 ### File References
 
-Use `{{filename}}` patterns to reference other configuration files:
+#### Direct Merge with {{file}} Syntax
+
+Use `{{filename}}` patterns to reference and directly merge other configuration files:
 
 ```env
 # envs/root.env
 APP_NAME=My App
 DATABASE_CONFIG={{database.json}}
 API_CONFIG={{api.toml}}
+```
+
+#### Prefixed Merge with <<file>> Syntax
+
+Use `<<filename>>` patterns to load configuration files with automatic key prefixing:
+
+```env
+# envs/root.env
+APP_NAME=My App
+DB={{database.env}}
+AUTH={{auth.json}}
+MONITOR={{monitoring.toml}}
 ```
 
 ```json
@@ -98,20 +113,47 @@ type = "bearer"
 token_url = "/auth/token"
 ```
 
-After initialization, all configurations are merged:
+After initialization, configurations are merged according to their syntax:
 
 ```dart
 await env.init();
 
-// Access values from any file
+// Access values from {{file}} direct merges
 print(env['APP_NAME']);                           // "My App"
-print(env.env['host']);                          // "localhost"
-print(env.env['api']['base_url']);               // "https://api.example.com"
-print(env.env['credentials']['username']);       // "user"
+print(env.env['host']);                          // "localhost" (from database.json)
+print(env.env['api']['base_url']);               // "https://api.example.com" (from api.toml)
+
+// Access values from <<file>> prefixed merges
+print(env.env['DB_DB_HOST']);                    // "localhost" (from database.env with DB_ prefix)
+print(env.env['AUTH_jwt_secret']);               // "secret_key" (from auth.json with AUTH_ prefix)
+print(env.env['MONITOR_enabled']);               // "true" (from monitoring.toml with MONITOR_ prefix)
 
 // File reference keys are removed after processing
 print(env['DATABASE_CONFIG']);                   // null
 print(env['API_CONFIG']);                       // null
+print(env['DB']);                               // null
+print(env['AUTH']);                             // null
+print(env['MONITOR']);                          // null
+```
+
+#### Prefix Example
+
+If you have `DB=<<database.env>>` and `database.env` contains:
+
+```env
+# envs/database.env
+HOST=localhost
+PORT=5432
+NAME=mydb
+```
+
+The result will be:
+
+```dart
+// All keys get the DB_ prefix
+env.env['DB_HOST']     // "localhost"
+env.env['DB_PORT']     // "5432"
+env.env['DB_NAME']     // "mydb"
 ```
 
 ### Supported File Formats

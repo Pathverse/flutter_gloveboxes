@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/services.dart';
 import 'package:pv_webenv/lib.dart';
 
 void main() {
@@ -24,6 +23,7 @@ void main() {
       expect(env['DATABASE_CONFIG'], isNull);
       expect(env['API_CONFIG'], isNull);
       expect(env['CACHE_CONFIG'], isNull);
+      expect(env['DB_CONFIG'], isNull); // prefix reference should be removed
 
       // Test that content from referenced files is merged into the main env
       final envMap = env.env;
@@ -202,5 +202,56 @@ void main() {
       expect(firstValue, equals(secondValue));
       expect(secondValue, equals('PV WebEnv Test'));
     });
+
+    test(
+      'should load files with prefix syntax and apply correct prefixes',
+      () async {
+        // Reset the ENV instance for this test
+        ENV.reset();
+        // Initialize the environment
+        await env.init();
+
+        final envMap = env.env;
+
+        // Test that DB_CONFIG reference is removed after processing
+        expect(env['DB_CONFIG'], isNull);
+
+        // Test that prefixed keys from database_prefixed.env are present with DB_CONFIG_ prefix
+        expect(envMap['DB_CONFIG_DB_HOST'], equals('db.example.com'));
+        expect(envMap['DB_CONFIG_DB_PORT'], equals('5432'));
+        expect(envMap['DB_CONFIG_DB_NAME'], equals('prefixed_test_db'));
+        expect(envMap['DB_CONFIG_DB_USER'], equals('test_user'));
+        expect(envMap['DB_CONFIG_DB_PASSWORD'], equals('test_pass'));
+        expect(envMap['DB_CONFIG_DB_SSL'], equals('true'));
+        expect(envMap['DB_CONFIG_DB_TIMEOUT'], equals('5000'));
+      },
+    );
+
+    test(
+      'should handle both {{file}} and <<file>> syntax simultaneously',
+      () async {
+        // Reset the ENV instance for this test
+        ENV.reset();
+        // Initialize the environment
+        await env.init();
+
+        final envMap = env.env;
+
+        // Verify {{file}} syntax still works (direct merge)
+        expect(envMap['host'], equals('localhost')); // from database.json
+        expect(envMap['CACHE_TYPE'], equals('redis')); // from cache.env
+
+        // Verify <<file>> syntax works (prefixed merge)
+        expect(
+          envMap['DB_CONFIG_DB_HOST'],
+          equals('db.example.com'),
+        ); // from database_prefixed.env with prefix
+
+        // Verify reference keys are removed
+        expect(env['DATABASE_CONFIG'], isNull);
+        expect(env['CACHE_CONFIG'], isNull);
+        expect(env['DB_CONFIG'], isNull);
+      },
+    );
   });
 }

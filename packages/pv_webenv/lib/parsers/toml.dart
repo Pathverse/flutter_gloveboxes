@@ -12,8 +12,9 @@ class TOMLParser extends PVEnvBaseParser {
 
     for (var line in lines) {
       line = line.trim();
-      if (line.isEmpty || line.startsWith('#'))
+      if (line.isEmpty || line.startsWith('#')) {
         continue; // skip empty lines and comments
+      }
 
       if (line.startsWith('[') && line.endsWith(']')) {
         // section header

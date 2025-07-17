@@ -1,0 +1,16 @@
+{
+  "jwt_secret": "super_secret_key",
+  "token_expiry": 3600,
+  "refresh_enabled": true,
+  "providers": {
+    "google": {
+      "client_id": "google_client_123",
+      "client_secret": "google_secret_456"
+    },
+    "facebook": {
+      "app_id": "fb_app_789",
+      "app_secret": "fb_secret_012"
+    }
+  },
+  "session_timeout": 1800
+} 

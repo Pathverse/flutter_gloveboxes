@@ -1,6 +1,6 @@
 name: pv_webenv
 description: "web environment management"
-version: 0.0.1
+version: 0.0.2
 publish_to: none
 
 environment:
