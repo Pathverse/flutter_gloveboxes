@@ -1,21 +1,20 @@
 // initialize flutter_secure_storage, hive_ce and flutter_cache_manager
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce/hive.dart';
-import 'package:pv_cache/src/utils/custom_cipher.dart';
 
-const secureStorage = FlutterSecureStorage();
+FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
 // Map to store opened boxes by name
-final Map<String, LazyBox<String>> _openLazyBoxes = {};
-final Map<String, Box<String>> _openRegularBoxes = {};
+final Map<String, LazyBox<dynamic>> _openLazyBoxes = {};
+final Map<String, Box<dynamic>> _openRegularBoxes = {};
 
 // Global references for the main boxes
-LazyBox<String>? lazyBox;
-Box<String>? subscriberBox;
+LazyBox<dynamic>? lazyBox;
+Box<dynamic>? subscriberBox;
 
 /// Get or create a lazy box for the specified name
 /// Structure: indexeddb/__pv_cache__box_{name}
-Future<LazyBox<String>> getCollectionBox(String name) async {
+Future<LazyBox<dynamic>> getCollectionBox(String name) async {
   final boxName = '__pvcache_$name';
 
   // Return existing box if already open
@@ -23,11 +22,8 @@ Future<LazyBox<String>> getCollectionBox(String name) async {
     return _openLazyBoxes[boxName]!;
   }
 
-  // Open new lazy box with simple naming
-  final box = await Hive.openLazyBox<String>(
-    boxName,
-    encryptionCipher: CustomCipher(),
-  );
+  // Open new lazy box with dynamic type for native Hive serialization
+  final box = await Hive.openLazyBox<dynamic>(boxName);
 
   // Store in map for future use
   _openLazyBoxes[boxName] = box;
@@ -36,7 +32,7 @@ Future<LazyBox<String>> getCollectionBox(String name) async {
 
 /// Get or create a regular box for fast metadata access
 /// Structure: indexeddb/__pv_cache__meta
-Future<Box<String>> getMetadataBox() async {
+Future<Box<dynamic>> getMetadataBox() async {
   const boxName = '__pvcache_meta';
 
   // Return existing box if already open
@@ -44,11 +40,8 @@ Future<Box<String>> getMetadataBox() async {
     return _openRegularBoxes[boxName]!;
   }
 
-  // Open new regular box for fast metadata access
-  final box = await Hive.openBox<String>(
-    boxName,
-    encryptionCipher: CustomCipher(),
-  );
+  // Open new regular box for fast metadata access with dynamic type
+  final box = await Hive.openBox<dynamic>(boxName);
 
   // Store in map for future use
   _openRegularBoxes[boxName] = box;
@@ -56,7 +49,7 @@ Future<Box<String>> getMetadataBox() async {
 }
 
 /// Get the default cache box (maintains backward compatibility)
-Future<LazyBox<String>> get defaultBox async {
+Future<LazyBox<dynamic>> get defaultBox async {
   lazyBox ??= await getCollectionBox('default');
   return lazyBox!;
 }
@@ -66,4 +59,14 @@ Future<void> baseInit() async {
   // Initialize the main boxes
   lazyBox = await getCollectionBox('default');
   subscriberBox = await getMetadataBox();
+}
+
+/// Get all opened lazy boxes (for debugging and management)
+Map<String, LazyBox<dynamic>> getOpenedLazyBoxes() {
+  return Map.unmodifiable(_openLazyBoxes);
+}
+
+/// Get all opened regular boxes (for debugging and management)
+Map<String, Box<dynamic>> getOpenedRegularBoxes() {
+  return Map.unmodifiable(_openRegularBoxes);
 }

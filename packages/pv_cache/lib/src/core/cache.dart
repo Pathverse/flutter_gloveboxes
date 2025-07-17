@@ -6,10 +6,62 @@ import 'package:pv_cache/src/core/options.dart';
 import 'package:pv_cache/src/core/wrapper.dart';
 
 class PVCache {
-  /// Returns all keys in the main cache box
-  Future<List<String>> getAllKeys({CacheOptions? options}) async {
+  /// Returns all keys from cache boxes
+  /// 
+  /// Parameters:
+  /// - [options]: If provided with a group, returns keys from that specific collection
+  /// - [includeAllGroups]: If true, returns keys from all collections (default box + all groups)
+  /// 
+  /// Examples:
+  /// - `getAllKeys()` - Returns keys from default box only
+  /// - `getAllKeys(options: CacheOptions(group: 'user_sessions'))` - Returns keys from specific group
+  /// - `getAllKeys(includeAllGroups: true)` - Returns keys from all boxes combined
+  Future<List<String>> getAllKeys({
+    CacheOptions? options,
+    bool includeAllGroups = false,
+  }) async {
+    if (includeAllGroups) {
+      return await _getAllKeysFromAllBoxes();
+    }
+    
     final box = await _getBoxForOptions(options);
     return box.keys.cast<String>().toList();
+  }
+
+  /// Get all keys from all opened boxes (default + all collections)
+  Future<List<String>> _getAllKeysFromAllBoxes() async {
+    final allKeys = <String>[];
+    
+    try {
+      // Get keys from default box
+      final defaultBox = await toplv.defaultBox;
+      allKeys.addAll(defaultBox.keys.cast<String>());
+      
+      // Get keys from all opened collection boxes
+      for (final entry in toplv.getOpenedLazyBoxes().entries) {
+        final boxName = entry.key;
+        final box = entry.value;
+        
+        // Add group prefix to distinguish keys from different collections
+        final groupName = boxName.replaceFirst('__pvcache_', '');
+        final groupKeys = box.keys.cast<String>()
+            .map((key) => '[$groupName]$key')
+            .toList();
+        allKeys.addAll(groupKeys);
+      }
+      
+      // Also check metadata box for any keys
+      final metadataBox = await toplv.getMetadataBox();
+      final metadataKeys = metadataBox.keys.cast<String>()
+          .map((key) => '[metadata]$key')
+          .toList();
+      allKeys.addAll(metadataKeys);
+      
+    } catch (e) {
+      debugPrint('Warning: Error getting keys from some boxes: $e');
+    }
+    
+    return allKeys;
   }
 
   static PVCache? _instance;
@@ -60,7 +112,7 @@ class PVCache {
   }
 
   /// Helper function to get the appropriate box based on cache options
-  Future<LazyBox<String>> _getBoxForOptions(CacheOptions? options) async {
+  Future<LazyBox<dynamic>> _getBoxForOptions(CacheOptions? options) async {
     if (options != null && options.useCollection && options.group != null) {
       return await toplv.getCollectionBox(options.group!);
     }
@@ -79,7 +131,16 @@ class PVCache {
 
   Future<T?> getWithOptions<T>(String key, {CacheOptions? options}) async {
     final opts = options ?? const CacheOptions();
-    return await CacheWrapper.get(key, opts) as T?;
+    final result = await CacheWrapper.get(key, opts);
+
+    if (result == null) return null;
+
+    // Handle Map type conversion
+    if (result is Map<dynamic, dynamic>) {
+      return Map<String, dynamic>.from(result) as T?;
+    }
+
+    return result as T?;
   }
 
   Future<void> deleteWithOptions(String key, {CacheOptions? options}) async {
@@ -131,13 +192,13 @@ class PVCache {
     return await utils.getJsonList(key, options: options);
   }
 
-  // Direct access to the box for non-JSON operations
-  Future<void> put(String key, String value, {CacheOptions? options}) async {
+  // Direct access to the box for backward compatibility - now supports dynamic types
+  Future<void> put(String key, dynamic value, {CacheOptions? options}) async {
     final box = await _getBoxForOptions(options);
     await box.put(key, value);
   }
 
-  Future<String?> get(String key, {CacheOptions? options}) async {
+  Future<dynamic> get(String key, {CacheOptions? options}) async {
     final box = await _getBoxForOptions(options);
     return await box.get(key);
   }

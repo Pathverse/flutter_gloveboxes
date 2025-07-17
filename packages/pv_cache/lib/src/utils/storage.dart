@@ -9,7 +9,7 @@ import 'package:pv_cache/src/utils/cache_helper.dart';
 /// Handles core cache storage operations
 class CacheStorage {
   /// Get the appropriate box based on cache options
-  static Future<LazyBox<String>> getBoxForOptions(CacheOptions options) async {
+  static Future<LazyBox<dynamic>> getBoxForOptions(CacheOptions options) async {
     if (options.useCollection && options.group != null) {
       return await getCollectionBox(options.group!);
     }
@@ -28,11 +28,10 @@ class CacheStorage {
     // Get the appropriate box for this operation
     final box = await getBoxForOptions(options);
 
-    // Get sensitive patterns and check if key matches
+    // Get sensitive patterns and check if we have sensitive data with dependencies
     final sensitivePatterns = options.sensitive ?? <String>[];
-    final isSensitive =
-        sensitivePatterns.isNotEmpty &&
-        CacheUtils.matchesSensitive(key, sensitivePatterns);
+    final hasSensitiveData =
+        sensitivePatterns.isNotEmpty && options.depends != null;
 
     // Calculate expiry if lifetime is set
     final expiryTimestamp = CacheUtils.calculateExpiry(options.lifetime);
@@ -40,7 +39,7 @@ class CacheStorage {
     // Store the data based on encryption requirements
     if (options.encrypted) {
       await _storeEncrypted(key, value, options, expiryTimestamp);
-    } else if (isSensitive) {
+    } else if (hasSensitiveData) {
       await _storeSensitive(key, value, options, expiryTimestamp);
     } else {
       await _storeRegular(key, value, options, expiryTimestamp, box);
@@ -52,16 +51,15 @@ class CacheStorage {
 
   /// Get value with options
   static Future<dynamic> get(String key, CacheOptions options) async {
-    // Get sensitive patterns and check if key matches
+    // Get sensitive patterns and check if we have sensitive data with dependencies
     final sensitivePatterns = options.sensitive ?? <String>[];
-    final isSensitive =
-        sensitivePatterns.isNotEmpty &&
-        CacheUtils.matchesSensitive(key, sensitivePatterns);
+    final hasSensitiveData =
+        sensitivePatterns.isNotEmpty && options.depends != null;
 
     dynamic result;
 
-    if (options.encrypted || isSensitive) {
-      result = await _getEncrypted(key, options, isSensitive);
+    if (options.encrypted || hasSensitiveData) {
+      result = await _getEncrypted(key, options, hasSensitiveData);
     } else {
       result = await _getRegular(key, options);
     }
@@ -76,13 +74,12 @@ class CacheStorage {
 
   /// Delete value with options
   static Future<void> delete(String key, CacheOptions options) async {
-    // Get sensitive patterns and check if key matches
+    // Get sensitive patterns and check if we have sensitive data with dependencies
     final sensitivePatterns = options.sensitive ?? <String>[];
-    final isSensitive =
-        sensitivePatterns.isNotEmpty &&
-        CacheUtils.matchesSensitive(key, sensitivePatterns);
+    final hasSensitiveData =
+        sensitivePatterns.isNotEmpty && options.depends != null;
 
-    if (options.encrypted || isSensitive) {
+    if (options.encrypted || hasSensitiveData) {
       // Delete from secure storage
       await secureStorage.delete(key: key);
     } else {
@@ -126,7 +123,16 @@ class CacheStorage {
     }
 
     // Get private key from secure storage
-    final privateKeyStr = await secureStorage.read(key: options.depends!);
+    final masterKeyDataStr = await secureStorage.read(key: options.depends!);
+    if (masterKeyDataStr == null) {
+      throw ArgumentError(
+        'Private key not found at depends location: ${options.depends}',
+      );
+    }
+
+    // Extract the private key value from the stored metadata
+    final masterKeyData = jsonDecode(masterKeyDataStr);
+    final privateKeyStr = masterKeyData['value'];
     if (privateKeyStr == null) {
       throw ArgumentError(
         'Private key not found at depends location: ${options.depends}',
@@ -160,7 +166,7 @@ class CacheStorage {
     dynamic value,
     CacheOptions options,
     int? expiryTimestamp,
-    LazyBox<String> box,
+    LazyBox<dynamic> box,
   ) async {
     final metadata = CacheUtils.createMetadata(
       value: value,
@@ -169,7 +175,8 @@ class CacheStorage {
       encrypted: false,
     );
 
-    await box.put(key, jsonEncode(metadata));
+    // Store metadata Map directly, leveraging Hive's native serialization
+    await box.put(key, metadata);
   }
 
   /// Get encrypted data from secure storage
@@ -201,18 +208,20 @@ class CacheStorage {
   /// Get regular data from storage
   static Future<dynamic> _getRegular(String key, CacheOptions options) async {
     final box = await getBoxForOptions(options);
-    final dataStr = await box.get(key);
-    if (dataStr == null) return null;
+    final data = await box.get(key);
+    if (data == null) return null;
 
-    final data = jsonDecode(dataStr);
+    // Data is now stored as Map directly, no JSON decoding needed
+    // Handle the type safely - Hive returns Map<dynamic, dynamic>
+    final metadata = Map<String, dynamic>.from(data as Map);
 
     // Check expiry
-    if (CacheUtils.isExpired(data['expiry'])) {
+    if (CacheUtils.isExpired(metadata['expiry'])) {
       await box.delete(key);
       return null;
     }
 
-    return data['value'];
+    return metadata['value'];
   }
 
   /// Decrypt sensitive data using dependency key
@@ -227,16 +236,34 @@ class CacheStorage {
       );
     }
 
-    // Get private key
-    final privateKeyStr = await secureStorage.read(key: options.depends!);
-    if (privateKeyStr == null) {
-      throw ArgumentError(
-        'Private key not found at depends location: ${options.depends}',
-      );
+    // First check if the master key exists and is not expired
+    final masterKeyDataStr = await secureStorage.read(key: options.depends!);
+    if (masterKeyDataStr == null) {
+      // Master key doesn't exist, cleanup dependent data
+      await secureStorage.delete(key: key);
+      return null;
     }
 
-    // Decrypt and return with key expiration handling
+    // Check if master key is expired
     try {
+      final masterKeyData = jsonDecode(masterKeyDataStr);
+
+      if (CacheUtils.isExpired(masterKeyData['expiry'])) {
+        // Master key is expired, cleanup both master key and dependent data
+        await secureStorage.delete(key: key);
+        await secureStorage.delete(key: options.depends!);
+        return null;
+      }
+
+      // Extract the private key value
+      final privateKeyStr = masterKeyData['value'];
+      if (privateKeyStr == null) {
+        throw ArgumentError(
+          'Private key not found at depends location: ${options.depends}',
+        );
+      }
+
+      // Decrypt and return
       final decryptedJson = await CacheEncryption.decryptWithPrivateKey(
         encryptedData['encrypted_value'],
         privateKeyStr,
@@ -245,7 +272,7 @@ class CacheStorage {
       );
       return jsonDecode(decryptedJson);
     } catch (e) {
-      // If decryption fails, assume key expired - delete entry and private key
+      // If decryption fails, assume key is corrupted - delete entry and private key
       await secureStorage.delete(key: key);
       await secureStorage.delete(key: options.depends!);
       return null;

@@ -4,11 +4,14 @@ import 'package:pv_cache/src/core/toplv.dart';
 import 'package:pv_cache/src/core/options.dart';
 import 'dart:convert';
 
+/// Store JSON data - now uses native Hive serialization for better performance
 Future<void> putJson(String key, dynamic value, {CacheOptions? options}) async {
   final box = await _getBoxForOptions(options);
-  await box.put(key, jsonEncode(value));
+  // Use native Hive serialization instead of JSON encoding
+  await box.put(key, value);
 }
 
+/// Get JSON data with type safety - leverages native Hive serialization
 Future<T?> getJson<T>(
   String key, {
   T? defaultValue,
@@ -19,7 +22,36 @@ Future<T?> getJson<T>(
   if (value == null) return defaultValue;
 
   try {
-    final decoded = jsonDecode(value);
+    // Value is already deserialized by Hive, just cast it
+    return value as T?;
+  } catch (e) {
+    return defaultValue;
+  }
+}
+
+/// Legacy method: Store as explicit JSON string (for backward compatibility)
+Future<void> putJsonString(
+  String key,
+  dynamic value, {
+  CacheOptions? options,
+}) async {
+  final box = await _getBoxForOptions(options);
+  await box.put(key, jsonEncode(value));
+}
+
+/// Legacy method: Get from explicit JSON string (for backward compatibility)
+Future<T?> getJsonString<T>(
+  String key, {
+  T? defaultValue,
+  CacheOptions? options,
+}) async {
+  final box = await _getBoxForOptions(options);
+  final value = await box.get(key);
+  if (value == null) return defaultValue;
+
+  try {
+    // Assume value is a JSON string that needs decoding
+    final decoded = jsonDecode(value as String);
     return decoded as T?;
   } catch (e) {
     return defaultValue;
@@ -38,7 +70,7 @@ Future<List<dynamic>?> getJsonList(String key, {CacheOptions? options}) async {
 }
 
 /// Helper function to get the appropriate box based on cache options
-Future<LazyBox<String>> _getBoxForOptions(CacheOptions? options) async {
+Future<LazyBox<dynamic>> _getBoxForOptions(CacheOptions? options) async {
   if (options != null && options.useCollection && options.group != null) {
     return await getCollectionBox(options.group!);
   }

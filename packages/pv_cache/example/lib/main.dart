@@ -1,81 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:pv_cache/lib.dart';
+import 'dart:math';
 
 void main() {
-  runApp(const CacheVisualTestApp());
+  runApp(const CacheSimulatorApp());
 }
 
-class CacheVisualTestApp extends StatelessWidget {
-  const CacheVisualTestApp({super.key});
+class CacheSimulatorApp extends StatelessWidget {
+  const CacheSimulatorApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PVCache Visual Test',
-      home: const CacheVisualTestPage(),
+      title: 'PVCache API Simulator',
+      home: const CacheSimulatorPage(),
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
     );
   }
 }
 
-class CacheVisualTestPage extends StatefulWidget {
-  const CacheVisualTestPage({super.key});
+class CacheSimulatorPage extends StatefulWidget {
+  const CacheSimulatorPage({super.key});
 
   @override
-  State<CacheVisualTestPage> createState() => _CacheVisualTestPageState();
+  State<CacheSimulatorPage> createState() => _CacheSimulatorPageState();
 }
 
-class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
+class _CacheSimulatorPageState extends State<CacheSimulatorPage> {
   PVCache? cache;
-  final keyController = TextEditingController();
-  final collectionController = TextEditingController();
+  String statusMessage = 'Initializing cache...';
+  bool isLoading = false;
+  int operationCount = 0;
 
-  String? selectedPreset = '1. Normal';
-  Map<String, dynamic> allEntries = {};
-  String? lastAction;
-  bool showAdvanced = false;
-
-  // Preset configurations
-  final Map<String, Map<String, dynamic>> presets = {
-    '1. Normal': {
-      'value': 'simple_text_value',
-      'options': const CacheOptions(),
-    },
-    '2. Encrypted': {
-      'value': 'secret_information',
-      'options': const CacheOptions(encrypted: true),
-    },
-    '3. JSON': {
-      'value': {'name': 'John', 'age': 30, 'city': 'New York'},
-      'options': const CacheOptions(),
-    },
-    '4. Sensitive JSON': {
-      'value': {
-        'public': 'visible_data',
-        'secret': 'hidden_data',
-        'password': 'top_secret',
-      },
-      'options': const CacheOptions(
-        sensitive: ['secret', 'password'],
-        depends: 'master_key',
-      ),
-    },
-    '5. LRU': {
-      'value': 'lru_tracked_value',
-      'options': const CacheOptions(lru: true, lruInCount: 0),
-    },
-    '6. Expiring (5s)': {
-      'value': 'expires_in_5_seconds',
-      'options': const CacheOptions(lifetime: 5),
-    },
-    '7. Key Expiry': {
-      'value': {'data': 'will_expire_with_key'},
-      'options': const CacheOptions(
-        sensitive: ['data'],
-        depends: 'expiring_master_key',
-      ),
-    },
-  };
+  final Random random = Random();
 
   @override
   void initState() {
@@ -85,368 +43,551 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
 
   Future<void> _initCache() async {
     cache = await PVCache.getInstance(debug: true);
-    await _refreshEntries();
-    debugPrint('🚀 Cache initialized successfully');
+    setState(() {
+      statusMessage = 'Cache initialized - Ready for testing';
+    });
   }
 
-  /// Ensure cache is initialized before use
   Future<PVCache> _ensureCache() async {
-    if (cache == null) {
-      cache = await PVCache.getInstance(debug: true);
-    }
+    cache ??= await PVCache.getInstance(debug: true);
     return cache!;
   }
 
-  /// Get cache options with collection support
-  CacheOptions _getOptionsWithCollection() {
-    if (selectedPreset == null) return const CacheOptions();
-
-    final preset = presets[selectedPreset]!;
-    final baseOptions = preset['options'] as CacheOptions;
-
-    // If collection field is specified, use it
-    final collection = collectionController.text.trim();
-    if (collection.isNotEmpty) {
-      return CacheOptions(
-        group: collection,
-        useCollection: true,
-        sensitive: baseOptions.sensitive,
-        depends: baseOptions.depends,
-        lifetime: baseOptions.lifetime,
-        lru: baseOptions.lru,
-        lruInCount: baseOptions.lruInCount,
-        encrypted: baseOptions.encrypted,
-      );
-    }
-
-    return baseOptions;
-  }
-
-  Future<void> _refreshEntries() async {
-    final cacheInstance = await _ensureCache();
-    final keys = await cacheInstance.getAllKeys();
-    final map = <String, dynamic>{};
-    for (final k in keys) {
-      try {
-        map[k] = await cacheInstance.getWithOptions(k);
-      } catch (e) {
-        map[k] = 'Error: $e';
-      }
-    }
+  void _updateStatus(String message) {
     setState(() {
-      allEntries = map;
+      statusMessage = message;
+      operationCount++;
     });
-    debugPrint('📊 Cache entries refreshed: ${keys.length} keys found');
+    debugPrint('📊 Operation #$operationCount: $message');
   }
 
-  Future<void> _put() async {
-    final key = keyController.text.trim();
-    if (key.isEmpty || selectedPreset == null) return;
-
-    try {
-      final preset = presets[selectedPreset]!;
-      final value = preset['value'];
-      final options = _getOptionsWithCollection();
-
-      // Auto-setup master key for sensitive presets
-      if (options.depends == 'master_key') {
-        await _setupDependencyKey();
-      } else if (options.depends == 'expiring_master_key') {
-        await _setupExpiringKey();
-      }
-
-      await (await _ensureCache()).putWithOptions(key, value, options: options);
-
-      debugPrint('✅ PUT: $key = $value');
-      debugPrint('   Options: $options');
-      if (options.depends != null) {
-        debugPrint('   🔑 Auto-setup dependency: ${options.depends}');
-      }
-
-      setState(() {
-        lastAction =
-            'Put $key with preset: $selectedPreset${collectionController.text.isNotEmpty ? ' (collection: ${collectionController.text})' : ''}';
-      });
-      await _refreshEntries();
-    } catch (e) {
-      debugPrint('❌ PUT Error: $key -> $e');
-      setState(() {
-        lastAction = 'Error putting $key: $e';
-      });
-    }
+  void _setLoading(bool loading) {
+    setState(() {
+      isLoading = loading;
+    });
   }
 
-  Future<void> _get() async {
-    final key = keyController.text.trim();
-    if (key.isEmpty || selectedPreset == null) return;
+  // ============ USER SESSION SIMULATION ============
 
+  Future<void> _simulateUserLogin() async {
+    _setLoading(true);
     try {
-      final options = _getOptionsWithCollection();
-
-      // Auto-setup master key for sensitive presets if needed
-      if (options.depends == 'master_key') {
-        await _setupDependencyKey();
-      } else if (options.depends == 'expiring_master_key') {
-        await _setupExpiringKey();
-      }
-
-      final value = await (await _ensureCache()).getWithOptions(
-        key,
-        options: options,
-      );
-
-      debugPrint('📖 GET: $key = $value');
-      debugPrint('   Options: $options');
-
-      setState(() {
-        lastAction =
-            'Get $key: $value${collectionController.text.isNotEmpty ? ' (collection: ${collectionController.text})' : ''}';
-      });
-    } catch (e) {
-      debugPrint('❌ GET Error: $key -> $e');
-      setState(() {
-        lastAction = 'Error getting $key: $e';
-      });
-    }
-  }
-
-  Future<void> _delete() async {
-    final key = keyController.text.trim();
-    if (key.isEmpty || selectedPreset == null) return;
-
-    try {
-      final options = _getOptionsWithCollection();
-
-      await (await _ensureCache()).deleteWithOptions(key, options: options);
-
-      debugPrint('🗑️ DELETE: $key');
-      debugPrint('   Options: $options');
-
-      setState(() {
-        lastAction =
-            'Deleted $key${collectionController.text.isNotEmpty ? ' (collection: ${collectionController.text})' : ''}';
-      });
-      await _refreshEntries();
-    } catch (e) {
-      debugPrint('❌ DELETE Error: $key -> $e');
-      setState(() {
-        lastAction = 'Error deleting $key: $e';
-      });
-    }
-  }
-
-  Future<void> _clear() async {
-    try {
-      await (await _ensureCache()).clear();
-      debugPrint('🧹 CLEAR: All cache cleared');
-      setState(() {
-        lastAction = 'Cleared all cache';
-      });
-      await _refreshEntries();
-    } catch (e) {
-      debugPrint('❌ CLEAR Error: $e');
-      setState(() {
-        lastAction = 'Error clearing cache: $e';
-      });
-    }
-  }
-
-  Future<void> _setupDependencyKey() async {
-    try {
-      // Store a permanent master key
-      const masterKey = 'master_key';
-      final permanentKey =
-          'permanent_key_${DateTime.now().millisecondsSinceEpoch}';
-      await (await _ensureCache()).putWithOptions(
-        masterKey,
-        permanentKey,
-        options: const CacheOptions(encrypted: true),
-      );
-
-      debugPrint('🔑 SETUP: Permanent master key created');
-      debugPrint('   Key: $masterKey = $permanentKey');
-
-      setState(() {
-        lastAction = 'Setup master key: $masterKey';
-      });
-    } catch (e) {
-      debugPrint('❌ SETUP Error: $e');
-      setState(() {
-        lastAction = 'Error setting up master key: $e';
-      });
-    }
-  }
-
-  Future<void> _setupExpiringKey() async {
-    try {
-      // Store an expiring master key (3 seconds)
-      const expiringKey = 'expiring_master_key';
-      final temporaryKey = 'temp_key_${DateTime.now().millisecondsSinceEpoch}';
-      await (await _ensureCache()).putWithOptions(
-        expiringKey,
-        temporaryKey,
-        options: const CacheOptions(encrypted: true, lifetime: 3),
-      );
-
-      debugPrint('⏰ SETUP: Expiring master key created (3s)');
-      debugPrint('   Key: $expiringKey = $temporaryKey');
-
-      setState(() {
-        lastAction = 'Setup expiring key: $expiringKey (3s)';
-      });
-    } catch (e) {
-      debugPrint('❌ SETUP Error: $e');
-      setState(() {
-        lastAction = 'Error setting up expiring key: $e';
-      });
-    }
-  }
-
-  Future<void> _runBehaviorTests() async {
-    debugPrint('\n🧪 Running 7 Behavior Tests...');
-
-    try {
-      // Test 1: Normal value
-      debugPrint('\n1️⃣ Test: Normal Value Storage');
-      await (await _ensureCache()).putWithOptions(
-        'test_normal',
-        'simple_value',
-      );
-      final normal = await (await _ensureCache()).getWithOptions('test_normal');
-      debugPrint('   Result: $normal');
-
-      // Test 2: Encrypted value
-      debugPrint('\n2️⃣ Test: Encrypted Storage');
-      await (await _ensureCache()).putWithOptions(
-        'test_encrypted',
-        'secret_data',
-        options: const CacheOptions(encrypted: true),
-      );
-      final encrypted = await (await _ensureCache()).getWithOptions(
-        'test_encrypted',
-        options: const CacheOptions(encrypted: true),
-      );
-      debugPrint('   Result: $encrypted');
-
-      // Test 3: JSON object
-      debugPrint('\n3️⃣ Test: JSON Object Storage');
-      final jsonData = {'name': 'Alice', 'age': 25, 'role': 'developer'};
-      await (await _ensureCache()).putWithOptions('test_json', jsonData);
-      final json = await (await _ensureCache()).getWithOptions('test_json');
-      debugPrint('   Result: $json');
-
-      // Test 4: JSON with sensitive fields
-      debugPrint('\n4️⃣ Test: JSON with Sensitive Fields');
-      await _setupDependencyKey(); // Setup master key first
-
-      final sensitiveJson = {
-        'username': 'alice123',
-        'email': 'alice@example.com',
-        'password': 'secret123',
-        'apiKey': 'sensitive_api_key',
+      final userId = 'user_${random.nextInt(1000)}';
+      final sessionData = {
+        'userId': userId,
+        'username': 'user$userId',
+        'email': '$userId@example.com',
+        'loginTime': DateTime.now().toIso8601String(),
+        'permissions': ['read', 'write', if (random.nextBool()) 'admin'],
+        'preferences': {
+          'theme': random.nextBool() ? 'dark' : 'light',
+          'language': ['en', 'es', 'fr'][random.nextInt(3)],
+          'notifications': random.nextBool(),
+        },
       };
 
       await (await _ensureCache()).putWithOptions(
-        'test_sensitive',
-        sensitiveJson,
+        'session_$userId',
+        sessionData,
         options: const CacheOptions(
-          sensitive: ['password', 'apiKey'],
-          depends: 'master_key',
+          group: 'user_sessions',
+          lifetime: 3600, // 1 hour
         ),
       );
 
-      final sensitive = await (await _ensureCache()).getWithOptions(
-        'test_sensitive',
+      _updateStatus('✅ User login cached: $userId (expires in 1h)');
+    } catch (e) {
+      _updateStatus('❌ Login simulation failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _simulateUserLogout() async {
+    _setLoading(true);
+    try {
+      final cacheInstance = await _ensureCache();
+
+      // Look specifically in the user_sessions group where login data is stored
+      final sessionOptions = const CacheOptions(group: 'user_sessions');
+      final sessionKeys = await cacheInstance.getAllKeys(
+        options: sessionOptions,
+      );
+
+      // Also check default box for any session keys
+      final defaultKeys = await cacheInstance.getAllKeys();
+      final defaultSessionKeys = defaultKeys
+          .where((k) => k.startsWith('session_'))
+          .toList();
+
+      final allSessionKeys = [...sessionKeys, ...defaultSessionKeys];
+
+      debugPrint('🔍 Session keys in user_sessions group: $sessionKeys');
+      debugPrint('🔍 Session keys in default box: $defaultSessionKeys');
+      debugPrint('🔍 All session keys found: $allSessionKeys');
+
+      if (allSessionKeys.isNotEmpty) {
+        final keyToRemove =
+            allSessionKeys[random.nextInt(allSessionKeys.length)];
+
+        // Determine which options to use for deletion
+        final deleteOptions = sessionKeys.contains(keyToRemove)
+            ? sessionOptions
+            : null;
+
+        await cacheInstance.deleteWithOptions(
+          keyToRemove,
+          options: deleteOptions,
+        );
+        _updateStatus('🚪 User logout: Removed $keyToRemove');
+      } else {
+        _updateStatus('ℹ️ No active sessions to logout');
+      }
+    } catch (e) {
+      _updateStatus('❌ Logout simulation failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ============ API RESPONSE CACHING ============
+
+  Future<void> _simulateApiResponse() async {
+    _setLoading(true);
+    try {
+      final endpoint = [
+        'products',
+        'users',
+        'orders',
+        'analytics',
+      ][random.nextInt(4)];
+      final page = random.nextInt(10) + 1;
+
+      final mockApiResponse = {
+        'status': 'success',
+        'endpoint': '/api/$endpoint',
+        'page': page,
+        'data': List.generate(
+          random.nextInt(50) + 10,
+          (i) => {
+            'id': i + 1 + (page - 1) * 20,
+            'name': '$endpoint item ${i + 1}',
+            'timestamp': DateTime.now().millisecondsSinceEpoch,
+            'metadata': {
+              'version': '1.${random.nextInt(10)}',
+              'priority': ['low', 'medium', 'high'][random.nextInt(3)],
+            },
+          },
+        ),
+        'meta': {
+          'total': random.nextInt(1000) + 100,
+          'page': page,
+          'perPage': 20,
+          'cached': true,
+          'cacheTime': DateTime.now().toIso8601String(),
+        },
+      };
+
+      await (await _ensureCache()).putWithOptions(
+        'api_${endpoint}_page_$page',
+        mockApiResponse,
         options: const CacheOptions(
-          sensitive: ['password', 'apiKey'],
-          depends: 'master_key',
+          group: 'api_cache',
+          lifetime: 300, // 5 minutes
         ),
       );
-      debugPrint('   Result: $sensitive');
 
-      // Test 5: LRU tracking
-      debugPrint('\n5️⃣ Test: LRU Tracking');
-      await (await _ensureCache()).putWithOptions(
-        'test_lru',
-        'lru_value',
-        options: const CacheOptions(lru: true, lruInCount: 0),
+      _updateStatus(
+        '📡 API response cached: $endpoint page $page (expires in 5m)',
       );
-      // Access it multiple times to test tracking
-      await (await _ensureCache()).getWithOptions(
-        'test_lru',
-        options: const CacheOptions(lru: true, lruInCount: 0),
-      );
-      await (await _ensureCache()).getWithOptions(
-        'test_lru',
-        options: const CacheOptions(lru: true, lruInCount: 0),
-      );
-      debugPrint('   LRU tracking enabled (accessed 3 times total)');
+    } catch (e) {
+      _updateStatus('❌ API simulation failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
 
-      // Test 6: Expiry of key-value
-      debugPrint('\n6️⃣ Test: Key-Value Expiry (3s)');
+  Future<void> _simulateApiInvalidation() async {
+    _setLoading(true);
+    try {
+      final cacheInstance = await _ensureCache();
+      final keys = await cacheInstance.getAllKeys();
+      final apiKeys = keys.where((k) => k.startsWith('api_')).toList();
+
+      if (apiKeys.isNotEmpty) {
+        // Invalidate random API cache entries
+        final toInvalidate = apiKeys
+            .take(random.nextInt(apiKeys.length) + 1)
+            .toList();
+        for (final key in toInvalidate) {
+          await cacheInstance.deleteWithOptions(key);
+        }
+        _updateStatus(
+          '🔄 API cache invalidated: ${toInvalidate.length} entries',
+        );
+      } else {
+        _updateStatus('ℹ️ No API cache to invalidate');
+      }
+    } catch (e) {
+      _updateStatus('❌ API invalidation failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ============ ENCRYPTED DATA SIMULATION ============
+
+  Future<void> _simulateSecureTokenStorage() async {
+    _setLoading(true);
+    try {
+      final tokenType = ['access', 'refresh', 'api'][random.nextInt(3)];
+      final token =
+          'tok_${List.generate(32, (i) => '0123456789abcdef'[random.nextInt(16)]).join()}';
+
       await (await _ensureCache()).putWithOptions(
-        'test_expiry',
-        'will_expire_soon',
+        '${tokenType}_token',
+        token,
+        options: CacheOptions(
+          encrypted: true,
+          group: 'secure_tokens',
+          lifetime: tokenType == 'access' ? 900 : 3600, // 15m or 1h
+        ),
+      );
+
+      _updateStatus('🔐 Secure token stored: $tokenType (encrypted)');
+    } catch (e) {
+      _updateStatus('❌ Token storage failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _simulateCredentialStorage() async {
+    _setLoading(true);
+    try {
+      // Setup master key if not exists
+      await (await _ensureCache()).putWithOptions(
+        'credential_master_key',
+        'master_key_${DateTime.now().millisecondsSinceEpoch}',
+        options: const CacheOptions(encrypted: true),
+      );
+
+      final serviceNames = ['database', 'smtp', 'payment', 'analytics'];
+      final serviceName = serviceNames[random.nextInt(serviceNames.length)];
+
+      final credentials = {
+        'service': serviceName,
+        'host': '$serviceName.example.com',
+        'username': '${serviceName}_user',
+        'password': 'super_secret_${random.nextInt(9999)}',
+        'apiKey':
+            'key_${List.generate(20, (i) => 'abcdefghijklmnopqrstuvwxyz0123456789'[random.nextInt(36)]).join()}',
+        'metadata': {
+          'created': DateTime.now().toIso8601String(),
+          'environment': 'production',
+        },
+      };
+
+      await (await _ensureCache()).putWithOptions(
+        'credentials_$serviceName',
+        credentials,
+        options: const CacheOptions(
+          sensitive: ['password', 'apiKey'],
+          depends: 'credential_master_key',
+          group: 'secure_credentials',
+        ),
+      );
+
+      _updateStatus(
+        '🔑 Service credentials stored: $serviceName (partial encryption)',
+      );
+    } catch (e) {
+      _updateStatus('❌ Credential storage failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ============ PERFORMANCE & STRESS TESTING ============
+
+  Future<void> _simulateBulkDataLoad() async {
+    _setLoading(true);
+    try {
+      final dataType = [
+        'products',
+        'users',
+        'transactions',
+        'logs',
+      ][random.nextInt(4)];
+      final count = random.nextInt(500) + 100;
+
+      final futures = <Future>[];
+      for (int i = 0; i < count; i++) {
+        final entry = {
+          'id': i,
+          'type': dataType,
+          'data': 'bulk_data_${dataType}_$i',
+          'timestamp': DateTime.now().millisecondsSinceEpoch + i,
+          'payload': List.generate(
+            random.nextInt(10) + 1,
+            (j) => 'item_${i}_$j',
+          ),
+        };
+
+        futures.add(
+          (await _ensureCache()).putWithOptions(
+            'bulk_${dataType}_$i',
+            entry,
+            options: const CacheOptions(group: 'bulk_data'),
+          ),
+        );
+      }
+
+      await Future.wait(futures);
+      _updateStatus('📦 Bulk data loaded: $count $dataType entries');
+    } catch (e) {
+      _updateStatus('❌ Bulk load failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _simulateConcurrentOperations() async {
+    _setLoading(true);
+    try {
+      final operations = random.nextInt(100) + 50;
+      final futures = <Future>[];
+
+      for (int i = 0; i < operations; i++) {
+        switch (i % 4) {
+          case 0: // Store
+            futures.add(
+              (await _ensureCache()).putWithOptions(
+                'concurrent_$i',
+                'value_$i',
+              ),
+            );
+            break;
+          case 1: // Store JSON
+            futures.add(
+              (await _ensureCache()).putWithOptions('concurrent_json_$i', {
+                'index': i,
+                'data': 'json_$i',
+              }),
+            );
+            break;
+          case 2: // Store with expiry
+            futures.add(
+              (await _ensureCache()).putWithOptions(
+                'concurrent_exp_$i',
+                'expiring_$i',
+                options: const CacheOptions(lifetime: 60),
+              ),
+            );
+            break;
+          case 3: // Store encrypted
+            futures.add(
+              (await _ensureCache()).putWithOptions(
+                'concurrent_enc_$i',
+                'encrypted_$i',
+                options: const CacheOptions(encrypted: true),
+              ),
+            );
+            break;
+        }
+      }
+
+      final stopwatch = Stopwatch()..start();
+      await Future.wait(futures);
+      stopwatch.stop();
+
+      _updateStatus(
+        '⚡ Concurrent ops: $operations operations in ${stopwatch.elapsedMilliseconds}ms',
+      );
+    } catch (e) {
+      _updateStatus('❌ Concurrent operations failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ============ EXPIRATION TESTING ============
+
+  Future<void> _simulateQuickExpiry() async {
+    _setLoading(true);
+    try {
+      final key = 'quick_expire_${DateTime.now().millisecondsSinceEpoch}';
+      await (await _ensureCache()).putWithOptions(
+        key,
+        'This will expire in 3 seconds',
         options: const CacheOptions(lifetime: 3),
       );
-      final beforeExpiry = await (await _ensureCache()).getWithOptions(
-        'test_expiry',
-      );
-      debugPrint('   Before expiry: $beforeExpiry');
 
-      debugPrint('   Waiting 4 seconds for expiry...');
-      await Future.delayed(const Duration(seconds: 4));
+      _updateStatus('⏰ Quick expiry set: $key (3 seconds)');
 
-      final afterExpiry = await (await _ensureCache()).getWithOptions(
-        'test_expiry',
-      );
-      debugPrint('   After expiry: $afterExpiry (should be null)');
-
-      // Test 7: Expiry caused by master key expiry
-      debugPrint('\n7️⃣ Test: Sensitive Data Expiry via Master Key');
-      await _setupExpiringKey(); // Setup expiring master key (3s)
-
-      await (await _ensureCache()).putWithOptions(
-        'test_key_expiry',
-        {'public': 'visible', 'secret': 'will_fail_when_key_expires'},
-        options: const CacheOptions(
-          sensitive: ['secret'],
-          depends: 'expiring_master_key',
-        ),
-      );
-
-      final beforeKeyExpiry = await (await _ensureCache()).getWithOptions(
-        'test_key_expiry',
-        options: const CacheOptions(
-          sensitive: ['secret'],
-          depends: 'expiring_master_key',
-        ),
-      );
-      debugPrint('   Before key expiry: $beforeKeyExpiry');
-
-      debugPrint('   Waiting 4 seconds for master key expiry...');
-      await Future.delayed(const Duration(seconds: 4));
-
-      final afterKeyExpiry = await (await _ensureCache()).getWithOptions(
-        'test_key_expiry',
-        options: const CacheOptions(
-          sensitive: ['secret'],
-          depends: 'expiring_master_key',
-        ),
-      );
-      debugPrint(
-        '   After key expiry: $afterKeyExpiry (should be null due to failed decryption)',
-      );
-
-      await _refreshEntries();
-      setState(() {
-        lastAction = 'All 7 behavior tests completed - check terminal';
+      // Schedule a check after expiry
+      Future.delayed(const Duration(seconds: 4), () async {
+        final result = await (await _ensureCache()).getWithOptions(key);
+        _updateStatus(
+          result == null
+              ? '✅ Expiry confirmed: $key expired as expected'
+              : '❌ Expiry failed: $key still exists',
+        );
       });
     } catch (e) {
-      debugPrint('❌ Behavior test error: $e');
-      setState(() {
-        lastAction = 'Behavior test error: $e';
+      _updateStatus('❌ Quick expiry failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _simulateMasterKeyExpiry() async {
+    _setLoading(true);
+    try {
+      // Create expiring master key
+      final masterKey =
+          'expiring_master_${DateTime.now().millisecondsSinceEpoch}';
+      await (await _ensureCache()).putWithOptions(
+        masterKey,
+        'temporary_key',
+        options: const CacheOptions(encrypted: true, lifetime: 5),
+      );
+
+      // Store dependent data
+      final dependentKey =
+          'dependent_data_${DateTime.now().millisecondsSinceEpoch}';
+      await (await _ensureCache()).putWithOptions(
+        dependentKey,
+        {'public': 'visible_data', 'secret': 'will_fail_when_master_expires'},
+        options: CacheOptions(sensitive: const ['secret'], depends: masterKey),
+      );
+
+      _updateStatus(
+        '🔐 Master key expiry test: Key expires in 5s, dependent data will fail',
+      );
+
+      // Schedule check after expiry
+      Future.delayed(const Duration(seconds: 6), () async {
+        try {
+          final result = await (await _ensureCache()).getWithOptions(
+            dependentKey,
+            options: CacheOptions(
+              sensitive: const ['secret'],
+              depends: masterKey,
+            ),
+          );
+          _updateStatus(
+            result == null
+                ? '✅ Dependent data expired with master key'
+                : '❌ Dependent data unexpectedly survived',
+          );
+        } catch (e) {
+          _updateStatus('✅ Dependent data failed as expected: $e');
+        }
       });
+    } catch (e) {
+      _updateStatus('❌ Master key expiry test failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ============ LRU/LFU TESTING ============
+
+  Future<void> _simulateLRUBehavior() async {
+    _setLoading(true);
+    try {
+      const maxEntries = 50;
+      const testEntries = 75; // More than max
+
+      final options = CacheOptions(
+        lru: true,
+        lruInCount: maxEntries,
+        group: 'lru_test',
+      );
+
+      // Fill beyond capacity
+      for (int i = 0; i < testEntries; i++) {
+        await (await _ensureCache()).putWithOptions(
+          'lru_item_$i',
+          'lru_data_$i',
+          options: options,
+        );
+
+        // Access some older items to test LRU
+        if (i > 30 && i % 10 == 0) {
+          await (await _ensureCache()).getWithOptions(
+            'lru_item_${i - 20}',
+            options: options,
+          );
+        }
+      }
+
+      final keys = await (await _ensureCache()).getAllKeys();
+      final lruKeys = keys.where((k) => k.startsWith('lru_item_')).length;
+
+      _updateStatus(
+        '🔄 LRU test: Created $testEntries, retained ~$lruKeys entries',
+      );
+    } catch (e) {
+      _updateStatus('❌ LRU simulation failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ============ CLEANUP & UTILITIES ============
+
+  Future<void> _clearAllCache() async {
+    _setLoading(true);
+    try {
+      await (await _ensureCache()).clear();
+      _updateStatus('🧹 All cache cleared');
+    } catch (e) {
+      _updateStatus('❌ Clear failed: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _showCacheStats() async {
+    _setLoading(true);
+    try {
+      final cacheInstance = await _ensureCache();
+      
+      // Get keys from all collections
+      final allKeys = await cacheInstance.getAllKeys(includeAllGroups: true);
+      
+      // Parse groups from prefixed keys
+      final groups = <String, int>{};
+      var defaultCount = 0;
+      
+      for (final key in allKeys) {
+        if (key.startsWith('[') && key.contains(']')) {
+          // Extract group name from [groupname]key format
+          final endBracket = key.indexOf(']');
+          final groupName = key.substring(1, endBracket);
+          groups[groupName] = (groups[groupName] ?? 0) + 1;
+        } else {
+          defaultCount++;
+        }
+      }
+      
+      final groupStats = groups.entries
+          .map((e) => '${e.key}: ${e.value}')
+          .join(', ');
+      
+      final statsMessage = [
+        'Total: ${allKeys.length} entries',
+        if (defaultCount > 0) 'default: $defaultCount',
+        if (groupStats.isNotEmpty) groupStats,
+      ].join(' | ');
+      
+      _updateStatus('📊 Cache stats: $statsMessage');
+    } catch (e) {
+      _updateStatus('❌ Stats failed: $e');
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -454,253 +595,255 @@ class _CacheVisualTestPageState extends State<CacheVisualTestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PV Cache Visual Test'),
+        title: const Text('PVCache API Simulator'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: _showCacheStats,
+            icon: const Icon(Icons.info),
+            tooltip: 'Cache Statistics',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Key input and preset selector
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: keyController,
-                    decoration: const InputDecoration(
-                      labelText: 'Cache Key',
-                      border: OutlineInputBorder(),
-                      hintText: 'e.g., user123, profile, settings',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  flex: 2,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedPreset,
-                    decoration: const InputDecoration(
-                      labelText: 'Preset',
-                      border: OutlineInputBorder(),
-                    ),
-                    isExpanded: true,
-                    items: presets.keys.map((String preset) {
-                      return DropdownMenuItem<String>(
-                        value: preset,
-                        child: Text(preset, overflow: TextOverflow.ellipsis),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedPreset = newValue;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Collection input field
-            TextField(
-              controller: collectionController,
-              decoration: const InputDecoration(
-                labelText: 'Collection (optional)',
-                border: OutlineInputBorder(),
-                hintText: 'e.g., user_data, app_settings, temporary',
-                helperText: 'Leave empty for default collection',
+            // Status Display
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Action buttons
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _put,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Put'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _get,
-                  icon: const Icon(Icons.search),
-                  label: const Text('Get'),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _delete,
-                  icon: const Icon(Icons.delete),
-                  label: const Text('Delete'),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _clear,
-                  icon: const Icon(Icons.clear_all),
-                  label: const Text('Clear All'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _setupDependencyKey,
-                  icon: const Icon(Icons.key),
-                  label: const Text('Setup Key'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _runBehaviorTests,
-                  icon: const Icon(Icons.science),
-                  label: const Text('Run 7 Tests'),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => setState(() => showAdvanced = !showAdvanced),
-                  icon: Icon(
-                    showAdvanced ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  label: Text(showAdvanced ? 'Hide Details' : 'Show Details'),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Advanced preset details
-            if (showAdvanced && selectedPreset != null) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        'Configuration Details: $selectedPreset',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Icon(
+                        isLoading ? Icons.hourglass_empty : Icons.check_circle,
+                        color: isLoading ? Colors.orange : Colors.green,
                       ),
-                      const SizedBox(height: 8),
-                      Text('Value: ${presets[selectedPreset]!['value']}'),
-                      Text(
-                        'Base Options: ${presets[selectedPreset]!['options']}',
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Status:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      if (collectionController.text.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          'Collection Override: ${collectionController.text}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text('Final Options: ${_getOptionsWithCollection()}'),
-                      ],
                     ],
                   ),
-                ),
+                  const SizedBox(height: 4),
+                  Text(statusMessage),
+                  if (operationCount > 0) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Operations performed: $operationCount',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
+            ),
+            const SizedBox(height: 20),
 
-            // Last action display
-            if (lastAction != null) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+            // Simulation Categories
+            Expanded(
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Last Action:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    _buildCategorySection('👤 User Session Management', [
+                      _buildSimulationButton(
+                        'Simulate User Login',
+                        'Create user session with preferences',
+                        Icons.login,
+                        Colors.green,
+                        _simulateUserLogin,
+                      ),
+                      _buildSimulationButton(
+                        'Simulate User Logout',
+                        'Remove random user session',
+                        Icons.logout,
+                        Colors.orange,
+                        _simulateUserLogout,
+                      ),
+                    ]),
+
+                    _buildCategorySection('📡 API Response Caching', [
+                      _buildSimulationButton(
+                        'Cache API Response',
+                        'Store paginated API data with 5min expiry',
+                        Icons.api,
+                        Colors.blue,
+                        _simulateApiResponse,
+                      ),
+                      _buildSimulationButton(
+                        'Invalidate API Cache',
+                        'Clear stale API cache entries',
+                        Icons.refresh,
+                        Colors.indigo,
+                        _simulateApiInvalidation,
+                      ),
+                    ]),
+
+                    _buildCategorySection('🔐 Encrypted Data Storage', [
+                      _buildSimulationButton(
+                        'Store Security Tokens',
+                        'Cache encrypted access/refresh tokens',
+                        Icons.security,
+                        Colors.purple,
+                        _simulateSecureTokenStorage,
+                      ),
+                      _buildSimulationButton(
+                        'Store Service Credentials',
+                        'Partially encrypted service credentials',
+                        Icons.vpn_key,
+                        Colors.deepPurple,
+                        _simulateCredentialStorage,
+                      ),
+                    ]),
+
+                    _buildCategorySection('⚡ Performance & Stress Testing', [
+                      _buildSimulationButton(
+                        'Bulk Data Load',
+                        'Load 100-600 entries rapidly',
+                        Icons.storage,
+                        Colors.teal,
+                        _simulateBulkDataLoad,
+                      ),
+                      _buildSimulationButton(
+                        'Concurrent Operations',
+                        'Run 50-150 parallel operations',
+                        Icons.speed,
+                        Colors.cyan,
+                        _simulateConcurrentOperations,
+                      ),
+                      _buildSimulationButton(
+                        'LRU Cache Behavior',
+                        'Test eviction with 75 items, 50 limit',
+                        Icons.cached,
+                        Colors.amber,
+                        _simulateLRUBehavior,
+                      ),
+                    ]),
+
+                    _buildCategorySection('⏰ Expiration Testing', [
+                      _buildSimulationButton(
+                        'Quick Expiry Test',
+                        'Data expires in 3 seconds',
+                        Icons.timer,
+                        Colors.red,
+                        _simulateQuickExpiry,
+                      ),
+                      _buildSimulationButton(
+                        'Master Key Expiry',
+                        'Dependent data fails when key expires',
+                        Icons.timer_off,
+                        Colors.pink,
+                        _simulateMasterKeyExpiry,
+                      ),
+                    ]),
+
+                    _buildCategorySection('🧹 Cache Management', [
+                      _buildSimulationButton(
+                        'Clear All Cache',
+                        'Remove all cached data',
+                        Icons.clear_all,
+                        Colors.red[300]!,
+                        _clearAllCache,
+                      ),
+                      _buildSimulationButton(
+                        'Show Cache Stats',
+                        'Display current cache statistics',
+                        Icons.analytics,
+                        Colors.grey,
+                        _showCacheStats,
+                      ),
+                    ]),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategorySection(String title, List<Widget> buttons) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        ...buttons,
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildSimulationButton(
+    String title,
+    String description,
+    IconData icon,
+    Color color,
+    Future<void> Function() onPressed,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: isLoading ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.all(16),
+            alignment: Alignment.centerLeft,
+          ),
+          child: Row(
+            children: [
+              Icon(icon),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                    Text(lastAction!),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Check terminal/debug console for detailed output',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-            ],
-
-            // Cache entries display (keys only)
-            const Text(
-              'Cache Keys:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
+              if (isLoading)
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
                 ),
-                child: allEntries.isEmpty
-                    ? const Text(
-                        'No cache entries found.',
-                        style: TextStyle(color: Colors.grey),
-                      )
-                    : SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: allEntries.keys.map((key) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 2.0,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.key,
-                                    size: 16,
-                                    color: Colors.grey[600],
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      key,
-                                      style: const TextStyle(
-                                        fontFamily: 'monospace',
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.content_copy,
-                                      size: 16,
-                                    ),
-                                    onPressed: () {
-                                      keyController.text = key;
-                                    },
-                                    tooltip: 'Copy to key field',
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,7 +1,161 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:pv_cache/lib.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pv_cache/src/core/toplv.dart' as toplv;
 import 'dart:io';
+
+/// Mock implementation of FlutterSecureStorage for testing
+class MockFlutterSecureStorage implements FlutterSecureStorage {
+  final Map<String, String> _storage = {};
+
+  /// Clear the mock storage for testing
+  void clearMockStorage() {
+    _storage.clear();
+  }
+
+  @override
+  Future<bool> containsKey({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    return _storage.containsKey(key);
+  }
+
+  @override
+  Future<void> delete({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    _storage.remove(key);
+  }
+
+  @override
+  Future<void> deleteAll({
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    _storage.clear();
+  }
+
+  @override
+  Future<String?> read({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    return _storage[key];
+  }
+
+  @override
+  Future<Map<String, String>> readAll({
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    return Map<String, String>.from(_storage);
+  }
+
+  @override
+  Future<void> write({
+    required String key,
+    required String? value,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) async {
+    if (value != null) {
+      _storage[key] = value;
+    } else {
+      _storage.remove(key);
+    }
+  }
+
+  // Implementing remaining abstract methods with basic implementations
+  @override
+  Future<bool> isCupertinoProtectedDataAvailable({
+    IOSOptions? iOptions,
+  }) async => false;
+
+  @override
+  void registerListener({
+    required String key,
+    required void Function(String?) listener,
+  }) {}
+
+  @override
+  void unregisterAllListeners({
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) {}
+
+  @override
+  void unregisterAllListenersForKey({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) {}
+
+  @override
+  void unregisterListener({
+    required String key,
+    required void Function(String?) listener,
+  }) {}
+
+  // Implementing additional methods that might be required
+  @override
+  Stream<bool> get onCupertinoProtectedDataAvailabilityChanged =>
+      Stream.value(false);
+
+  // Abstract getters that need implementation
+  @override
+  AndroidOptions get aOptions => const AndroidOptions();
+
+  @override
+  IOSOptions get iOptions => const IOSOptions();
+
+  @override
+  LinuxOptions get lOptions => const LinuxOptions();
+
+  @override
+  MacOsOptions get mOptions => const MacOsOptions();
+
+  @override
+  WebOptions get webOptions => const WebOptions();
+
+  @override
+  WindowsOptions get wOptions => const WindowsOptions();
+}
 
 void main() {
   // Initialize Flutter bindings for secure storage
@@ -9,11 +163,18 @@ void main() {
 
   group('PVCache Comprehensive Tests', () {
     late PVCache cache;
+    late MockFlutterSecureStorage mockSecureStorage;
 
     setUpAll(() async {
       // Initialize Hive with a temporary directory for testing
       final tempDir = Directory.systemTemp.createTempSync('pv_cache_test');
       Hive.init(tempDir.path);
+
+      // Set up mock secure storage
+      mockSecureStorage = MockFlutterSecureStorage();
+
+      // Replace the global secure storage instance with our mock
+      toplv.secureStorage = mockSecureStorage;
 
       cache = await PVCache.getInstance(debug: true);
     });
@@ -26,6 +187,8 @@ void main() {
     setUp(() async {
       // Clear cache before each test
       await cache.clear();
+      // Also clear the mock storage
+      mockSecureStorage.clearMockStorage();
     });
 
     group('Basic Cache Operations', () {
@@ -166,14 +329,9 @@ void main() {
         const value = 'secret_information';
         const options = CacheOptions(encrypted: true);
 
-        try {
-          await cache.putWithOptions(key, value, options: options);
-          final result = await cache.getWithOptions(key, options: options);
-          expect(result, equals(value));
-        } catch (e) {
-          // Skip encryption tests in test environment where flutter_secure_storage isn't available
-          print('Skipping encryption test in test environment: $e');
-        }
+        await cache.putWithOptions(key, value, options: options);
+        final result = await cache.getWithOptions(key, options: options);
+        expect(result, equals(value));
       });
 
       test('should store and retrieve encrypted JSON', () async {
@@ -188,23 +346,18 @@ void main() {
         };
         const options = CacheOptions(encrypted: true);
 
-        try {
-          await cache.putWithOptions(key, value, options: options);
-          final result = await cache.getWithOptions<Map<String, dynamic>>(
-            key,
-            options: options,
-          );
+        await cache.putWithOptions(key, value, options: options);
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          key,
+          options: options,
+        );
 
-          expect(result, equals(value));
-          expect(result!['secret'], equals('top_secret_data'));
-          expect(
-            result['credentials']['password'],
-            equals('super_secure_password'),
-          );
-        } catch (e) {
-          // Skip encryption tests in test environment where flutter_secure_storage isn't available
-          print('Skipping encryption test in test environment: $e');
-        }
+        expect(result, equals(value));
+        expect(result!['secret'], equals('top_secret_data'));
+        expect(
+          result['credentials']['password'],
+          equals('super_secure_password'),
+        );
       });
 
       test(
@@ -215,98 +368,83 @@ void main() {
           const encryptedOptions = CacheOptions(encrypted: true);
           const normalOptions = CacheOptions();
 
-          try {
-            await cache.putWithOptions(key, value, options: encryptedOptions);
-            final result = await cache.getWithOptions(
-              key,
-              options: normalOptions,
-            );
+          await cache.putWithOptions(key, value, options: encryptedOptions);
+          final result = await cache.getWithOptions(
+            key,
+            options: normalOptions,
+          );
 
-            expect(result, isNull);
-          } catch (e) {
-            // Skip encryption tests in test environment where flutter_secure_storage isn't available
-            print('Skipping encryption test in test environment: $e');
-          }
+          expect(result, isNull);
         },
       );
     });
 
     group('Sensitive Data with Patterns', () {
       test('should handle sensitive data with dependency keys', () async {
-        try {
-          // Setup master key first
-          const masterKey = 'test_master_key';
-          const masterValue = 'master_secret_123';
-          await cache.putWithOptions(
-            masterKey,
-            masterValue,
-            options: const CacheOptions(encrypted: true),
-          );
+        // Setup master key first
+        const masterKey = 'test_master_key';
+        const masterValue = 'master_secret_123';
+        await cache.putWithOptions(
+          masterKey,
+          masterValue,
+          options: const CacheOptions(encrypted: true),
+        );
 
-          // Store sensitive data
-          const key = 'sensitive_data';
-          final value = {
-            'public': 'visible_data',
-            'secret': 'hidden_information',
-            'password': 'ultra_secret',
-          };
-          final options = CacheOptions(
-            sensitive: const ['secret', 'password'],
-            depends: masterKey,
-          );
+        // Store sensitive data
+        const key = 'sensitive_data';
+        final value = {
+          'public': 'visible_data',
+          'secret': 'hidden_information',
+          'password': 'ultra_secret',
+        };
+        final options = CacheOptions(
+          sensitive: const ['secret', 'password'],
+          depends: masterKey,
+        );
 
-          await cache.putWithOptions(key, value, options: options);
-          final result = await cache.getWithOptions<Map<String, dynamic>>(
-            key,
-            options: options,
-          );
+        await cache.putWithOptions(key, value, options: options);
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          key,
+          options: options,
+        );
 
-          expect(result, equals(value));
-          expect(result!['public'], equals('visible_data'));
-          expect(result['secret'], equals('hidden_information'));
-          expect(result['password'], equals('ultra_secret'));
-        } catch (e) {
-          // Skip sensitive data tests in test environment where flutter_secure_storage isn't available
-          print('Skipping sensitive data test in test environment: $e');
-        }
+        expect(result, equals(value));
+        expect(result!['public'], equals('visible_data'));
+        expect(result['secret'], equals('hidden_information'));
+        expect(result['password'], equals('ultra_secret'));
       });
 
       test('should handle wildcard patterns', () async {
-        try {
-          // Setup master key
-          const masterKey = 'wildcard_master';
-          await cache.putWithOptions(
-            masterKey,
-            'wildcard_secret',
-            options: const CacheOptions(encrypted: true),
-          );
+        // Setup master key
+        const masterKey = 'wildcard_master';
+        await cache.putWithOptions(
+          masterKey,
+          'wildcard_secret',
+          options: const CacheOptions(encrypted: true),
+        );
 
-          // Test data with various keys
-          final testData = {
-            'user_name': 'john_doe',
-            'user_email': 'john@example.com',
-            'user_password': 'secret123',
-            'profile_data': 'public_info',
-          };
+        // Test data with various keys
+        final testData = {
+          'user_name': 'john_doe',
+          'user_email': 'john@example.com',
+          'user_password': 'secret123',
+          'profile_data': 'public_info',
+        };
 
-          final options = CacheOptions(
-            sensitive: const [
-              'user*',
-            ], // Should match user_name, user_email, user_password
-            depends: masterKey,
-          );
+        final options = CacheOptions(
+          sensitive: const [
+            'user*',
+          ], // Should match user_name, user_email, user_password
+          depends: masterKey,
+        );
 
-          await cache.putWithOptions('user_data', testData, options: options);
-          final result = await cache.getWithOptions<Map<String, dynamic>>(
-            'user_data',
-            options: options,
-          );
+        await cache.putWithOptions('user_data', testData, options: options);
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          'user_data',
+          options: options,
+        );
 
-          expect(result, equals(testData));
-        } catch (e) {
-          // Skip sensitive data tests in test environment where flutter_secure_storage isn't available
-          print('Skipping sensitive data test in test environment: $e');
-        }
+        expect(result, equals(testData));
       });
 
       test('should fail when master key is missing', () async {
@@ -434,48 +572,43 @@ void main() {
       });
 
       test('should handle master key expiration', () async {
-        try {
-          // Setup expiring master key
-          const masterKey = 'expiring_master';
-          await cache.putWithOptions(
-            masterKey,
-            'temporary_key',
-            options: const CacheOptions(encrypted: true, lifetime: 1),
-          );
+        // Setup expiring master key
+        const masterKey = 'expiring_master';
+        await cache.putWithOptions(
+          masterKey,
+          'temporary_key',
+          options: const CacheOptions(encrypted: true, lifetime: 1),
+        );
 
-          // Store sensitive data depending on expiring key
-          final sensitiveData = {'secret': 'will_expire_with_key'};
-          final options = CacheOptions(
-            sensitive: const ['secret'],
-            depends: masterKey,
-          );
+        // Store sensitive data depending on expiring key
+        final sensitiveData = {'secret': 'will_expire_with_key'};
+        final options = CacheOptions(
+          sensitive: const ['secret'],
+          depends: masterKey,
+        );
 
-          await cache.putWithOptions(
-            'dependent_data',
-            sensitiveData,
-            options: options,
-          );
+        await cache.putWithOptions(
+          'dependent_data',
+          sensitiveData,
+          options: options,
+        );
 
-          // Should work initially
-          final initialResult = await cache.getWithOptions(
-            'dependent_data',
-            options: options,
-          );
-          expect(initialResult, equals(sensitiveData));
+        // Should work initially
+        final initialResult = await cache.getWithOptions(
+          'dependent_data',
+          options: options,
+        );
+        expect(initialResult, equals(sensitiveData));
 
-          // Wait for master key expiration
-          await Future.delayed(const Duration(seconds: 2));
+        // Wait for master key expiration
+        await Future.delayed(const Duration(seconds: 2));
 
-          // Should fail after master key expires
-          final expiredResult = await cache.getWithOptions(
-            'dependent_data',
-            options: options,
-          );
-          expect(expiredResult, isNull);
-        } catch (e) {
-          // Skip master key expiration tests in test environment where flutter_secure_storage isn't available
-          print('Skipping master key expiration test in test environment: $e');
-        }
+        // Should fail after master key expires
+        final expiredResult = await cache.getWithOptions(
+          'dependent_data',
+          options: options,
+        );
+        expect(expiredResult, isNull);
       });
     });
 
@@ -630,6 +763,405 @@ void main() {
           }
         }
       });
+
+      test('should handle large data objects efficiently', () async {
+        // Test with large objects to verify memory efficiency
+        final largeObject = {
+          'metadata': {
+            'created': DateTime.now().toIso8601String(),
+            'version': '1.0.0',
+            'size': 'large',
+          },
+          'payload': List.generate(
+            1000,
+            (index) => {
+              'id': index,
+              'name': 'item_$index',
+              'description':
+                  'This is a longer description for item $index' * 10,
+              'tags': [
+                'tag${index % 5}',
+                'category${index % 3}',
+                'type${index % 7}',
+              ],
+              'nested': {
+                'level1': {
+                  'level2': {
+                    'data': 'deep_data_$index',
+                    'values': List.generate(10, (i) => i * index),
+                  },
+                },
+              },
+            },
+          ),
+        };
+
+        final stopwatch = Stopwatch()..start();
+
+        await cache.putWithOptions('large_object_test', largeObject);
+        final storeTime = stopwatch.elapsedMilliseconds;
+
+        stopwatch.reset();
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          'large_object_test',
+        );
+        final retrieveTime = stopwatch.elapsedMilliseconds;
+
+        stopwatch.stop();
+
+        expect(result, isNotNull);
+        expect(result!['payload'].length, equals(1000));
+        expect(result['payload'][500]['name'], equals('item_500'));
+        expect(
+          result['payload'][999]['nested']['level1']['level2']['data'],
+          equals('deep_data_999'),
+        );
+
+        print(
+          'Large object storage: ${storeTime}ms, retrieval: ${retrieveTime}ms',
+        );
+        expect(storeTime, lessThan(5000)); // Should store within 5 seconds
+        expect(
+          retrieveTime,
+          lessThan(2000),
+        ); // Should retrieve within 2 seconds
+      });
+
+      test('should handle concurrent mixed operations stress test', () async {
+        const concurrentOperations = 500;
+        final futures = <Future>[];
+        final results = <String, dynamic>{};
+
+        final stopwatch = Stopwatch()..start();
+
+        // Mix of different operation types
+        for (int i = 0; i < concurrentOperations; i++) {
+          switch (i % 5) {
+            case 0: // String storage
+              futures.add(
+                cache.putWithOptions('concurrent_str_$i', 'string_value_$i'),
+              );
+              break;
+            case 1: // JSON storage
+              futures.add(
+                cache.putWithOptions('concurrent_json_$i', {
+                  'index': i,
+                  'type': 'json',
+                  'data': List.generate(5, (j) => 'item_${i}_$j'),
+                }),
+              );
+              break;
+            case 2: // Encrypted storage
+              futures.add(
+                cache.putWithOptions(
+                  'concurrent_enc_$i',
+                  'encrypted_value_$i',
+                  options: const CacheOptions(encrypted: true),
+                ),
+              );
+              break;
+            case 3: // With expiry
+              futures.add(
+                cache.putWithOptions(
+                  'concurrent_exp_$i',
+                  'expiring_value_$i',
+                  options: const CacheOptions(lifetime: 3600),
+                ),
+              );
+              break;
+            case 4: // Grouped storage
+              futures.add(
+                cache.putWithOptions(
+                  'concurrent_grp_$i',
+                  'grouped_value_$i',
+                  options: const CacheOptions(group: 'stress_test'),
+                ),
+              );
+              break;
+          }
+        }
+
+        await Future.wait(futures);
+        futures.clear();
+
+        // Now retrieve all data concurrently
+        for (int i = 0; i < concurrentOperations; i++) {
+          switch (i % 5) {
+            case 0:
+              futures.add(
+                cache
+                    .getWithOptions<String>('concurrent_str_$i')
+                    .then((value) => results['str_$i'] = value),
+              );
+              break;
+            case 1:
+              futures.add(
+                cache
+                    .getWithOptions<Map<String, dynamic>>('concurrent_json_$i')
+                    .then((value) => results['json_$i'] = value),
+              );
+              break;
+            case 2:
+              futures.add(
+                cache
+                    .getWithOptions<String>(
+                      'concurrent_enc_$i',
+                      options: const CacheOptions(encrypted: true),
+                    )
+                    .then((value) => results['enc_$i'] = value),
+              );
+              break;
+            case 3:
+              futures.add(
+                cache
+                    .getWithOptions<String>(
+                      'concurrent_exp_$i',
+                      options: const CacheOptions(lifetime: 3600),
+                    )
+                    .then((value) => results['exp_$i'] = value),
+              );
+              break;
+            case 4:
+              futures.add(
+                cache
+                    .getWithOptions<String>(
+                      'concurrent_grp_$i',
+                      options: const CacheOptions(group: 'stress_test'),
+                    )
+                    .then((value) => results['grp_$i'] = value),
+              );
+              break;
+          }
+        }
+
+        await Future.wait(futures);
+        stopwatch.stop();
+
+        // Verify results
+        expect(results.length, equals(concurrentOperations));
+        expect(results['str_250'], equals('string_value_250'));
+        expect(results['json_251']?['index'], equals(251));
+        expect(results['enc_252'], equals('encrypted_value_252'));
+        expect(results['exp_253'], equals('expiring_value_253'));
+        expect(results['grp_254'], equals('grouped_value_254'));
+
+        print(
+          'Concurrent mixed operations (${concurrentOperations * 2} ops) took: ${stopwatch.elapsedMilliseconds}ms',
+        );
+        expect(
+          stopwatch.elapsedMilliseconds,
+          lessThan(15000),
+        ); // Should complete within 15 seconds
+      });
+
+      test('should handle bulk operations with cleanup', () async {
+        const bulkSize = 2000;
+        final bulkData = <String, dynamic>{};
+
+        // Generate bulk data
+        for (int i = 0; i < bulkSize; i++) {
+          bulkData['bulk_$i'] = {
+            'index': i,
+            'timestamp': DateTime.now().millisecondsSinceEpoch + i,
+            'payload': 'bulk_data_$i' * (i % 10 + 1), // Variable size data
+          };
+        }
+
+        final stopwatch = Stopwatch()..start();
+
+        // Store all data
+        final storeFutures = bulkData.entries
+            .map((entry) => cache.putWithOptions(entry.key, entry.value))
+            .toList();
+        await Future.wait(storeFutures);
+
+        final storeTime = stopwatch.elapsedMilliseconds;
+        stopwatch.reset();
+
+        // Verify data exists
+        final keys = await cache.getAllKeys();
+        final bulkKeys = keys.where((key) => key.startsWith('bulk_')).toList();
+        expect(bulkKeys.length, greaterThanOrEqualTo(bulkSize));
+
+        final verifyTime = stopwatch.elapsedMilliseconds;
+        stopwatch.reset();
+
+        // Clean up bulk data
+        final deleteFutures = bulkKeys
+            .map((key) => cache.deleteWithOptions(key))
+            .toList();
+        await Future.wait(deleteFutures);
+
+        final deleteTime = stopwatch.elapsedMilliseconds;
+        stopwatch.stop();
+
+        // Verify cleanup
+        final remainingKeys = await cache.getAllKeys();
+        final remainingBulkKeys = remainingKeys
+            .where((key) => key.startsWith('bulk_'))
+            .toList();
+        expect(remainingBulkKeys.length, equals(0));
+
+        print(
+          'Bulk operations - Store: ${storeTime}ms, Verify: ${verifyTime}ms, Delete: ${deleteTime}ms',
+        );
+        expect(storeTime, lessThan(10000)); // Store within 10 seconds
+        expect(deleteTime, lessThan(5000)); // Delete within 5 seconds
+      });
+
+      test('should handle memory pressure with LRU eviction', () async {
+        // Test LRU eviction behavior
+        const testEntries = 150;
+
+        final options = CacheOptions(
+          lru: true,
+          lruInCount: 100, // Limit to 100 entries
+        );
+
+        // Fill cache beyond capacity
+        for (int i = 0; i < testEntries; i++) {
+          await cache.putWithOptions('evict_test_$i', {
+            'index': i,
+            'data': 'entry_data_$i',
+            'timestamp': DateTime.now().millisecondsSinceEpoch,
+          }, options: options);
+
+          // Occasionally access older entries to test LRU behavior
+          if (i > 50 && i % 20 == 0) {
+            await cache.getWithOptions(
+              'evict_test_${i - 30}',
+              options: options,
+            );
+          }
+        }
+
+        final keys = await cache.getAllKeys();
+        final evictKeys = keys
+            .where((key) => key.startsWith('evict_test_'))
+            .toList();
+
+        // Most recent entries should still be present
+        for (int i = testEntries - 20; i < testEntries; i++) {
+          final result = await cache.getWithOptions(
+            'evict_test_$i',
+            options: options,
+          );
+          expect(
+            result,
+            isNotNull,
+            reason: 'Recent entry evict_test_$i should still exist',
+          );
+        }
+
+        // Cleanup
+        for (final key in evictKeys) {
+          await cache.deleteWithOptions(key);
+        }
+      });
+
+      test('should handle rapid cache clear and rebuild cycles', () async {
+        const cycles = 10;
+        const entriesPerCycle = 100;
+
+        for (int cycle = 0; cycle < cycles; cycle++) {
+          // Build cache
+          for (int i = 0; i < entriesPerCycle; i++) {
+            await cache.putWithOptions('cycle_${cycle}_entry_$i', {
+              'cycle': cycle,
+              'entry': i,
+              'data': 'cycle_data_${cycle}_$i',
+            });
+          }
+
+          // Verify cache contents
+          final keys = await cache.getAllKeys();
+          final cycleKeys = keys
+              .where((key) => key.startsWith('cycle_${cycle}_'))
+              .toList();
+          expect(cycleKeys.length, equals(entriesPerCycle));
+
+          // Clear cache
+          await cache.clear();
+
+          // Verify empty
+          final clearedKeys = await cache.getAllKeys();
+          expect(clearedKeys.length, equals(0));
+        }
+
+        print('Completed $cycles cache clear/rebuild cycles');
+      });
+
+      test('should handle long keys and values within limits', () async {
+        final longKey = 'long_key_' + 'x' * 240; // Stay under 255 char limit
+        final longValue = 'long_value_' + 'y' * 10000;
+
+        await cache.putWithOptions(longKey, longValue);
+        final result = await cache.getWithOptions<String>(longKey);
+
+        expect(result, equals(longValue));
+        expect(
+          result!.length,
+          equals(11 + 10000),
+        ); // 'long_value_' + 10000 chars
+
+        await cache.deleteWithOptions(longKey);
+      });
+
+      test('should handle unicode and special characters', () async {
+        final unicodeData = {
+          'emoji': '🚀🎉💾🔐🌟',
+          'chinese': '你好世界',
+          'arabic': 'مرحبا بالعالم',
+          'special': 'Special chars: !@#\$%^&*()_+-=[]{}|;:\'",.<>?/~`',
+          'mixed': 'Mixed: 🌍 Hello 世界 مرحبا @#\$%',
+        };
+
+        await cache.putWithOptions('unicode_test', unicodeData);
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          'unicode_test',
+        );
+
+        expect(result, equals(unicodeData));
+        expect(result!['emoji'], equals('🚀🎉💾🔐🌟'));
+        expect(result['chinese'], equals('你好世界'));
+        expect(result['arabic'], equals('مرحبا بالعالم'));
+
+        await cache.deleteWithOptions('unicode_test');
+      });
+
+      test('should handle deeply nested object structures', () async {
+        Map<String, dynamic> createNestedStructure(int depth) {
+          if (depth <= 0) {
+            return {'value': 'leaf_node_$depth'};
+          }
+          return {
+            'level': depth,
+            'data': 'level_$depth',
+            'nested': createNestedStructure(depth - 1),
+            'array': List.generate(5, (i) => 'item_${depth}_$i'),
+          };
+        }
+
+        final deepStructure = createNestedStructure(20); // 20 levels deep
+
+        await cache.putWithOptions('deep_structure', deepStructure);
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          'deep_structure',
+        );
+
+        expect(result, isNotNull);
+        expect(result!['level'], equals(20));
+
+        // Navigate to the deepest level
+        var current = result;
+        for (int i = 20; i > 0; i--) {
+          expect(current['level'], equals(i));
+          current = Map<String, dynamic>.from(current['nested'] as Map);
+        }
+        expect(current['value'], equals('leaf_node_0'));
+
+        await cache.deleteWithOptions('deep_structure');
+      });
     });
 
     group('Real-World Usage Scenarios', () {
@@ -701,52 +1233,47 @@ void main() {
       });
 
       test('should handle encrypted credentials', () async {
-        try {
-          // Setup encryption key
-          const encryptionKey = 'app_encryption_key';
-          await cache.putWithOptions(
-            encryptionKey,
-            'master_encryption_secret_key',
-            options: const CacheOptions(encrypted: true),
-          );
+        // Setup encryption key
+        const encryptionKey = 'app_encryption_key';
+        await cache.putWithOptions(
+          encryptionKey,
+          'master_encryption_secret_key',
+          options: const CacheOptions(encrypted: true),
+        );
 
-          final credentials = {
-            'username': 'service_account',
-            'password': 'super_secret_password',
-            'apiKey': 'sk_live_abcdef123456',
-            'refreshToken': 'rt_xyz789',
-            'metadata': {
-              'created': DateTime.now().toIso8601String(),
-              'expires': DateTime.now()
-                  .add(const Duration(days: 30))
-                  .toIso8601String(),
-            },
-          };
+        final credentials = {
+          'username': 'service_account',
+          'password': 'super_secret_password',
+          'apiKey': 'sk_live_abcdef123456',
+          'refreshToken': 'rt_xyz789',
+          'metadata': {
+            'created': DateTime.now().toIso8601String(),
+            'expires': DateTime.now()
+                .add(const Duration(days: 30))
+                .toIso8601String(),
+          },
+        };
 
-          final options = CacheOptions(
-            sensitive: const ['password', 'apiKey', 'refreshToken'],
-            depends: encryptionKey,
-            group: 'secure_credentials',
-          );
+        final options = CacheOptions(
+          sensitive: const ['password', 'apiKey', 'refreshToken'],
+          depends: encryptionKey,
+          group: 'secure_credentials',
+        );
 
-          await cache.putWithOptions(
-            'service_creds',
-            credentials,
-            options: options,
-          );
-          final result = await cache.getWithOptions<Map<String, dynamic>>(
-            'service_creds',
-            options: options,
-          );
+        await cache.putWithOptions(
+          'service_creds',
+          credentials,
+          options: options,
+        );
+        final result = await cache.getWithOptions<Map<String, dynamic>>(
+          'service_creds',
+          options: options,
+        );
 
-          expect(result, equals(credentials));
-          expect(result!['username'], equals('service_account'));
-          expect(result['password'], equals('super_secret_password'));
-          expect(result['apiKey'], equals('sk_live_abcdef123456'));
-        } catch (e) {
-          // Skip encryption tests in test environment where flutter_secure_storage isn't available
-          print('Skipping encrypted credentials test in test environment: $e');
-        }
+        expect(result, equals(credentials));
+        expect(result!['username'], equals('service_account'));
+        expect(result['password'], equals('super_secret_password'));
+        expect(result['apiKey'], equals('sk_live_abcdef123456'));
       });
     });
   });
