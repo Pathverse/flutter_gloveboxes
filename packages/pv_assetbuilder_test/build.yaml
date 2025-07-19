@@ -1,0 +1,6 @@
+# Build runner configuration only
+targets:
+  $default:
+    builders:
+      pv_assetbuilder:
+        enabled: true

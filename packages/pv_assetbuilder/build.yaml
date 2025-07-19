@@ -1,0 +1,9 @@
+builders:
+  pv_assetbuilder:
+    import: "package:pv_assetbuilder/lib.dart"
+    builder_factories: ["pvAssetBuilder"]
+    build_extensions: 
+      "$lib$": ["generated/pap.dart", "generated/assets.md"]
+    auto_apply: dependents
+    build_to: source
+    required_inputs: [".dart", ".yaml"] 

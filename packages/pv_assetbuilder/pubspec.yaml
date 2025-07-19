@@ -1,0 +1,30 @@
+name: pv_assetbuilder
+description: "A new Flutter package project."
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  yaml: ^3.1.0
+  glob: ^2.1.0
+  collection: ^1.17.0
+  build: ^2.0.0
+  source_gen: ^1.0.0
+  analyzer: ^6.0.0
+  pv_assetprovider:
+    path: ../pv_assetprovider
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.0.0
+
+# Tool configuration
+executables:
+  pvasbuild: pvasbuild

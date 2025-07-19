@@ -1,0 +1,64 @@
+# PV Asset Builder Test Theme Configuration
+theme_name: "Material Blue"
+version: "1.2.0"
+author: "Pathverse Team"
+
+# Color scheme
+colors:
+  primary: "#3498db"
+  primary_dark: "#2980b9"
+  secondary: "#e74c3c"
+  accent: "#f39c12"
+  background: "#ecf0f1"
+  surface: "#ffffff"
+  error: "#e74c3c"
+  text_primary: "#2c3e50"
+  text_secondary: "#7f8c8d"
+
+# Typography
+typography:
+  font_family: "Roboto"
+  font_size_base: 16
+  font_weight_normal: 400
+  font_weight_bold: 600
+  line_height: 1.5
+
+# Spacing
+spacing:
+  xs: 4
+  sm: 8
+  md: 16
+  lg: 24
+  xl: 32
+  xxl: 48
+
+# Component styles
+components:
+  button:
+    border_radius: 8
+    padding_horizontal: 16
+    padding_vertical: 12
+    elevation: 2
+  
+  card:
+    border_radius: 12
+    elevation: 4
+    padding: 16
+  
+  input:
+    border_radius: 6
+    border_width: 1
+    padding: 12
+
+# Animation settings
+animation:
+  duration_short: 200
+  duration_medium: 300
+  duration_long: 500
+  curve: "ease_in_out"
+
+# Custom properties
+custom:
+  use_material_3: true
+  enable_dark_mode: true
+  adaptive_brightness: false 

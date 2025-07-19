@@ -1,0 +1,27 @@
+PV Asset Builder Test Data
+==========================
+
+This file demonstrates path pattern matching using the "assets/test/**" pattern.
+
+Test Information:
+- File Type: Plain Text
+- Location: assets/test/
+- Loader: test_loaders:loadTestAsset
+- Purpose: Demonstrate custom path-based matching
+
+Sample Data Lines:
+Line 1: Hello World
+Line 2: Custom Asset Loading
+Line 3: Path Pattern Matching
+Line 4: Type-Safe Code Generation
+Line 5: Flutter Asset Management
+
+Metadata:
+- Created: 2024
+- Author: PV Asset Builder
+- Encoding: UTF-8
+- Line Count: 21 (including this line)
+
+This text file will be processed by the custom test asset loader,
+which can handle both text and image files within the test directory
+and provide specialized metadata and processing for test scenarios. 
