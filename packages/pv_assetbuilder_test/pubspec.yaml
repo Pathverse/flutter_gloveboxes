@@ -1,7 +1,7 @@
 name: pv_assetbuilder_test
-description: A new Flutter project.
+description: Comprehensive test and demonstration app for PV Asset Builder custom load methods.
 publish_to: none
-version: 0.1.0
+version: 0.1.1
 environment:
   sdk: ^3.8.1
 dependencies:

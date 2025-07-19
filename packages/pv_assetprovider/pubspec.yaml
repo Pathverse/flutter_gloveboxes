@@ -1,6 +1,6 @@
 name: pv_assetprovider
 description: "provides annotations for assetbuilder"
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:

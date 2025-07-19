@@ -1,6 +1,6 @@
 name: pv_assetbuilder
-description: "A new Flutter package project."
-version: 0.0.1
+description: "Build-time package for generating type-safe Flutter assets with custom load methods and automatic code generation."
+version: 0.1.0
 publish_to: none
 
 environment:
