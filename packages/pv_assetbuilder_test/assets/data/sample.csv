@@ -1,0 +1,11 @@
+name,age,city,profession,salary
+"John Doe",28,"New York","Software Engineer",75000
+"Jane Smith",32,"San Francisco","Product Manager",85000
+"Bob Johnson",45,"Chicago","Data Scientist",90000
+"Alice Brown",29,"Seattle","UX Designer",65000
+"Charlie Wilson",35,"Boston","DevOps Engineer",80000
+"Diana Davis",27,"Austin","Frontend Developer",70000
+"Eva Miller",41,"Denver","Backend Developer",78000
+"Frank Garcia",33,"Portland","Full Stack Developer",72000
+"Grace Lee",30,"Atlanta","Mobile Developer",68000
+"Henry Taylor",38,"Miami","Technical Lead",95000 

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../packages/pv_assetbuilder"
+		},
+		{
+			"path": "../../packages/pv_assetprovider"
+		},
+		{
+			"path": "../../packages/pv_assetbuilder_test"
+		}
+	]
+}

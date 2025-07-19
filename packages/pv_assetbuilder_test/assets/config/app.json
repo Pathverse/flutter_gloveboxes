@@ -1,0 +1,49 @@
+{
+  "app_name": "PV Asset Builder Test",
+  "version": "1.0.0",
+  "debug_mode": true,
+  "features": {
+    "custom_loaders": true,
+    "path_patterns": true,
+    "signature_matching": true,
+    "conditional_generation": true
+  },
+  "asset_types": {
+    "image": {
+      "extensions": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+      "cache_enabled": true,
+      "max_cache_size": "100MB"
+    },
+    "web": {
+      "extensions": [".html", ".css", ".js"],
+      "minify": true,
+      "process_imports": true
+    },
+    "config": {
+      "extensions": [".json", ".yaml", ".yml"],
+      "validate": true,
+      "watch_changes": false
+    },
+    "data": {
+      "extensions": [".csv", ".txt", ".md"],
+      "parse_csv_headers": true,
+      "markdown_toc": true
+    }
+  },
+  "build_settings": {
+    "target_directory": "lib/generated",
+    "generate_docs": true,
+    "include_metadata": true,
+    "dart_format": true
+  },
+  "logging": {
+    "level": "info",
+    "include_timestamps": true,
+    "log_asset_loading": true
+  },
+  "experimental": {
+    "watch_mode": true,
+    "hot_reload": false,
+    "parallel_builds": true
+  }
+} 

@@ -1,0 +1,22 @@
+name: pv_assetprovider
+description: "provides annotations for assetbuilder"
+version: 0.0.1
+homepage: https://github.com/Pathverse/flutter_gloveboxes
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=1.17.0"
+  
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meta: ^1.16.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec

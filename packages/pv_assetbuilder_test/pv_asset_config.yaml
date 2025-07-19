@@ -1,0 +1,54 @@
+# PV Asset Builder Custom Configuration
+# This demonstrates custom load methods and signature configurations
+
+# PV Asset Provider Configuration
+pv_assetprovider:
+  target: lib/generated
+  custom:
+    - path: assets/images
+      provider: true
+      objectmap: false    # Should generate provider only, no LazyObjects
+    - path: assets/web
+      provider: false
+      objectmap: true     # Should generate LazyObjects only, no provider
+    - path: assets/config
+      provider: true
+      objectmap: true     # Should generate both provider and LazyObjects
+    - path: images        # Top-level images directory (NOT under assets/)
+      provider: true
+      objectmap: true
+    - path: data          # Top-level data directory (NOT under assets/)
+      provider: true
+      objectmap: true
+  default:
+    provider: true
+
+# Custom Signature Configurations
+signature:
+  # Override default image loading with custom caching
+  image:
+    loader: custom_loaders:loadCachedImage
+    
+  # Custom web assets signature
+  web:
+    match_via:
+      extension: ['.html', '.css', '.js']
+    loader: web_loaders:loadWebContent
+    
+  # Configuration files signature  
+  config:
+    match_via:
+      extension: ['.json', '.yaml', '.yml']
+    loader: config_loaders:parseConfig
+    
+  # Path pattern example for specific directories
+  test_assets:
+    match_via:
+      path: "assets/test/**"
+    loader: test_loaders:loadTestAsset
+    
+  # Custom data files
+  data:
+    match_via:
+      extension: ['.csv', '.txt', '.md']
+    loader: data_loaders:loadDataFile 
