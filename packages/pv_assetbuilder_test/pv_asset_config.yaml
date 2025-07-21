@@ -32,13 +32,13 @@ signature:
   # Custom web assets signature
   web:
     match_via:
-      extension: ['.html', '.css', '.js']
+      extension: ['html', 'css', 'js']
     loader: web_loaders:loadWebContent
     
   # Configuration files signature  
   config:
     match_via:
-      extension: ['.json', '.yaml', '.yml']
+      extension: ['json', 'yaml', 'yml']
     loader: config_loaders:parseConfig
     
   # Path pattern example for specific directories
@@ -50,5 +50,5 @@ signature:
   # Custom data files
   data:
     match_via:
-      extension: ['.csv', '.txt', '.md']
+      extension: ['csv', 'txt', 'md']
     loader: data_loaders:loadDataFile 

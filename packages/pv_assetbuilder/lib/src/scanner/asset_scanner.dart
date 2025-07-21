@@ -93,7 +93,7 @@ class AssetDirectory {
   /// Generate anonymous class name with hash
   String get anonymousClassName {
     final hash = (relativePath.hashCode & 0x7FFFFFFF).toString();
-    return '_i$hash';
+    return 'i$hash';
   }
 }
 
@@ -131,55 +131,73 @@ class AssetScanner {
       assets: rootAssets,
       subdirectories: subdirectories,
       generateProvider: config.defaultConfig.provider,
-      generateObjectMap: config.defaultConfig.objectmap
+      generateObjectMap: config.defaultConfig.objectmap,
     );
   }
 
-  /// Scan a specific path with configuration
+  /// Scan a specific path with configuration - builds proper tree structure
   Future<AssetDirectory?> _scanPath(
     String pathPattern,
     bool generateProvider,
     bool generateObjectMap,
   ) async {
-    final assets = <Asset>[];
-    final subdirMap = <String, List<Asset>>{};
-
-    // For now, use simple directory scanning
-    // TODO: Implement proper glob pattern matching later
     final baseDir = Directory('$projectRoot/$pathPattern');
     if (!await baseDir.exists()) return null;
 
-    await for (final entity in baseDir.list(recursive: true)) {
-      if (entity is File) {
-        final asset = await _createAssetFromFile(entity, pathPattern);
-        if (asset != null) {
-          final dirPath = asset.directoryPath;
-          if (dirPath.isEmpty) {
+    return await _buildDirectoryTree(
+      baseDir.path,
+      pathPattern,
+      generateProvider,
+      generateObjectMap,
+    );
+  }
+
+  /// Build proper nested directory tree structure
+  Future<AssetDirectory> _buildDirectoryTree(
+    String currentPath,
+    String relativePath,
+    bool generateProvider,
+    bool generateObjectMap,
+  ) async {
+    final currentDir = Directory(currentPath);
+    final assets = <Asset>[];
+    final subdirectories = <AssetDirectory>[];
+
+    if (await currentDir.exists()) {
+      // Get immediate children only (not recursive)
+      await for (final entity in currentDir.list(followLinks: false)) {
+        if (entity is File) {
+          // Add files as assets
+          final asset = await _createAssetFromFile(entity, relativePath);
+          if (asset != null) {
             assets.add(asset);
-          } else {
-            subdirMap.putIfAbsent(dirPath, () => <Asset>[]).add(asset);
+          }
+        } else if (entity is Directory) {
+          // Recursively process subdirectories
+          final subdirName = entity.path.split(Platform.pathSeparator).last;
+          final subdirRelativePath = relativePath.isEmpty
+              ? subdirName
+              : '$relativePath/$subdirName';
+
+          final subdirectory = await _buildDirectoryTree(
+            entity.path,
+            subdirRelativePath,
+            generateProvider,
+            generateObjectMap,
+          );
+
+          // Only add subdirectory if it has assets or subdirectories
+          if (subdirectory.assets.isNotEmpty ||
+              subdirectory.subdirectories.isNotEmpty) {
+            subdirectories.add(subdirectory);
           }
         }
       }
     }
 
-    if (assets.isEmpty && subdirMap.isEmpty) return null;
-
-    // Create subdirectories
-    final subdirectories = subdirMap.entries.map((entry) {
-      return AssetDirectory(
-        path: '$projectRoot/${entry.key}',
-        relativePath: entry.key,
-        assets: entry.value,
-        subdirectories: [],
-        generateProvider: generateProvider,
-        generateObjectMap: generateObjectMap,
-      );
-    }).toList();
-
     return AssetDirectory(
-      path: '$projectRoot/$pathPattern',
-      relativePath: pathPattern,
+      path: currentPath,
+      relativePath: relativePath,
       assets: assets,
       subdirectories: subdirectories,
       generateProvider: generateProvider,
@@ -241,12 +259,22 @@ class AssetScanner {
     return null;
   }
 
-  /// Get relative path from base path
+  /// Get relative path from base path - improved to handle proper nesting
   String? _getRelativePath(String filePath, String basePath) {
     final baseDir = Directory('$projectRoot/$basePath');
-    if (!filePath.startsWith(baseDir.path)) return null;
+    final normalizedBasePath = baseDir.path.replaceAll('\\', '/');
+    final normalizedFilePath = filePath.replaceAll('\\', '/');
 
-    return filePath.substring(baseDir.path.length + 1);
+    if (!normalizedFilePath.startsWith(normalizedBasePath)) return null;
+
+    var relativePath = normalizedFilePath.substring(normalizedBasePath.length);
+
+    // Remove leading slash if present
+    if (relativePath.startsWith('/')) {
+      relativePath = relativePath.substring(1);
+    }
+
+    return relativePath;
   }
 
   /// Scan default asset paths
@@ -259,7 +287,7 @@ class AssetScanner {
       final directory = await _scanPath(
         path,
         config.defaultConfig.provider,
-        config.defaultConfig.objectmap, 
+        config.defaultConfig.objectmap,
       );
       if (directory != null) {
         directories.add(directory);
