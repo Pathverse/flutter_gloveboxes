@@ -33,53 +33,6 @@ class AssetBuilder implements Builder {
     }
   }
 
-  /// Load configuration from pv_asset_config.yaml or use defaults
-  Future<PVAssetBuilderConfig> _loadConfiguration(BuildStep buildStep) async {
-    // Try to read pv_asset_config.yaml from the package root
-    try {
-      final configYamlId = AssetId(
-        buildStep.inputId.package,
-        'pv_asset_config.yaml',
-      );
-      if (await buildStep.canRead(configYamlId)) {
-        final yamlContent = await buildStep.readAsString(configYamlId);
-        log.info('✅ FOUND pv_asset_config.yaml (${yamlContent.length} chars)');
-        try {
-          final config = ConfigParser.parseString(yamlContent);
-          log.info(
-            '✅ PARSED: ${config.customPaths.length} paths, ${config.signatures.signatures.length} sigs',
-          );
-          return config;
-        } catch (parseError) {
-          log.severe('❌ PARSE ERROR in pv_asset_config.yaml: $parseError');
-        }
-      } else {
-        log.info('❌ Cannot read pv_asset_config.yaml');
-      }
-    } catch (e) {
-      log.severe('❌ Error accessing pv_asset_config.yaml: $e');
-    }
-
-    // Fallback to build.yaml
-    try {
-      final buildYamlId = AssetId(buildStep.inputId.package, 'build.yaml');
-      if (await buildStep.canRead(buildYamlId)) {
-        final yamlContent = await buildStep.readAsString(buildYamlId);
-        return ConfigParser.parseString(yamlContent);
-      }
-    } catch (e) {
-      log.info('Could not read build.yaml, using defaults: $e');
-    }
-
-    // Return default configuration
-    return PVAssetBuilderConfig(
-      target: 'lib/generated',
-      customPaths: const [],
-      defaultConfig: const DefaultConfig(provider: true),
-      signatures: SignatureConfigCollection.fromYaml(null),
-    );
-  }
-
   /// Load configuration directly from filesystem
   Future<PVAssetBuilderConfig> _loadConfigFromFileSystem(
     String packagePath,
@@ -105,7 +58,7 @@ class AssetBuilder implements Builder {
     return PVAssetBuilderConfig(
       target: 'lib/generated',
       customPaths: const [],
-      defaultConfig: const DefaultConfig(provider: true),
+      defaultConfig: const DefaultConfig(provider: true, objectmap: false),
       signatures: SignatureConfigCollection.fromYaml(null),
     );
   }

@@ -7,7 +7,6 @@ library;
 
 import 'dart:io';
 import 'dart:convert';
-import 'package:yaml/yaml.dart';
 import 'package:pv_assetbuilder/lib.dart';
 
 Future<void> main(List<String> arguments) async {

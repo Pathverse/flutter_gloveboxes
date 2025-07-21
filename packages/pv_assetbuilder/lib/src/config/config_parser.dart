@@ -68,11 +68,15 @@ class CustomPathConfig {
 /// Default configuration options
 class DefaultConfig {
   final bool provider;
+  final bool objectmap;
 
-  const DefaultConfig({required this.provider});
+  const DefaultConfig({required this.provider, required this.objectmap});
 
   factory DefaultConfig.fromYaml(Map<String, dynamic>? yaml) {
-    return DefaultConfig(provider: yaml?['provider'] as bool? ?? true);
+    return DefaultConfig(
+      provider: yaml?['provider'] as bool? ?? true,
+      objectmap: yaml?['objectmap'] as bool? ?? false,
+    );
   }
 }
 
@@ -128,7 +132,7 @@ class ConfigParser {
       return const PVAssetBuilderConfig(
         target: 'lib/generated',
         customPaths: [],
-        defaultConfig: DefaultConfig(provider: true),
+        defaultConfig: DefaultConfig(provider: true, objectmap: false),
         signatures: SignatureConfigCollection({}),
       );
     }
