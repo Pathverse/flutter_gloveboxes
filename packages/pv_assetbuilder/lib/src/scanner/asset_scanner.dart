@@ -2,7 +2,6 @@
 library;
 
 import 'dart:io';
-import 'package:glob/glob.dart';
 import '../config/config_parser.dart';
 import '../config/signature_config.dart';
 
@@ -132,7 +131,7 @@ class AssetScanner {
       assets: rootAssets,
       subdirectories: subdirectories,
       generateProvider: config.defaultConfig.provider,
-      generateObjectMap: true,
+      generateObjectMap: config.defaultConfig.objectmap
     );
   }
 
@@ -260,7 +259,7 @@ class AssetScanner {
       final directory = await _scanPath(
         path,
         config.defaultConfig.provider,
-        true, // Always generate object maps for defaults
+        config.defaultConfig.objectmap, 
       );
       if (directory != null) {
         directories.add(directory);

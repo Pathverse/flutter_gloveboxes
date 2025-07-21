@@ -143,36 +143,6 @@ class AssetGenerator {
         .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_');
   }
 
-  /// Get class name for directory
-  String _getClassNameForDirectory(
-    AssetDirectory directory, {
-    bool isNested = false,
-  }) {
-    if (directory.relativePath.isEmpty) return 'Assets';
-
-    final parts = directory.relativePath.split('/');
-    final folderName = parts.last;
-
-    // Capitalize and clean the folder name
-    final className = folderName
-        .split(RegExp(r'[^a-zA-Z0-9]'))
-        .where((part) => part.isNotEmpty)
-        .map((part) => part[0].toUpperCase() + part.substring(1).toLowerCase())
-        .join('');
-
-    return className.isEmpty ? 'Assets' : className;
-  }
-
-  /// Get asset name without folder prefix
-  String _getAssetNameWithoutPrefix(Asset asset, String directoryPath) {
-    final fileName = asset.relativePath.split('/').last;
-    return fileName
-        .replaceAll('.', '_')
-        .replaceAll('-', '_')
-        .replaceAll(' ', '_')
-        .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_');
-  }
-
   /// Generate the main AssetMap class
   String _generateMainAssetClass(
     AssetDirectory rootDirectory,
@@ -284,27 +254,6 @@ class AssetGenerator {
 
     return imports;
   }
-
-  /// Generate initialization code for custom methods
-  String _generateCustomMethodInit() {
-    if (!config.signatures.hasCustomSignatures) return '';
-
-    final buffer = StringBuffer();
-
-    buffer.writeln('/// Initialize custom asset loading methods');
-    buffer.writeln('void initializeCustomAssetLoading() {');
-    buffer.writeln('  // Merge custom configurations with defaults');
-    buffer.writeln(
-      '  LazyObjectConfig.defaultTypeMaps.addAll(CustomLazyObjectConfig.customTypeMaps);',
-    );
-    buffer.writeln(
-      '  LazyObjectConfig.defaultTypeLoaders.addAll(CustomLazyObjectConfig.customTypeLoaders);',
-    );
-    buffer.writeln('}');
-
-    return buffer.toString();
-  }
-
   /// Generate README documentation for the generated assets
   String generateDocumentation(
     AssetDirectory rootDirectory,
@@ -420,22 +369,6 @@ class AssetGenerator {
         .replaceAll('\t', '\\t');
   }
 
-  /// Generate type definition comments for better IDE support
-  String _generateTypeComments(Asset asset) {
-    final buffer = StringBuffer();
-
-    buffer.write('  /// Asset: ${asset.relativePath}');
-
-    if (asset.signature != null) {
-      buffer.write(' (${asset.signature})');
-    }
-
-    if (asset.needsLoadSignature) {
-      buffer.write(' - Uses custom loader');
-    }
-
-    return buffer.toString();
-  }
 
   /// Validate generated code for common issues
   List<String> validateGeneratedCode(AssetDirectory rootDirectory) {
