@@ -40,12 +40,17 @@ class AssetBuilder implements Builder {
     try {
       final configFile = File('$packagePath/pv_asset_config.yaml');
       if (await configFile.exists()) {
-        final yamlContent = await configFile.readAsString();
-        log.info('✅ FOUND pv_asset_config.yaml (${yamlContent.length} chars)');
-        final config = ConfigParser.parseString(yamlContent);
+        log.info('✅ FOUND pv_asset_config.yaml');
+        // Use parseFile instead of parseString to enable package name detection
+        final config = await ConfigParser.parseFile(configFile.path);
         log.info(
           '✅ PARSED: ${config.customPaths.length} paths, ${config.signatures.signatures.length} sigs',
         );
+        if (config.shouldForwardToPackage) {
+          log.info(
+            '📦 Package forwarding enabled for: ${config.currentPackageName}',
+          );
+        }
         return config;
       } else {
         log.info('❌ pv_asset_config.yaml not found, using defaults');
@@ -60,6 +65,7 @@ class AssetBuilder implements Builder {
       customPaths: const [],
       defaultConfig: const DefaultConfig(provider: true, objectmap: false),
       signatures: SignatureConfigCollection.fromYaml(null),
+      forwardToPackage: false,
     );
   }
 

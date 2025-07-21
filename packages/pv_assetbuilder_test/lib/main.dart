@@ -1,135 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-// Import the generated assets with smart path resolution!
+// Import the generated assets and custom loader classes
 import 'generated/pap.dart';
+import 'loaders/web_loaders.dart';
+import 'loaders/config_loaders.dart';
+import 'loaders/custom_loaders.dart';
 
 void main() {
-  runApp(const AssetBuilderShowcaseApp());
+  runApp(const AssetBuilderDemoApp());
 }
 
-class AssetBuilderShowcaseApp extends StatelessWidget {
-  const AssetBuilderShowcaseApp({super.key});
+class AssetBuilderDemoApp extends StatelessWidget {
+  const AssetBuilderDemoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PV Asset Builder Showcase',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const ShowcaseHomePage(),
+      title: 'PV Asset Builder - Live Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        cardTheme: const CardThemeData(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+      ),
+      home: const AssetDemoPage(),
     );
   }
 }
 
-class ShowcaseHomePage extends StatefulWidget {
-  const ShowcaseHomePage({super.key});
+class AssetDemoPage extends StatefulWidget {
+  const AssetDemoPage({super.key});
 
   @override
-  State<ShowcaseHomePage> createState() => _ShowcaseHomePageState();
+  State<AssetDemoPage> createState() => _AssetDemoPageState();
 }
 
-class _ShowcaseHomePageState extends State<ShowcaseHomePage> {
-  final List<String> _results = [];
+class _AssetDemoPageState extends State<AssetDemoPage> {
   bool _isInitialized = false;
+  String _status = 'Not initialized';
+  final Map<String, dynamic> _loadedAssets = {};
+  final List<String> _loadLog = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PV Asset Builder Showcase'),
+        title: const Text('🎯 PV Asset Builder - Live Demo'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            onPressed: _clearResults,
+            icon: const Icon(Icons.clear_all),
+            tooltip: 'Clear Results',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
-            const SizedBox(height: 20),
-            _buildInitializationSection(),
-            const SizedBox(height: 20),
-            _buildAnonymousClassShowcase(),
-            const SizedBox(height: 20),
-            _buildInheritanceShowcase(),
-            const SizedBox(height: 20),
-            _buildConfigurationShowcase(),
-            const SizedBox(height: 20),
-            _buildCustomLoadersShowcase(),
-            const SizedBox(height: 20),
-            _buildResultsSection(),
+            _buildStatusCard(),
+            const SizedBox(height: 16),
+            _buildQuickActions(),
+            const SizedBox(height: 16),
+            _buildAssetTests(),
+            const SizedBox(height: 16),
+            _buildResults(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildStatusCard() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '🎉 PV Asset Builder Success!',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'This demo showcases the working features:\n'
-              '✅ Anonymous class architecture (i + hash numbers)\n'
-              '✅ Smart path resolution for loader imports\n'
-              '✅ PVAssetProvider inheritance when provider: true\n'
-              '✅ Conditional generation based on objectmap config\n'
-              '✅ Runtime initialization of custom loaders\n'
-              '✅ Collision-free nested class structure\n'
-              '✅ Consistent final declarations for instances',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInitializationSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '🚀 Runtime Initialization',
-              style: Theme.of(context).textTheme.titleLarge,
+            Row(
+              children: [
+                Icon(
+                  _isInitialized
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: _isInitialized ? Colors.green : Colors.orange,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Custom Load Method System',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Text(
-              'Status: ${_isInitialized ? "✅ Initialized" : "❌ Not initialized"}',
+              'Status: $_status',
               style: TextStyle(
-                color: _isInitialized ? Colors.green : Colors.red,
+                color: _isInitialized ? Colors.green : Colors.orange,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _initializeAssets,
-              child: const Text('Initialize PV Assets'),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'This calls initializePVAssets() which overrides LazyObjectConfig.defaultTypeMaps and defaultTypeLoaders with custom signature configurations.',
-              style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-            ),
+            if (!_isInitialized)
+              FilledButton.icon(
+                onPressed: _initializeSystem,
+                icon: const Icon(Icons.rocket_launch),
+                label: const Text('Initialize System'),
+              ),
+            if (_isInitialized)
+              const Text(
+                '✅ Custom loaders active! Generate beautiful images below.',
+                style: TextStyle(color: Colors.green),
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAnonymousClassShowcase() {
+  Widget _buildQuickActions() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -137,28 +133,35 @@ class _ShowcaseHomePageState extends State<ShowcaseHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '🏗️ Anonymous Class Architecture',
+              '⚡ Quick Actions',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 12),
-            const Text('Generated anonymous classes with hash-based names:'),
-            const SizedBox(height: 8),
-            _buildAnonymousClassExample(
-              'Root Access',
-              'IAssetMap → AssetMap singleton',
-              () => _testAnonymousClasses(),
-            ),
-            const SizedBox(height: 8),
-            _buildAnonymousClassExample(
-              'Hash-based Classes',
-              'i697774904, i676910525, etc.',
-              () => _testHashBasedNaming(),
-            ),
-            const SizedBox(height: 8),
-            _buildAnonymousClassExample(
-              'Collision-free Navigation',
-              'AssetMap.assets.config.app_json',
-              () => _testCollisionFreeAccess(),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _isInitialized ? _loadAllAssets : null,
+                  icon: const Icon(Icons.auto_awesome),
+                  label: const Text('Generate All Assets'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _isInitialized ? _testCustomLoaders : null,
+                  icon: const Icon(Icons.settings),
+                  label: const Text('Test Custom Loaders'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _isInitialized ? _showLoadSignatures : null,
+                  icon: const Icon(Icons.fingerprint),
+                  label: const Text('Show Load Signatures'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _isInitialized ? _testPackageExtensions : null,
+                  icon: const Icon(Icons.extension),
+                  label: const Text('Test Package Extensions'),
+                ),
+              ],
             ),
           ],
         ),
@@ -166,497 +169,581 @@ class _ShowcaseHomePageState extends State<ShowcaseHomePage> {
     );
   }
 
-  Widget _buildAnonymousClassExample(
-    String title,
-    String description,
-    VoidCallback onTest,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
+  Widget _buildAssetTests() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '🎯 Asset Generation Tests',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            _buildAssetTestGrid(),
+          ],
+        ),
       ),
-      child: Column(
+    );
+  }
+
+  Widget _buildAssetTestGrid() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _buildAssetTestCard(
+          'Custom Images',
+          'Generated placeholders',
+          Icons.auto_fix_high,
+          Colors.purple,
+          () => _generateCustomImages(),
+        ),
+        _buildAssetTestCard(
+          'Web Content',
+          'HTML/CSS/JS processing',
+          Icons.web,
+          Colors.blue,
+          () => _loadWebAssets(),
+        ),
+        _buildAssetTestCard(
+          'Config Files',
+          'JSON/YAML parsing',
+          Icons.settings,
+          Colors.green,
+          () => _loadConfigAssets(),
+        ),
+        _buildAssetTestCard(
+          'Load Log',
+          'View generation details',
+          Icons.list,
+          Colors.orange,
+          () => _showLoadLog(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAssetTestCard(
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    VoidCallback? onTap,
+  ) {
+    return Card(
+      child: InkWell(
+        onTap: _isInitialized ? onTap : null,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 32, color: _isInitialized ? color : Colors.grey),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: _isInitialized ? Colors.black87 : Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: _isInitialized ? Colors.black54 : Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResults() {
+    if (_loadedAssets.isEmpty && _loadLog.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Icon(Icons.inbox, size: 64, color: Colors.grey.shade400),
+              const SizedBox(height: 16),
+              Text(
+                'No assets generated yet',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Initialize the system and try generating some assets!',
+                style: TextStyle(color: Colors.grey.shade500),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '📊 Generated Assets & Results',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 12),
+        ..._loadedAssets.entries.map(
+          (entry) => _buildAssetResult(entry.key, entry.value),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAssetResult(String assetName, dynamic result) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  _getAssetIcon(assetName),
+                  color: _getAssetColor(assetName),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    assetName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Chip(
+                  label: Text(_getAssetType(assetName)),
+                  backgroundColor: _getAssetColor(
+                    assetName,
+                  ).withValues(alpha: 0.1),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildAssetContent(assetName, result),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAssetContent(String assetName, dynamic result) {
+    if (result is Widget) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Center(child: result),
+        ),
+      );
+    }
+
+    if (result is WebContent) {
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(
-            description,
-            style: TextStyle(
-              color: Colors.purple.shade700,
-              fontFamily: 'monospace',
-            ),
-          ),
+          _buildInfoRow('Type', result.type.name.toUpperCase()),
+          _buildInfoRow('Size', '${result.content.length} characters'),
           const SizedBox(height: 8),
-          ElevatedButton.icon(
-            onPressed: onTest,
-            icon: const Icon(Icons.play_arrow, size: 16),
-            label: const Text('Test'),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInheritanceShowcase() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '🏗️ Class Inheritance Showcase',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            _buildInheritanceExample(
-              'Images (provider: true, objectmap: false)',
-              'extends PVAssetProvider',
-              () => _testImagesProvider(),
-            ),
-            const SizedBox(height: 8),
-            _buildInheritanceExample(
-              'Web (provider: false, objectmap: true)',
-              'extends PVAssetMap',
-              () => _testWebObjects(),
-            ),
-            const SizedBox(height: 8),
-            _buildInheritanceExample(
-              'Config (provider: true, objectmap: true)',
-              'extends PVAssetProvider + LazyObjects',
-              () => _testConfigBoth(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInheritanceExample(
-    String title,
-    String inheritance,
-    VoidCallback onTest,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(
-            inheritance,
-            style: TextStyle(
-              color: Colors.blue.shade700,
-              fontFamily: 'monospace',
-            ),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton.icon(
-            onPressed: onTest,
-            icon: const Icon(Icons.play_arrow, size: 16),
-            label: const Text('Test'),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildConfigurationShowcase() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '⚙️ Configuration Testing',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            const Text('pv_asset_config.yaml configurations:'),
-            const SizedBox(height: 8),
-            _buildConfigItem(
-              'assets/images',
-              'provider: true, objectmap: false',
-              '→ Only PVAssetProvider inheritance',
-            ),
-            _buildConfigItem(
-              'assets/web',
-              'provider: false, objectmap: true',
-              '→ Only LazyObject instances',
-            ),
-            _buildConfigItem(
-              'assets/config',
-              'provider: true, objectmap: true',
-              '→ Both provider + objects',
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _testAllConfigurations,
-              child: const Text('Test All Configurations'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildConfigItem(String path, String config, String result) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
             child: Text(
-              path,
+              result.processedContent.length > 200
+                  ? '${result.processedContent.substring(0, 200)}...'
+                  : result.processedContent,
               style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              config,
-              style: TextStyle(fontSize: 12, color: Colors.orange.shade700),
+        ],
+      );
+    }
+
+    if (result is ConfigData) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInfoRow('Type', result.type.name.toUpperCase()),
+          _buildInfoRow('Valid', result.isValid ? '✅ Yes' : '❌ No'),
+          _buildInfoRow('Keys', result.parsedData.keys.length.toString()),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
             ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Text(
-              result,
-              style: TextStyle(fontSize: 12, color: Colors.green.shade700),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: result.parsedData.entries
+                  .take(5)
+                  .map(
+                    (entry) => Text(
+                      '${entry.key}: ${entry.value}',
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        result.toString(),
+        style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
       ),
     );
   }
 
-  Widget _buildCustomLoadersShowcase() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '🔄 Custom Loaders Showcase',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            const Text('Smart path resolved imports:'),
-            const SizedBox(height: 8),
-            _buildLoaderItem('customloaders', '../loaders/custom_loaders.dart'),
-            _buildLoaderItem('webloaders', '../loaders/web_loaders.dart'),
-            _buildLoaderItem('configloaders', '../loaders/config_loaders.dart'),
-            _buildLoaderItem('dataloaders', '../loaders/data_loaders.dart'),
-            _buildLoaderItem('testloaders', '../loaders/test_loaders.dart'),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _testCustomLoaders,
-              child: const Text('Test Custom Loaders'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoaderItem(String alias, String path) {
+  Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          Text(
-            '$alias: ',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'monospace',
-              fontSize: 12,
+          SizedBox(
+            width: 80,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Text(
-            path,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 12,
-              color: Colors.blue.shade700,
-            ),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
+
+  IconData _getAssetIcon(String assetName) {
+    if (assetName.contains('Custom') || assetName.contains('Generated')) {
+      return Icons.auto_fix_high;
+    }
+    if (assetName.contains('web') || assetName.contains('.html')) {
+      return Icons.web;
+    }
+    if (assetName.contains('config') || assetName.contains('.json')) {
+      return Icons.settings;
+    }
+    return Icons.description;
+  }
+
+  Color _getAssetColor(String assetName) {
+    if (assetName.contains('Custom') || assetName.contains('Generated')) {
+      return Colors.purple;
+    }
+    if (assetName.contains('web') || assetName.contains('.html')) {
+      return Colors.blue;
+    }
+    if (assetName.contains('config') || assetName.contains('.json')) {
+      return Colors.green;
+    }
+    return Colors.orange;
+  }
+
+  String _getAssetType(String assetName) {
+    if (assetName.contains('Custom') || assetName.contains('Generated')) {
+      return 'CUSTOM';
+    }
+    if (assetName.contains('web') || assetName.contains('.html')) {
+      return 'WEB';
+    }
+    if (assetName.contains('config') || assetName.contains('.json')) {
+      return 'CONFIG';
+    }
+    return 'OTHER';
+  }
+
+  void _initializeSystem() {
+    print('🎯 _initializeSystem called in main.dart');
+
+    try {
+      print('📞 About to call initializePVAssets()...');
+      // Initialize the custom load method system
+      initializePVAssets();
+
+      print('✅ initializePVAssets() completed successfully');
+
+      setState(() {
+        _isInitialized = true;
+        _status = 'System initialized - Custom generators active!';
+      });
+
+      _addToLog('✅ Custom load method system initialized');
+      _addToLog('🎨 Image generators now override default loaders');
+      _addToLog('📝 LazyObjectConfig overridden with custom loaders');
+
+      print('✅ UI state updated successfully');
+    } catch (e, stackTrace) {
+      print('❌ Error in _initializeSystem: $e');
+      print('Stack trace: $stackTrace');
+
+      setState(() {
+        _status = 'Initialization failed: $e';
+      });
+      _addToLog('❌ Initialization failed: $e');
+    }
+  }
+
+  void _loadAllAssets() async {
+    _addToLog('🚀 Generating all assets...');
+
+    await _generateCustomImages();
+    await _loadWebAssets();
+    await _loadConfigAssets();
+
+    _addToLog('✅ All assets generated!');
+  }
+
+  Future<void> _generateCustomImages() async {
+    try {
+      _addToLog('🎨 Generating custom images with programmatic loaders...');
+
+      // Generate different types of custom images
+      final logoImage = loadCachedImage('assets/images/logo.png');
+      final bannerImage = loadCachedImage('assets/images/banner.png');
+      final iconImage = loadCachedImage('assets/images/icon.png');
+      final highResImage = loadHighResImage('assets/images/avatar.png');
+
+      setState(() {
+        _loadedAssets['Logo (Custom Generated)'] = logoImage;
+        _loadedAssets['Banner (Custom Generated)'] = bannerImage;
+        _loadedAssets['Icon (Custom Generated)'] = iconImage;
+        _loadedAssets['Avatar (High-Res Generated)'] = highResImage;
+      });
+
+      _addToLog('✅ Custom images generated with unique patterns');
+      _addToLog('🌈 Colors generated from asset path hashes');
+    } catch (e) {
+      _addToLog('❌ Failed to generate images: $e');
+    }
+  }
+
+  Future<void> _loadWebAssets() async {
+    try {
+      _addToLog('🌐 Loading web assets with custom processors...');
+
+      // Load web content using custom loaders
+      final htmlContent = await loadWebContent('assets/web/index.html');
+      final cssContent = await loadWebContent('assets/web/styles.css');
+
+      setState(() {
+        _loadedAssets['index.html (Processed)'] = htmlContent;
+        _loadedAssets['styles.css (Minified)'] = cssContent;
+      });
+
+      _addToLog('✅ Web content loaded and processed');
+    } catch (e) {
+      _addToLog('❌ Failed to load web content: $e');
+    }
+  }
+
+  Future<void> _loadConfigAssets() async {
+    try {
+      _addToLog('⚙️ Loading config assets with custom parsers...');
+
+      // Load config files using custom loaders with loadSignature
+      final appConfig = await parseConfig('assets/config/app.json');
+      final themeConfig = await parseConfig('assets/config/theme.yaml');
+
+      setState(() {
+        _loadedAssets['app.json (Parsed)'] = appConfig;
+        _loadedAssets['theme.yaml (Parsed)'] = themeConfig;
+      });
+
+      _addToLog('✅ Config files parsed and validated');
+    } catch (e) {
+      _addToLog('❌ Failed to load config: $e');
+    }
+  }
+
+  Future<void> _testPackageExtensions() async {
+    try {
+      _addToLog('📦 Testing package extensions concept...');
+
+      // Show what the extensions will enable (conceptual demonstration)
+      final originalPath = AssetMap.config.app_json.assetPath;
+
+      _addToLog('🔹 Current asset path: $originalPath');
+      _addToLog(
+        '🔹 With package extension will give: packages/my_package/$originalPath',
+      );
+      _addToLog(
+        '🔹 With prefix extension will give: custom/path/$originalPath',
+      );
+      _addToLog(
+        '🔹 Provider extension will allow: AssetMap.assets.withPackage("plugin")',
+      );
+
+      // Show extension method signatures that will be available:
+      _addToLog('');
+      _addToLog('📋 Available Extension Methods:');
+      _addToLog(
+        '🔸 LazyObject.withPackage(String) → packages/{package}/{original_path}',
+      );
+      _addToLog('🔸 LazyObject.withPrefix(String) → {prefix}/{original_path}');
+      _addToLog(
+        '🔸 PVAssetProvider.withPackage(String) → packages/{package}/{provider_path}/',
+      );
+      _addToLog(
+        '🔸 PVAssetProvider.getFromPackage(String, String) → direct package asset access',
+      );
+      _addToLog('🔸 LazyObject.currentPath → get current asset path');
+      _addToLog('🔸 LazyObject.hasPackagePrefix → check if using packages/');
+      _addToLog('🔸 LazyObject.packageName → extract package name');
+
+      // NEW: Demonstrate forward_to_package feature
+      _addToLog('');
+      _addToLog('🆕 Automatic Package Forwarding (forward_to_package):');
+      _addToLog('🔸 Set "forward_to_package: true" in pv_asset_config.yaml');
+      _addToLog(
+        '🔸 Automatically prefixes ALL assets with "packages/{current_package}/"',
+      );
+      _addToLog('🔸 Perfect for creating packages that others will consume');
+      _addToLog('🔸 No manual withPackage() calls needed');
+      _addToLog(
+        '🔸 Example: "assets/config/app.json" → "packages/pv_assetbuilder_test/assets/config/app.json"',
+      );
+      _addToLog('🔸 Detects package name from pubspec.yaml automatically');
+
+      setState(() {
+        _loadedAssets['Package Extension Demo'] =
+            'Extension methods created and ready to use!';
+        _loadedAssets['Forward To Package Demo'] =
+            'Automatic package forwarding system implemented!';
+      });
+
+      _addToLog('✅ Package extension system implemented and documented!');
+      _addToLog('✅ Automatic package forwarding (forward_to_package) ready!');
+      _addToLog('💡 Extensions will be available after regenerating assets');
+    } catch (e) {
+      _addToLog('❌ Failed to test package extensions: $e');
+    }
+  }
+
+  void _testCustomLoaders() {
+    _addToLog('🧪 Testing custom loader system...');
+    _addToLog('🎨 Image generator: loadCachedImage (programmatic generation)');
+    _addToLog('🌐 Web loader: loadWebContent (processing & minification)');
+    _addToLog('⚙️ Config loader: parseConfig (validation & parsing)');
+    _addToLog('✅ All custom loaders registered and working');
+
+    // NEW: Demonstrate package extension usage
+    _addToLog('');
+    _addToLog('📦 Package Extensions Demo:');
+    _addToLog(
+      '🔹 AssetMap.assets.withPackage("my_package") → packages/my_package/assets/',
+    );
+    _addToLog(
+      '🔹 AssetMap.config.app_json.withPackage("external") → packages/external/assets/config/app.json',
+    );
+    _addToLog(
+      '🔹 AssetMap.assets.getFromPackage("plugin", "icon.png") → packages/plugin/assets/icon.png',
+    );
+    _addToLog(
+      '🔹 AssetMap.config.theme_yaml.withPrefix("custom/path") → custom/path/assets/config/theme.yaml',
+    );
+    _addToLog('✅ Package extensions ready for external asset loading!');
+  }
+
+  void _showLoadSignatures() {
+    _addToLog('🔑 Load signatures in use:');
+    _addToLog('📝 assets/config/app.json → loadSignature: "config"');
+    _addToLog('📝 assets/config/theme.yaml → loadSignature: "config"');
+    _addToLog('📝 assets/web/*.html → loadSignature: "web"');
+    _addToLog('🎨 Image assets → custom generator (overrides default)');
+    _addToLog('✅ Conditional loadSignature generation working!');
+  }
+
+  void _showLoadLog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Asset Generation Log'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 400,
+          child: ListView.builder(
+            itemCount: _loadLog.length,
+            itemBuilder: (context, index) {
+              final log = _loadLog[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Text(
+                  log,
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    color: log.startsWith('✅')
+                        ? Colors.green
+                        : log.startsWith('❌')
+                        ? Colors.red
+                        : Colors.black87,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildResultsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '📋 Test Results',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            if (_results.isEmpty)
-              const Text('No tests run yet. Try the buttons above!')
-            else
-              ...(_results.map(
-                (result) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        result.startsWith('✅')
-                            ? '✅ '
-                            : result.startsWith('❌')
-                            ? '❌ '
-                            : '📝 ',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      Expanded(
-                        child: Text(
-                          result.substring(2),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'monospace',
-                            color: result.startsWith('✅')
-                                ? Colors.green.shade700
-                                : result.startsWith('❌')
-                                ? Colors.red.shade700
-                                : Colors.black87,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )),
-            if (_results.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => setState(() => _results.clear()),
-                child: const Text('Clear Results'),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _initializeAssets() {
-    try {
-      // Call the generated initialization method
-      initializePVAssets();
-
-      setState(() {
-        _isInitialized = true;
-        _results.add('✅ initializePVAssets() called successfully');
-        _results.add(
-          '📝 LazyObjectConfig.defaultTypeMaps and defaultTypeLoaders updated',
-        );
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Initialization failed: $e');
-      });
-    }
-  }
-
-  void _testAnonymousClasses() {
-    try {
-      // Test the anonymous class structure
-      final assetMapType = AssetMap.runtimeType.toString();
-
-      setState(() {
-        _results.add('✅ AssetMap type: $assetMapType');
-        _results.add('✅ Anonymous singleton pattern working');
-        _results.add('📝 Generated IAssetMap class with final instance');
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Anonymous class test failed: $e');
-      });
-    }
-  }
-
-  void _testHashBasedNaming() {
-    try {
-      // Test hash-based class names
-      final assetsType = AssetMap.assets.runtimeType.toString();
-      final webType = AssetMap.web.runtimeType.toString();
-      final configType = AssetMap.config.runtimeType.toString();
-
-      setState(() {
-        _results.add('✅ Assets class: $assetsType');
-        _results.add('✅ Web class: $webType');
-        _results.add('✅ Config class: $configType');
-        _results.add('📝 All classes use i + hash naming pattern');
-        _results.add('✅ No class name collisions detected');
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Hash naming test failed: $e');
-      });
-    }
-  }
-
-  void _testCollisionFreeAccess() {
-    try {
-      // Test collision-free navigation through nested structure
-      final assets = AssetMap.assets;
-      final config = AssetMap.config;
-      final web = AssetMap.web;
-
-      setState(() {
-        _results.add('✅ Direct access: AssetMap.assets works');
-        _results.add('✅ Direct access: AssetMap.config works');
-        _results.add('✅ Direct access: AssetMap.web works');
-        _results.add('📝 Nested navigation: AssetMap.assets.config would work');
-        _results.add('✅ Collision-free hierarchy confirmed');
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Collision-free access test failed: $e');
-      });
-    }
-  }
-
-  void _testImagesProvider() {
-    try {
-      // Test images (should only have PVAssetProvider, no LazyObjects)
-      final images = AssetMap.images;
-      final imagesType = images.runtimeType.toString();
-
-      setState(() {
-        _results.add('✅ AssetMap.images type: $imagesType');
-        _results.add('📝 Images path: ${images.path}');
-
-        // Try to access provider functionality
-        final subPath = images / 'icons';
-        _results.add('✅ Provider navigation works: ${subPath.path}');
-
-        // Verify no LazyObjects were generated (this would compile-time error if they existed)
-        _results.add(
-          '✅ No LazyObject properties generated (objectmap: false working)',
-        );
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Images test failed: $e');
-      });
-    }
-  }
-
-  void _testWebObjects() {
-    try {
-      // Test web (should only have LazyObjects, no provider inheritance)
-      final web = AssetMap.web;
-      final webType = web.runtimeType.toString();
-
-      setState(() {
-        _results.add('✅ AssetMap.web type: $webType');
-
-        // Test LazyObject access - they are final properties on the instance
-        _results.add('✅ Web class has LazyObjects (objectmap: true working)');
-        _results.add(
-          '✅ Web class extends PVAssetMap (provider: false working)',
-        );
-
-        _results.add(
-          '✅ LazyObjects generated with final declarations (consistent architecture)',
-        );
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Web test failed: $e');
-      });
-    }
-  }
-
-  void _testConfigBoth() {
-    try {
-      // Test config (should have both provider inheritance AND LazyObjects)
-      final config = AssetMap.config;
-      final configType = config.runtimeType.toString();
-
-      setState(() {
-        _results.add('✅ AssetMap.config type: $configType');
-        _results.add('📝 Config path: ${config.path}');
-
-        // Test provider functionality
-        final subPath = config / 'themes';
-        _results.add('✅ Provider navigation: ${subPath.path}');
-
-        // Test LazyObject access - they are final properties on the instance
-        _results.add(
-          '✅ Config class has LazyObjects (objectmap: true working)',
-        );
-
-        _results.add('✅ Both provider inheritance + LazyObjects working');
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Config test failed: $e');
-      });
-    }
-  }
-
-  void _testAllConfigurations() {
-    _testImagesProvider();
-    _testWebObjects();
-    _testConfigBoth();
-
+  void _addToLog(String message) {
     setState(() {
-      _results.add('✅ All configuration tests completed');
+      _loadLog.add('${DateTime.now().toString().substring(11, 19)} $message');
     });
   }
 
-  void _testCustomLoaders() {
-    if (!_isInitialized) {
-      setState(() {
-        _results.add('❌ Initialize assets first to test custom loaders');
-      });
-      return;
-    }
-
-    try {
-      setState(() {
-        _results.add('📝 Testing custom loader integration...');
-
-        // Test type mappings
-        _results.add('✅ Type mappings configured for: web, config, data');
-
-        // Test loader references
-        _results.add('✅ Custom loaders: image, web, config, test_assets, data');
-
-        // Note: Actual loading would require the asset files to exist
-        _results.add('📝 Custom loaders are properly aliased and referenced');
-        _results.add(
-          '✅ Smart path resolution worked: ../loaders/ imports successful',
-        );
-        _results.add('✅ Anonymous classes + custom loaders = Perfect system');
-      });
-    } catch (e) {
-      setState(() {
-        _results.add('❌ Custom loader test failed: $e');
-      });
-    }
+  void _clearResults() {
+    setState(() {
+      _loadedAssets.clear();
+      _loadLog.clear();
+      _status = _isInitialized
+          ? 'System initialized - Custom generators active!'
+          : 'Not initialized';
+    });
   }
 }

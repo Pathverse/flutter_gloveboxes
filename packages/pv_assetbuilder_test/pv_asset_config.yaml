@@ -1,5 +1,10 @@
 # PV Asset Builder Custom Configuration
-# This demonstrates custom load methods and signature configurations
+# This demonstrates custom load methods, signature configurations, and package forwarding
+
+# Enable automatic forwarding to current package
+# When true, all asset paths will be prefixed with "packages/{current_package_name}/"
+# This is useful when creating a package that other packages will consume
+forward_to_package: false  # Set to true to enable package forwarding
 
 # PV Asset Provider Configuration
 pv_assetprovider:
@@ -38,7 +43,7 @@ signature:
   # Configuration files signature  
   config:
     match_via:
-      extension: ['json', 'yaml', 'yml']
+      extension: ['.json', '.yaml', 'yml']
     loader: config_loaders:parseConfig
     
   # Path pattern example for specific directories
@@ -50,5 +55,5 @@ signature:
   # Custom data files
   data:
     match_via:
-      extension: ['csv', 'txt', 'md']
+      extension: ['csv', '.txt', 'md']
     loader: data_loaders:loadDataFile 

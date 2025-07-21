@@ -11,12 +11,16 @@ class PVAssetBuilderConfig {
   final List<CustomPathConfig> customPaths;
   final DefaultConfig defaultConfig;
   final SignatureConfigCollection signatures;
+  final bool forwardToPackage;
+  final String? currentPackageName;
 
   const PVAssetBuilderConfig({
     required this.target,
     required this.customPaths,
     required this.defaultConfig,
     required this.signatures,
+    required this.forwardToPackage,
+    this.currentPackageName,
   });
 
   factory PVAssetBuilderConfig.fromYaml(Map<String, dynamic> yaml) {
@@ -31,8 +35,30 @@ class PVAssetBuilderConfig {
       signatures: SignatureConfigCollection.fromYaml(
         yaml['signature'] as Map<String, dynamic>?,
       ),
+      forwardToPackage: yaml['forward_to_package'] as bool? ?? false,
+      currentPackageName: null, // Will be set later by parser
     );
   }
+
+  /// Create a copy with the current package name set
+  PVAssetBuilderConfig withPackageName(String packageName) {
+    return PVAssetBuilderConfig(
+      target: target,
+      customPaths: customPaths,
+      defaultConfig: defaultConfig,
+      signatures: signatures,
+      forwardToPackage: forwardToPackage,
+      currentPackageName: packageName,
+    );
+  }
+
+  /// Check if assets should be forwarded to the current package
+  bool get shouldForwardToPackage =>
+      forwardToPackage && currentPackageName != null;
+
+  /// Get the package prefix for asset paths
+  String get packagePrefix =>
+      shouldForwardToPackage ? 'packages/$currentPackageName/' : '';
 
   static List<CustomPathConfig> _parseCustomPaths(List? customList) {
     if (customList == null) return [];
@@ -49,11 +75,13 @@ class CustomPathConfig {
   final String path;
   final bool provider;
   final bool objectmap;
+  final String? forwardToPackage;
 
   const CustomPathConfig({
     required this.path,
     required this.provider,
     required this.objectmap,
+    this.forwardToPackage,
   });
 
   factory CustomPathConfig.fromYaml(Map<String, dynamic> yaml) {
@@ -61,8 +89,12 @@ class CustomPathConfig {
       path: yaml['path'] as String,
       provider: yaml['provider'] as bool? ?? false,
       objectmap: yaml['objectmap'] as bool? ?? false,
+      forwardToPackage: yaml['forward_to_package'] as String?,
     );
   }
+
+  /// Check if this path should be forwarded to an external package
+  bool get hasForwardPackage => forwardToPackage != null;
 }
 
 /// Default configuration options
@@ -90,7 +122,15 @@ class ConfigParser {
     }
 
     final contents = await file.readAsString();
-    return parseString(contents);
+    final config = parseString(contents);
+
+    // If forward_to_package is enabled, read package name from pubspec.yaml
+    if (config.forwardToPackage) {
+      final packageName = await _readPackageName(filePath);
+      return config.withPackageName(packageName);
+    }
+
+    return config;
   }
 
   /// Parse configuration from yaml string content
@@ -134,6 +174,8 @@ class ConfigParser {
         customPaths: [],
         defaultConfig: DefaultConfig(provider: true, objectmap: false),
         signatures: SignatureConfigCollection({}),
+        forwardToPackage: false,
+        currentPackageName: null,
       );
     }
 
@@ -171,6 +213,28 @@ class ConfigParser {
     }
 
     return errors;
+  }
+
+  /// Read the current package name from pubspec.yaml
+  static Future<String> _readPackageName(String configFilePath) async {
+    // Find pubspec.yaml in the same directory as the config file
+    final configDir = File(configFilePath).parent;
+    final pubspecFile = File('${configDir.path}/pubspec.yaml');
+
+    if (!await pubspecFile.exists()) {
+      throw ConfigParseException(
+        'pubspec.yaml not found. Required for forward_to_package feature.',
+      );
+    }
+
+    final pubspecContent = await pubspecFile.readAsString();
+    final pubspecYaml = loadYaml(pubspecContent);
+
+    if (pubspecYaml is! Map || !pubspecYaml.containsKey('name')) {
+      throw ConfigParseException('Invalid pubspec.yaml: missing package name');
+    }
+
+    return pubspecYaml['name'] as String;
   }
 }
 

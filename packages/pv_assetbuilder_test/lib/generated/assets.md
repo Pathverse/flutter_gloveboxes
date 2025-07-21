@@ -7,7 +7,9 @@ This file contains generated asset mappings for your project.
 - **Total Directories**: 14
 
 ## Assets by Signature
-- **default**: 21 assets
+- **default**: 14 assets
+- **config**: 6 assets
+- **data**: 1 assets
 
 ## Usage Examples
 
@@ -26,11 +28,11 @@ This project uses custom asset loading signatures:
   - Extensions: [html, css, js]
 - **config**: 
   - Loader: `config_loaders:parseConfig`
-  - Extensions: [json, yaml, yml]
+  - Extensions: [.json, .yaml, yml]
 - **test_assets**: 
   - Loader: `test_loaders:loadTestAsset`
   - Path Pattern: `assets/test/**`
 - **data**: 
   - Loader: `data_loaders:loadDataFile`
-  - Extensions: [csv, txt, md]
+  - Extensions: [csv, .txt, md]
 

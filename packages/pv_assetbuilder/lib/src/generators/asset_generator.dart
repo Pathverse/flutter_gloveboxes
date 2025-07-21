@@ -26,6 +26,19 @@ class AssetGenerator {
     buffer.writeln(
       "// ignore_for_file: unused_field, non_constantidentifier_names, camel_case_types, non_constant_identifier_names",
     );
+
+    // Add package forwarding comment if enabled
+    if (config.shouldForwardToPackage) {
+      buffer.writeln('//');
+      buffer.writeln('// 📦 PACKAGE FORWARDING ENABLED');
+      buffer.writeln(
+        '// All asset paths are automatically prefixed with "packages/${config.currentPackageName}/"',
+      );
+      buffer.writeln(
+        '// This allows other packages to access these assets via the Flutter package system',
+      );
+    }
+
     buffer.writeln();
 
     // Imports
@@ -75,9 +88,12 @@ class AssetGenerator {
 
     if (directory.generateProvider) {
       buffer.writeln('class $className extends $baseClass {');
-      // Call parent constructor with path
+      // Call parent constructor with path, applying package prefix if needed
+      final providerPath = config.shouldForwardToPackage
+          ? '${config.packagePrefix}${directory.relativePath}'
+          : directory.relativePath;
       buffer.writeln(
-        '  $className() : super("${_escapeStringForDart(directory.relativePath)}");',
+        '  $className() : super("${_escapeStringForDart(providerPath)}");',
       );
     } else {
       buffer.writeln('class $className extends $baseClass {');
@@ -104,16 +120,27 @@ class AssetGenerator {
       for (final asset in directory.assets) {
         final assetName = _getAssetNameFromFileName(asset.relativePath);
 
+        // Construct the full asset path by combining directory path with asset filename
+        // directory.relativePath is like "assets/config", asset.relativePath is like "app.json"
+        final fullAssetPath = directory.relativePath.isEmpty
+            ? asset.relativePath
+            : '${directory.relativePath}/${asset.relativePath}';
+
+        // Apply package prefix if forward_to_package is enabled
+        final finalAssetPath = config.shouldForwardToPackage
+            ? '${config.packagePrefix}$fullAssetPath'
+            : fullAssetPath;
+
         // Check if asset needs loadSignature based on custom signature
         if (asset.needsLoadSignature && asset.signature != null) {
           buffer.writeln(
             '  final LazyObject $assetName = '
-            'LazyObject("${_escapeStringForDart(asset.relativePath)}", loadSignature: "${asset.signature}");',
+            'LazyObject("${_escapeStringForDart(finalAssetPath)}", loadSignature: "${asset.signature}");',
           );
         } else {
           buffer.writeln(
             '  final LazyObject $assetName = '
-            'LazyObject("${_escapeStringForDart(asset.relativePath)}");',
+            'LazyObject("${_escapeStringForDart(finalAssetPath)}");',
           );
         }
       }
