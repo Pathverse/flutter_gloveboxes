@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class LazyObjectConfig {
   static Map<String, List<String>> defaultTypeMaps = {
-    "image": ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+    "image": ['png', 'jpg', 'jpeg', 'gif', 'webp'],
   };
 
   static Map<String, Function(String assetPath)> defaultTypeLoaders = {
