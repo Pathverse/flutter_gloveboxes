@@ -1,15 +1,27 @@
-# Active Context: PV Cache
+# PV Cache: Public Context
 
-## Current State
-- PVCache is fully modular and production-ready.
-- All core and advanced features are implemented:
-  - CRUD, JSON, encryption, sensitive fields, dependency logic, expiry, LRU/LFU, grouping.
-- Dependency logic is robust:
-  - Supports `ENCRYPTED:x`, `X:Y`, `X:*` patterns.
-  - If `sensitive` is set, `depends` always refers to a secure storage key.
-- All features are covered by a comprehensive, passing test suite.
-- Architecture is component-based, maintainable, and well-documented.
+## Overview
+PV Cache is a production-ready, modular Flutter caching package for secure, flexible, and type-safe data storage. It supports encrypted storage, advanced cache management (expiry, LRU/LFU), grouping, and robust JSON utilities.
 
-## Next Steps
-- Performance tuning for large datasets.
-- Expand advanced documentation and real-world usage examples.
+## Features
+- Secure, encrypted storage for sensitive data
+- Flexible support for strings, numbers, JSON objects, and arrays
+- Expiry and LRU/LFU eviction strategies
+- Grouping and dependency-based invalidation
+- Type-safe APIs: All map data is guaranteed to be `Map<String, dynamic>`, including nested structures
+- Cross-platform: iOS, Android, Web
+
+## Type Safety
+All cache retrieval methods (including nested structures) guarantee `Map<String, dynamic>` for maps and `List<Map<String, dynamic>>` for lists of maps. This ensures compatibility with Flutter widgets like `FutureBuilder<Map<String, dynamic>>`.
+
+## Status
+- Fully implemented and tested
+- Ready for production use
+- Comprehensive test suite
+- Performance-optimized for large datasets
+
+## Technology
+- Flutter, Dart, Hive, Flutter Secure Storage, WebCrypto
+
+## Documentation & Examples
+See the main README for usage examples and API documentation.
