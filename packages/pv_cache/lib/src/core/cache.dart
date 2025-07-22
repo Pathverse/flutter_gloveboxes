@@ -6,6 +6,32 @@ import 'package:pv_cache/src/core/options.dart';
 import 'package:pv_cache/src/core/wrapper.dart';
 
 class PVCache {
+  /// Deep cast a Map to Map<String, dynamic>, handling nested Maps and Lists
+  static Map<String, dynamic> deepCastMap(Map input) {
+    return input.map((key, value) {
+      if (value is Map) {
+        return MapEntry(key.toString(), deepCastMap(value));
+      } else if (value is List) {
+        return MapEntry(key.toString(), deepCastList(value));
+      } else {
+        return MapEntry(key.toString(), value);
+      }
+    });
+  }
+
+  /// Deep cast a List to List<dynamic>, handling nested Maps and Lists
+  static List<dynamic> deepCastList(List input) {
+    return input.map((element) {
+      if (element is Map) {
+        return deepCastMap(element);
+      } else if (element is List) {
+        return deepCastList(element);
+      } else {
+        return element;
+      }
+    }).toList();
+  }
+
   /// Returns all keys from cache boxes
   ///
   /// Parameters:
@@ -136,9 +162,11 @@ class PVCache {
 
     if (result == null) return null;
 
-    // Handle Map type conversion
-    if (result is Map<dynamic, dynamic>) {
-      return Map<String, dynamic>.from(result) as T?;
+    // Handle Map and List type conversion with deep casting
+    if (result is Map) {
+      return deepCastMap(result) as T?;
+    } else if (result is List) {
+      return deepCastList(result) as T?;
     }
 
     return result as T?;
@@ -201,7 +229,16 @@ class PVCache {
 
   Future<dynamic> get(String key, {CacheOptions? options}) async {
     final box = await _getBoxForOptions(options);
-    return await box.get(key);
+    final result = await box.get(key);
+
+    // Apply deep casting to ensure proper types
+    if (result is Map) {
+      return deepCastMap(result);
+    } else if (result is List) {
+      return deepCastList(result);
+    }
+
+    return result;
   }
 
   Future<void> delete(String key, {CacheOptions? options}) async {
@@ -225,14 +262,14 @@ class PVCache {
     if (cachedData != null) {
       debugPrint(
         'Cache hit for key: '
-        ' [32m$key [0m',
+        '$key',
       );
       return cachedData;
     }
 
     debugPrint(
       'Cache miss for key: '
-      ' [33m$key [0m, fetching fresh data',
+      '$key, fetching fresh data',
     );
     final freshData = await fetchFunction();
     if (freshData == null || (freshData is List && freshData.isEmpty)) {

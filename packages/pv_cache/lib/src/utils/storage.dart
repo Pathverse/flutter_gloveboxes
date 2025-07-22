@@ -248,7 +248,13 @@ class CacheStorage {
       return await _decryptSensitiveData(key, encryptedData, options);
     } else {
       // Simple encrypted storage, just return the value
-      return encryptedData['value'];
+      final value = encryptedData['value'];
+      if (value is Map) {
+        return Map<String, dynamic>.fromEntries(
+          value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+        );
+      }
+      return value;
     }
   }
 
@@ -260,7 +266,9 @@ class CacheStorage {
 
     // Data is now stored as Map directly, no JSON decoding needed
     // Handle the type safely - Hive returns Map<dynamic, dynamic>
-    final metadata = Map<String, dynamic>.from(data as Map);
+    final metadata = (data as Map).map(
+      (key, value) => MapEntry(key.toString(), value),
+    );
 
     // Check expiry
     if (CacheUtils.isExpired(metadata['expiry'])) {
@@ -317,7 +325,13 @@ class CacheStorage {
         options.group,
         options.depends!,
       );
-      return jsonDecode(decryptedJson);
+      final decoded = jsonDecode(decryptedJson);
+      if (decoded is Map) {
+        return Map<String, dynamic>.fromEntries(
+          decoded.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+        );
+      }
+      return decoded;
     } catch (e) {
       // If decryption fails, assume key is corrupted - delete entry and private key
       await secureStorage.delete(key: key);

@@ -22,6 +22,15 @@ Future<T?> getJson<T>(
   if (value == null) return defaultValue;
 
   try {
+    // If value is a Map and expecting Map<String, dynamic>, force a true Map<String, dynamic>
+    if (value is Map && (T == Map || T == Map<String, dynamic>)) {
+      return Map<String, dynamic>.fromEntries(
+            (value as Map).entries.map(
+              (e) => MapEntry(e.key.toString(), e.value),
+            ),
+          )
+          as T;
+    }
     // Value is already deserialized by Hive, just cast it
     return value as T?;
   } catch (e) {
@@ -62,7 +71,12 @@ Future<Map<String, dynamic>?> getJsonMap(
   String key, {
   CacheOptions? options,
 }) async {
-  return await getJson<Map<String, dynamic>>(key, options: options);
+  final value = await getJson<Map<String, dynamic>>(key, options: options);
+  if (value == null) return null;
+  // Defensive: ensure all keys are strings and type is Map<String, dynamic>
+  return Map<String, dynamic>.fromEntries(
+    value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+  );
 }
 
 Future<List<dynamic>?> getJsonList(String key, {CacheOptions? options}) async {
