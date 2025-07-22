@@ -5,6 +5,7 @@ import 'package:pv_cache/src/core/toplv.dart';
 import 'package:pv_cache/src/utils/encryption.dart';
 import 'package:pv_cache/src/utils/tracking.dart';
 import 'package:pv_cache/src/utils/cache_helper.dart';
+import 'package:flutter/foundation.dart';
 
 /// Handles core cache storage operations
 class CacheStorage {
@@ -24,6 +25,24 @@ class CacheStorage {
   ) async {
     // Validate options
     CacheUtils.validateOptions(options);
+
+    // Check dependency if specified
+    if (options.depends != null) {
+      final isSensitive =
+          options.sensitive != null && options.sensitive!.isNotEmpty;
+      final ok = await CacheUtils.checkDependency(
+        options.depends!,
+        sensitive: isSensitive,
+      );
+      if (!ok) {
+        debugPrint(
+          'Dependency check failed for key: $key, depends: ${options.depends}',
+        );
+        throw ArgumentError(
+          'Dependency not satisfied for key: $key, depends: ${options.depends}',
+        );
+      }
+    }
 
     // Get the appropriate box for this operation
     final box = await getBoxForOptions(options);
@@ -47,6 +66,18 @@ class CacheStorage {
 
     // Handle LRU/LFU tracking
     await CacheTracking.updateOnStore(key, options);
+
+    // Enforce LRU/LFU eviction if needed
+    if (options.lru == true &&
+        options.lruInCount != null &&
+        options.lruInCount! > 0 &&
+        options.group != null) {
+      await CacheTracking.performEviction(
+        options.group!,
+        options.lruInCount!,
+        options.lruInCount! > 0,
+      );
+    }
   }
 
   /// Get value with options
@@ -55,6 +86,22 @@ class CacheStorage {
     final sensitivePatterns = options.sensitive ?? <String>[];
     final hasSensitiveData =
         sensitivePatterns.isNotEmpty && options.depends != null;
+
+    // Check dependency if specified
+    if (options.depends != null) {
+      final isSensitive =
+          options.sensitive != null && options.sensitive!.isNotEmpty;
+      final ok = await CacheUtils.checkDependency(
+        options.depends!,
+        sensitive: isSensitive,
+      );
+      if (!ok) {
+        debugPrint(
+          'Dependency check failed for key: $key, depends: ${options.depends}',
+        );
+        return null;
+      }
+    }
 
     dynamic result;
 

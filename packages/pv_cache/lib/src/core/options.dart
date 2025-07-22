@@ -1,4 +1,15 @@
 /// Configuration options for cache operations
+///
+/// Dependency Logic:
+/// - If [encrypted] is true, [depends] refers to a key in Flutter Secure Storage.
+/// - If [depends] is in the form 'X:Y', X is the group and Y is the key in Hive.
+/// - If [depends] is in the form 'X:*', X is a group and the group must not be empty.
+///
+/// Rules:
+/// 1. [group] is optional, defaults to 'default' for lifetime or 'default_lru' for lru
+/// 2. If [sensitive] is not null, [depends] must not be null
+/// 3. LRU and lifetime are mutually exclusive
+/// 4. lruInCount only used when lru is true
 class CacheOptions {
   /// The cache group this entry belongs to
   /// Groups can be used to organize and batch operate on related cache entries
@@ -14,6 +25,7 @@ class CacheOptions {
 
   /// Dependency key that this cache entry depends on
   /// If the dependency is invalidated, this entry will also be invalidated
+  /// See class-level docstring for logic
   final String? depends;
 
   /// Lifetime of the cache entry in milliseconds

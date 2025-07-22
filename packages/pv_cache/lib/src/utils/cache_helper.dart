@@ -1,4 +1,5 @@
 import 'package:pv_cache/src/core/options.dart';
+import 'package:pv_cache/src/core/toplv.dart' as toplv;
 
 /// Utility methods for cache operations
 class CacheUtils {
@@ -84,5 +85,39 @@ class CacheUtils {
     if (options.lifetime != null && options.lifetime! < 0) {
       throw ArgumentError('lifetime must be non-negative');
     }
+  }
+
+  /// Check dependency for a cache entry.
+  ///
+  /// If [sensitive] is true, always check secure storage for the depends key.
+  /// Otherwise, patterns:
+  /// - 'ENCRYPTED:x': depends on secure storage key 'x'
+  /// - 'X:Y': depends on key 'Y' in group 'X' (Hive)
+  /// - 'X:*': depends on group 'X' not being empty (Hive)
+  static Future<bool> checkDependency(
+    String depends, {
+    bool sensitive = false,
+  }) async {
+    if (sensitive) {
+      final value = await toplv.secureStorage.read(key: depends);
+      return value != null;
+    }
+    if (depends.startsWith('ENCRYPTED:')) {
+      final key = depends.substring('ENCRYPTED:'.length);
+      final value = await toplv.secureStorage.read(key: key);
+      return value != null;
+    } else if (depends.contains(':')) {
+      final parts = depends.split(':');
+      if (parts.length != 2) return false;
+      final group = parts[0];
+      final key = parts[1];
+      final box = await toplv.getCollectionBox(group);
+      if (key == '*') {
+        return box.isNotEmpty;
+      } else {
+        return box.containsKey(key);
+      }
+    }
+    return false;
   }
 }

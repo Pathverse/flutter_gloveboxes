@@ -167,7 +167,7 @@ Configure cache behavior with these options:
 const CacheOptions({
   String? group,           // Group for organizing entries
   List<String>? sensitive, // Sensitive field patterns
-  String? depends,         // Dependency key for sensitive data
+  String? depends,         // Dependency key for sensitive data or cache invalidation
   int? lifetime,           // Expiry time in seconds
   bool? lru,              // Enable LRU/LFU eviction
   int? lruInCount,        // Size limit for LFU strategy
@@ -175,12 +175,50 @@ const CacheOptions({
 });
 ```
 
+#### Dependency Logic (NEW)
+- `depends: 'ENCRYPTED:x'` — depends on secure storage key `x`
+- `depends: 'X:Y'` — depends on key `Y` in group `X` (Hive)
+- `depends: 'X:*'` — depends on group `X` being non-empty (Hive)
+- Enforced in `putWithOptions` (throws if not satisfied) and `getWithOptions` (returns null if not satisfied)
+
 #### Option Rules
 
 1. **Sensitive Data**: If `sensitive` is specified, `depends` must also be provided
 2. **Encryption**: `encrypted` cannot be used with `sensitive` or `depends`
 3. **Eviction**: `lru` and `lifetime` are mutually exclusive
 4. **LFU Strategy**: `lruInCount` only applies when `lru` is true
+
+#### Dependency Example
+
+```dart
+// Store a master key in secure storage
+await cache.putWithOptions(
+  'master_key',
+  'encryption_key_value',
+  options: const CacheOptions(encrypted: true),
+);
+
+// Store data that depends on the master key
+await cache.putWithOptions(
+  'dependent_data',
+  {'secret': 'hidden'},
+  options: const CacheOptions(depends: 'ENCRYPTED:master_key'),
+);
+
+// Store data that depends on another group/key
+await cache.putWithOptions(
+  'grouped_data',
+  {'info': 'grouped'},
+  options: const CacheOptions(depends: 'user_sessions:session_123'),
+);
+
+// Store data that depends on a group being non-empty
+await cache.putWithOptions(
+  'group_check',
+  {'info': 'must have users'},
+  options: const CacheOptions(depends: 'user_sessions:*'),
+);
+```
 
 ## Examples
 

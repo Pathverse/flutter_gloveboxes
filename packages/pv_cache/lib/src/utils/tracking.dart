@@ -87,12 +87,19 @@ class CacheTracking {
 
     final trackedKeys = await getTrackedKeys();
 
-    if (trackedKeys.length <= maxCount) return;
+    // Only consider keys that exist in the group box
+    final groupBox = await getCollectionBox(group);
+    final groupKeys = <String>[];
+    for (final key in trackedKeys) {
+      if (await groupBox.containsKey(key)) {
+        groupKeys.add(key);
+      }
+    }
+    if (groupKeys.length <= maxCount) return;
 
     // Calculate eviction candidates
     final candidates = <MapEntry<String, int>>[];
-
-    for (final key in trackedKeys) {
+    for (final key in groupKeys) {
       if (isLFU) {
         // LFU: get frequency count
         final count = int.tryParse(subBox.get('${key}_freq') ?? '0') ?? 0;
@@ -118,11 +125,8 @@ class CacheTracking {
     final toEvict = candidates.length - maxCount;
     for (int i = 0; i < toEvict; i++) {
       final keyToEvict = candidates[i].key;
-
-      // Delete from storage (try both regular and secure storage)
       try {
-        final box = await defaultBox;
-        await box.delete(keyToEvict);
+        await groupBox.delete(keyToEvict);
       } catch (e) {
         // Might be in secure storage, try there too
         try {
@@ -131,8 +135,6 @@ class CacheTracking {
           // Key might already be deleted, continue
         }
       }
-
-      // Clean up tracking data
       await cleanupTracking(keyToEvict);
     }
   }
