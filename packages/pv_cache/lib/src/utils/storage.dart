@@ -116,6 +116,13 @@ class CacheStorage {
       await CacheTracking.updateOnAccess(key, options);
     }
 
+    // Convert LinkedMap to Map<String, dynamic> if requested
+    if (options.convertBackToMap == true &&
+        result is Map &&
+        result.runtimeType.toString().contains('LinkedMap')) {
+      result = Map<String, dynamic>.from(result);
+    }
+
     return result;
   }
 

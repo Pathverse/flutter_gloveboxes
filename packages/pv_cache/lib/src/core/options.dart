@@ -46,6 +46,9 @@ class CacheOptions {
   /// Whether the cache entry should be encrypted
   final bool encrypted;
 
+  /// Whether to convert LinkedMap to Map<String, dynamic> on retrieval
+  final bool convertBackToMap;
+
   /// Creates cache options with optional configuration parameters
   ///
   /// Rules:
@@ -53,6 +56,7 @@ class CacheOptions {
   /// 2. If sensitive is not null, depends must not be null
   /// 3. LRU and lifetime are mutually exclusive
   /// 4. lruInCount only used when lru is true
+  /// 5. If [convertBackToMap] is true, retrieved LinkedMap will be converted to Map<String, dynamic>
   const CacheOptions({
     this.group,
     this.useCollection = true,
@@ -62,6 +66,7 @@ class CacheOptions {
     this.lru,
     this.lruInCount,
     this.encrypted = false,
+    this.convertBackToMap = false,
   }) : assert(
          !encrypted || (sensitive == null && depends == null),
          'Encrypted data cannot have sensitive patterns or dependencies',
