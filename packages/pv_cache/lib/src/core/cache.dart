@@ -7,11 +7,11 @@ import 'package:pv_cache/src/core/wrapper.dart';
 
 class PVCache {
   /// Returns all keys from cache boxes
-  /// 
+  ///
   /// Parameters:
   /// - [options]: If provided with a group, returns keys from that specific collection
   /// - [includeAllGroups]: If true, returns keys from all collections (default box + all groups)
-  /// 
+  ///
   /// Examples:
   /// - `getAllKeys()` - Returns keys from default box only
   /// - `getAllKeys(options: CacheOptions(group: 'user_sessions'))` - Returns keys from specific group
@@ -23,7 +23,7 @@ class PVCache {
     if (includeAllGroups) {
       return await _getAllKeysFromAllBoxes();
     }
-    
+
     final box = await _getBoxForOptions(options);
     return box.keys.cast<String>().toList();
   }
@@ -31,36 +31,37 @@ class PVCache {
   /// Get all keys from all opened boxes (default + all collections)
   Future<List<String>> _getAllKeysFromAllBoxes() async {
     final allKeys = <String>[];
-    
+
     try {
       // Get keys from default box
       final defaultBox = await toplv.defaultBox;
       allKeys.addAll(defaultBox.keys.cast<String>());
-      
+
       // Get keys from all opened collection boxes
       for (final entry in toplv.getOpenedLazyBoxes().entries) {
         final boxName = entry.key;
         final box = entry.value;
-        
+
         // Add group prefix to distinguish keys from different collections
         final groupName = boxName.replaceFirst('__pvcache_', '');
-        final groupKeys = box.keys.cast<String>()
+        final groupKeys = box.keys
+            .cast<String>()
             .map((key) => '[$groupName]$key')
             .toList();
         allKeys.addAll(groupKeys);
       }
-      
+
       // Also check metadata box for any keys
       final metadataBox = await toplv.getMetadataBox();
-      final metadataKeys = metadataBox.keys.cast<String>()
+      final metadataKeys = metadataBox.keys
+          .cast<String>()
           .map((key) => '[metadata]$key')
           .toList();
       allKeys.addAll(metadataKeys);
-      
     } catch (e) {
       debugPrint('Warning: Error getting keys from some boxes: $e');
     }
-    
+
     return allKeys;
   }
 
@@ -211,5 +212,34 @@ class PVCache {
   Future<bool> containsKey(String key, {CacheOptions? options}) async {
     final box = await _getBoxForOptions(options);
     return box.containsKey(key);
+  }
+
+  /// Returns cached value for [key] if present, otherwise fetches using [fetchFunction], caches, and returns it.
+  /// Does not cache null or empty lists.
+  Future<T?> ifNotCached<T>(
+    String key,
+    Future<T> Function() fetchFunction, {
+    CacheOptions? options,
+  }) async {
+    final cachedData = await get(key, options: options) as T?;
+    if (cachedData != null) {
+      debugPrint(
+        'Cache hit for key: '
+        ' [32m$key [0m',
+      );
+      return cachedData;
+    }
+
+    debugPrint(
+      'Cache miss for key: '
+      ' [33m$key [0m, fetching fresh data',
+    );
+    final freshData = await fetchFunction();
+    if (freshData == null || (freshData is List && freshData.isEmpty)) {
+      debugPrint('Fetched data is empty, not caching');
+      return freshData;
+    }
+    await put(key, freshData, options: options);
+    return freshData;
   }
 }

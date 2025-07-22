@@ -554,14 +554,14 @@ class _CacheSimulatorPageState extends State<CacheSimulatorPage> {
     _setLoading(true);
     try {
       final cacheInstance = await _ensureCache();
-      
+
       // Get keys from all collections
       final allKeys = await cacheInstance.getAllKeys(includeAllGroups: true);
-      
+
       // Parse groups from prefixed keys
       final groups = <String, int>{};
       var defaultCount = 0;
-      
+
       for (final key in allKeys) {
         if (key.startsWith('[') && key.contains(']')) {
           // Extract group name from [groupname]key format
@@ -572,17 +572,17 @@ class _CacheSimulatorPageState extends State<CacheSimulatorPage> {
           defaultCount++;
         }
       }
-      
+
       final groupStats = groups.entries
           .map((e) => '${e.key}: ${e.value}')
           .join(', ');
-      
+
       final statsMessage = [
         'Total: ${allKeys.length} entries',
         if (defaultCount > 0) 'default: $defaultCount',
         if (groupStats.isNotEmpty) groupStats,
       ].join(' | ');
-      
+
       _updateStatus('📊 Cache stats: $statsMessage');
     } catch (e) {
       _updateStatus('❌ Stats failed: $e');
