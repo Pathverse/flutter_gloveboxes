@@ -1,6 +1,6 @@
 name: pv_cache
 description: "Pathverse package providing an abstract layer for caching"
-version: 0.1.2
+version: 0.1.3
 publish_to: none
 
 environment:

@@ -258,7 +258,7 @@ class PVCache {
     Future<T> Function() fetchFunction, {
     CacheOptions? options,
   }) async {
-    final cachedData = await get(key, options: options) as T?;
+    final cachedData = await getWithOptions<T>(key, options: options);
     if (cachedData != null) {
       debugPrint(
         'Cache hit for key: '
@@ -276,7 +276,7 @@ class PVCache {
       debugPrint('Fetched data is empty, not caching');
       return freshData;
     }
-    await put(key, freshData, options: options);
+    await putWithOptions(key, freshData, options: options);
     return freshData;
   }
 }
