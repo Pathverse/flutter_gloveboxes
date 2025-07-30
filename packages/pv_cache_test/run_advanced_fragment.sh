@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Running Advanced Fragment Example..."
+flutter run -d chrome --target=lib/main_advanced_fragment.dart

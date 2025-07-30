@@ -1,72 +1,160 @@
-// initialize flutter_secure_storage, hive_ce and flutter_cache_manager
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pv_cache/src/core/config.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:pv_cache/utils/json.dart';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
-FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+class PVCacheCentral {
+  static FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  static Map<String, PVCacheEnvConfig> environments = {};
+  static Map<String, String> envToHash = {}; // Simple map: env -> hash
+  static Map<String, LazyBox<dynamic>> lazyBoxes = {};
+  static Map<String, Box<dynamic>> boxes = {};
+  static Map<String, Box<dynamic>> metaBoxes = {};
+  static String _prefix = "pvcache";
+  // ignore: prefer_final_fields
+  static bool _initialized = false;
 
-// Map to store opened boxes by name
-final Map<String, LazyBox<dynamic>> _openLazyBoxes = {};
-final Map<String, Box<dynamic>> _openRegularBoxes = {};
+  static String get prefix => _prefix;
 
-// Global references for the main boxes
-LazyBox<dynamic>? lazyBox;
-Box<dynamic>? subscriberBox;
-
-/// Get or create a lazy box for the specified name
-/// Structure: indexeddb/__pv_cache__box_{name}
-Future<LazyBox<dynamic>> getCollectionBox(String name) async {
-  final boxName = '__pvcache_$name';
-
-  // Return existing box if already open
-  if (_openLazyBoxes.containsKey(boxName)) {
-    return _openLazyBoxes[boxName]!;
+  static set prefix(String value) {
+    if (_initialized) {
+      throw Exception("Prefix cannot be changed after initialization");
+    }
+    _prefix = value;
   }
 
-  // Open new lazy box with dynamic type for native Hive serialization
-  final box = await Hive.openLazyBox<dynamic>(boxName);
-
-  // Store in map for future use
-  _openLazyBoxes[boxName] = box;
-  return box;
-}
-
-/// Get or create a regular box for fast metadata access
-/// Structure: indexeddb/__pv_cache__meta
-Future<Box<dynamic>> getMetadataBox() async {
-  const boxName = '__pvcache_meta';
-
-  // Return existing box if already open
-  if (_openRegularBoxes.containsKey(boxName)) {
-    return _openRegularBoxes[boxName]!;
+  /// Generate SHA1 hash for meta box name, limited to 8 characters
+  static String generateMetaHash(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha1.convert(bytes);
+    return digest.toString().substring(0, 8);
   }
 
-  // Open new regular box for fast metadata access with dynamic type
-  final box = await Hive.openBox<dynamic>(boxName);
+  /// Check if a key is a special internal key (starts and ends with __)
+  static bool isSpecialKey(String key) {
+    return key.startsWith('__') && key.endsWith('__');
+  }
 
-  // Store in map for future use
-  _openRegularBoxes[boxName] = box;
-  return box;
-}
+  static Future<void> init() async {
+    // Open the single shared meta box first
+    metaBoxes['meta'] = await Hive.openBox<dynamic>(
+      'meta',
+      //collection: "meta",
+    );
 
-/// Get the default cache box (maintains backward compatibility)
-Future<LazyBox<dynamic>> get defaultBox async {
-  lazyBox ??= await getCollectionBox('default');
-  return lazyBox!;
-}
+    // Don't open environment boxes here - let ensureBoxReady handle them on-demand
+    _initialized = true;
+  }
 
-/// Initialize base system
-Future<void> baseInit() async {
-  // Initialize the main boxes
-  lazyBox = await getCollectionBox('default');
-  subscriberBox = await getMetadataBox();
-}
+  /// Ensure a box is ready for use, opening it if necessary
+  static Future<void> ensureBoxReady(String env) async {
+    if (!environments.containsKey(env)) {
+      throw Exception('Environment $env not found');
+    }
 
-/// Get all opened lazy boxes (for debugging and management)
-Map<String, LazyBox<dynamic>> getOpenedLazyBoxes() {
-  return Map.unmodifiable(_openLazyBoxes);
-}
+    final config = environments[env]!;
 
-/// Get all opened regular boxes (for debugging and management)
-Map<String, Box<dynamic>> getOpenedRegularBoxes() {
-  return Map.unmodifiable(_openRegularBoxes);
+    if (config.boxType == PVBoxType.lazy) {
+      if (!lazyBoxes.containsKey(env)) {
+        lazyBoxes[env] = await Hive.openLazyBox<dynamic>(
+          env,
+        );
+      }
+    } else {
+      if (!boxes.containsKey(env)) {
+        boxes[env] = await Hive.openBox<dynamic>(env); //collection: "normal");
+      }
+    }
+  }
+
+  static Future<void> secureSet({
+    String env = "default",
+    required String key,
+    required dynamic value,
+  }) async {
+    await secureStorage.write(key: "$prefix::$env:$key", value: value);
+  }
+
+  static Future<dynamic> secureGet({
+    String env = "default",
+    required String key,
+  }) async {
+    return await secureStorage.read(key: "$prefix::$env:$key");
+  }
+
+  static Future<void> secureDelete({
+    String env = "default",
+    required String key,
+  }) async {
+    await secureStorage.delete(key: "$prefix::$env:$key");
+  }
+
+  static Future<void> secureClear({String env = "default"}) async {
+    Map<String, String> allKeys = await secureStorage.readAll();
+    for (String key in allKeys.keys) {
+      if (key.startsWith("$prefix::$env:")) {
+        await secureStorage.delete(key: key);
+      }
+    }
+  }
+
+  static Future<void> secureMetaSet({
+    String env = "default",
+    required String key,
+    required dynamic value,
+  }) async {
+    await secureStorage.write(
+      key: "$prefix::$env:$key",
+      value: jsonDump(value),
+    );
+  }
+
+  static Future<Map<String, dynamic>?> secureMetaGet({
+    String env = "default",
+    required String key,
+  }) async {
+    final value = await secureStorage.read(key: "$prefix::$env:$key");
+    if (value == null) {
+      return null;
+    }
+    return jsonLoad(value);
+  }
+
+  static Future<void> secureMetaDelete({
+    String env = "default",
+    required String key,
+  }) async {
+    await secureStorage.delete(key: "$prefix::$env:$key");
+  }
+
+  static Future<void> secureMetaClear({String env = "default"}) async {
+    Map<String, String> allKeys = await secureStorage.readAll();
+    for (String key in allKeys.keys) {
+      if (key.startsWith("$prefix::$env:")) {
+        await secureStorage.delete(key: key);
+      }
+    }
+  }
+
+  /// Clear metadata for a specific environment from the single meta box
+  static Future<void> clearMetaForEnvironment(String env) async {
+    final metaBox = metaBoxes['meta'];
+    if (metaBox == null) return;
+
+    final keysToDelete = <String>[];
+
+    // Find all keys that start with the environment hash
+    for (final key in metaBox.keys) {
+      if (key is String && key.startsWith('$env:')) {
+        keysToDelete.add(key);
+      }
+    }
+
+    // Delete all keys for this environment
+    for (final key in keysToDelete) {
+      await metaBox.delete(key);
+    }
+  }
 }
