@@ -484,6 +484,187 @@ class _PVCacheWebTestState extends State<PVCacheWebTest> {
     }
   }
 
+  Future<void> _testIfNotCached() async {
+    if (!_isInitialized) return;
+
+    try {
+      const testKey = 'if_not_cached_test';
+      final fullKey = '$_selectedEnvironment:$testKey';
+
+      // Clear any existing value first
+      await PVCache.delete(fullKey);
+
+      setState(() {
+        _status = 'Testing ifNotCached functionality...';
+        _lastResult = 'IF NOT CACHED TEST: Starting test';
+      });
+
+      // Simulate expensive operation counter
+      int expensiveOperationCount = 0;
+
+      // Define the expensive callback function
+      Future<String> expensiveOperation() async {
+        expensiveOperationCount++;
+        // Simulate network delay or expensive computation
+        await Future.delayed(const Duration(milliseconds: 500));
+        return 'Expensive result #$expensiveOperationCount from $_selectedEnvironment';
+      }
+
+      // First call - should execute the callback and cache the result
+      setState(() {
+        _status = 'First call: Executing expensive operation...';
+      });
+
+      final firstResult = await PVCache.ifNotCached(
+        fullKey,
+        expensiveOperation,
+        metadata: {
+          'source': 'if_not_cached_test',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      // Second call - should return cached value without executing callback
+      setState(() {
+        _status = 'Second call: Should return cached value...';
+      });
+
+      final secondResult = await PVCache.ifNotCached(
+        fullKey,
+        expensiveOperation,
+        metadata: {
+          'source': 'if_not_cached_test',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      // Third call - should return cached value without executing callback
+      setState(() {
+        _status = 'Third call: Should return cached value...';
+      });
+
+      final thirdResult = await PVCache.ifNotCached(
+        fullKey,
+        expensiveOperation,
+        metadata: {
+          'source': 'if_not_cached_test',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      // Verify results
+      final allResultsMatch =
+          firstResult == secondResult && secondResult == thirdResult;
+      final callbackExecutedOnce = expensiveOperationCount == 1;
+
+      if (allResultsMatch && callbackExecutedOnce) {
+        setState(() {
+          _status =
+              'ifNotCached test passed! Callback executed once, cached value returned for subsequent calls';
+          _lastResult =
+              'IF NOT CACHED TEST: SUCCESS\n'
+              'Callback executed: $expensiveOperationCount times\n'
+              'First result: $firstResult\n'
+              'Second result: $secondResult\n'
+              'Third result: $thirdResult\n'
+              'All results match: $allResultsMatch';
+        });
+      } else {
+        setState(() {
+          _status =
+              'ifNotCached test failed! Expected callback to execute once only';
+          _lastResult =
+              'IF NOT CACHED TEST: FAILED\n'
+              'Callback executed: $expensiveOperationCount times (expected 1)\n'
+              'First result: $firstResult\n'
+              'Second result: $secondResult\n'
+              'Third result: $thirdResult\n'
+              'All results match: $allResultsMatch';
+        });
+      }
+
+      // Test with expiry (for environments that support it)
+      if (_selectedEnvironment == 'default' || _selectedEnvironment == 'test') {
+        setState(() {
+          _status = 'Testing ifNotCached with expiry...';
+        });
+
+        const expiryTestKey = 'if_not_cached_expiry_test';
+        final expiryFullKey = '$_selectedEnvironment:$expiryTestKey';
+
+        // Clear any existing value
+        await PVCache.delete(expiryFullKey);
+
+        int expiryOperationCount = 0;
+
+        Future<String> expiryOperation() async {
+          expiryOperationCount++;
+          await Future.delayed(const Duration(milliseconds: 200));
+          return 'Expiry test result #$expiryOperationCount';
+        }
+
+        // Set with 3 second expiry
+        final expiryTime = DateTime.now().add(const Duration(seconds: 3));
+        final expiryMetadata = {'expiry': expiryTime.toIso8601String()};
+
+        // First call
+        final expiryFirstResult = await PVCache.ifNotCached(
+          expiryFullKey,
+          expiryOperation,
+          metadata: expiryMetadata,
+        );
+
+        // Second call (should be cached)
+        await PVCache.ifNotCached(
+          expiryFullKey,
+          expiryOperation,
+          metadata: expiryMetadata,
+        );
+
+        // Wait for expiry
+        await Future.delayed(const Duration(seconds: 4));
+
+        // Third call (should execute callback again due to expiry)
+        final expiryThirdResult = await PVCache.ifNotCached(
+          expiryFullKey,
+          expiryOperation,
+          metadata: expiryMetadata,
+        );
+
+        final expiryCallbackExecutedTwice = expiryOperationCount == 2;
+        final expiryResultsDifferent = expiryFirstResult != expiryThirdResult;
+
+        if (expiryCallbackExecutedTwice && expiryResultsDifferent) {
+          setState(() {
+            _status =
+                'ifNotCached with expiry test passed! Callback executed twice due to expiry';
+            _lastResult +=
+                '\n\nEXPIRY TEST: SUCCESS\n'
+                'Callback executed: $expiryOperationCount times\n'
+                'First result: $expiryFirstResult\n'
+                'Third result: $expiryThirdResult\n'
+                'Results different after expiry: $expiryResultsDifferent';
+          });
+        } else {
+          setState(() {
+            _status = 'ifNotCached with expiry test failed!';
+            _lastResult +=
+                '\n\nEXPIRY TEST: FAILED\n'
+                'Callback executed: $expiryOperationCount times (expected 2)\n'
+                'First result: $expiryFirstResult\n'
+                'Third result: $expiryThirdResult\n'
+                'Results different after expiry: $expiryResultsDifferent';
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _status = 'Error in ifNotCached test: $e';
+        _lastResult = 'IF NOT CACHED TEST: ERROR - $e';
+      });
+    }
+  }
+
   Future<void> _runBatchTests() async {
     if (!_isInitialized) return;
 
@@ -734,6 +915,138 @@ class _PVCacheWebTestState extends State<PVCacheWebTest> {
         }
       }
 
+      // Test 10: ifNotCached functionality
+      for (final env in _availableEnvironments) {
+        totalTests++;
+        try {
+          final testKey = 'batch_test_if_not_cached_$env';
+          final fullKey = '$env:$testKey';
+
+          // Clear any existing value first
+          await PVCache.delete(fullKey);
+
+          // Simulate expensive operation counter
+          int expensiveOperationCount = 0;
+
+          // Define the expensive callback function
+          Future<String> expensiveOperation() async {
+            expensiveOperationCount++;
+            // Simulate network delay or expensive computation
+            await Future.delayed(const Duration(milliseconds: 100));
+            return 'Batch test result #$expensiveOperationCount from $env';
+          }
+
+          // First call - should execute the callback and cache the result
+          final firstResult = await PVCache.ifNotCached(
+            fullKey,
+            expensiveOperation,
+            metadata: {
+              'source': 'batch_test',
+              'timestamp': DateTime.now().toIso8601String(),
+            },
+          );
+
+          // Second call - should return cached value without executing callback
+          final secondResult = await PVCache.ifNotCached(
+            fullKey,
+            expensiveOperation,
+            metadata: {
+              'source': 'batch_test',
+              'timestamp': DateTime.now().toIso8601String(),
+            },
+          );
+
+          // Third call - should return cached value without executing callback
+          final thirdResult = await PVCache.ifNotCached(
+            fullKey,
+            expensiveOperation,
+            metadata: {
+              'source': 'batch_test',
+              'timestamp': DateTime.now().toIso8601String(),
+            },
+          );
+
+          // Verify results
+          final allResultsMatch =
+              firstResult == secondResult && secondResult == thirdResult;
+          final callbackExecutedOnce = expensiveOperationCount == 1;
+
+          if (allResultsMatch && callbackExecutedOnce) {
+            passedTests++;
+            results['if_not_cached_$env'] = 'PASS';
+          } else {
+            results['if_not_cached_$env'] =
+                'FAIL: Callback executed $expensiveOperationCount times (expected 1)';
+          }
+        } catch (e) {
+          results['if_not_cached_$env'] = 'ERROR: $e';
+        }
+      }
+
+      // Test 11: ifNotCached with expiry (for environments that support it)
+      for (final env in ['default', 'test']) {
+        if (_availableEnvironments.contains(env)) {
+          totalTests++;
+          try {
+            final testKey = 'batch_test_if_not_cached_expiry_$env';
+            final fullKey = '$env:$testKey';
+
+            // Clear any existing value
+            await PVCache.delete(fullKey);
+
+            int expiryOperationCount = 0;
+
+            Future<String> expiryOperation() async {
+              expiryOperationCount++;
+              await Future.delayed(const Duration(milliseconds: 50));
+              return 'Expiry batch test result #$expiryOperationCount';
+            }
+
+            // Set with 2 second expiry
+            final expiryTime = DateTime.now().add(const Duration(seconds: 2));
+            final expiryMetadata = {'expiry': expiryTime.toIso8601String()};
+
+            // First call
+            final expiryFirstResult = await PVCache.ifNotCached(
+              fullKey,
+              expiryOperation,
+              metadata: expiryMetadata,
+            );
+
+            // Second call (should be cached)
+            await PVCache.ifNotCached(
+              fullKey,
+              expiryOperation,
+              metadata: expiryMetadata,
+            );
+
+            // Wait for expiry
+            await Future.delayed(const Duration(seconds: 3));
+
+            // Third call (should execute callback again due to expiry)
+            final expiryThirdResult = await PVCache.ifNotCached(
+              fullKey,
+              expiryOperation,
+              metadata: expiryMetadata,
+            );
+
+            final expiryCallbackExecutedTwice = expiryOperationCount == 2;
+            final expiryResultsDifferent =
+                expiryFirstResult != expiryThirdResult;
+
+            if (expiryCallbackExecutedTwice && expiryResultsDifferent) {
+              passedTests++;
+              results['if_not_cached_expiry_$env'] = 'PASS';
+            } else {
+              results['if_not_cached_expiry_$env'] =
+                  'FAIL: Callback executed $expiryOperationCount times (expected 2)';
+            }
+          } catch (e) {
+            results['if_not_cached_expiry_$env'] = 'ERROR: $e';
+          }
+        }
+      }
+
       // Generate summary
       final successRate = totalTests > 0
           ? (passedTests / totalTests * 100).toStringAsFixed(1)
@@ -882,40 +1195,46 @@ class _PVCacheWebTestState extends State<PVCacheWebTest> {
             const SizedBox(height: 16),
 
             // Input Fields
-            TextField(
-              controller: _keyController,
-              decoration: const InputDecoration(
-                labelText: 'Key',
-                border: OutlineInputBorder(),
-                hintText: 'Enter cache key',
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            TextField(
-              controller: _valueController,
-              decoration: const InputDecoration(
-                labelText: 'Value',
-                border: OutlineInputBorder(),
-                hintText: 'Enter cache value',
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            if (_selectedEnvironment == 'default' ||
-                _selectedEnvironment == 'test')
-              TextField(
-                controller: _expiryController,
-                decoration: const InputDecoration(
-                  labelText: 'Expiry (seconds)',
-                  border: OutlineInputBorder(),
-                  hintText:
-                      'Optional: seconds until expiry (SimpleExpiry environments)',
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _keyController,
+                    decoration: const InputDecoration(
+                      labelText: 'Key',
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter cache key',
+                    ),
+                  ),
                 ),
-                keyboardType: TextInputType.number,
-              ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _valueController,
+                    decoration: const InputDecoration(
+                      labelText: 'Value',
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter cache value',
+                    ),
+                  ),
+                ),
+                if (_selectedEnvironment == 'default' ||
+                    _selectedEnvironment == 'test') ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _expiryController,
+                      decoration: const InputDecoration(
+                        labelText: 'Expiry (seconds)',
+                        border: OutlineInputBorder(),
+                        hintText: 'Optional: seconds until expiry',
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ],
+            ),
 
             const SizedBox(height: 16),
 
@@ -1022,6 +1341,24 @@ class _PVCacheWebTestState extends State<PVCacheWebTest> {
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Test Cross Env'),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // ifNotCached Test
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isInitialized ? _testIfNotCached : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrange,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('🧠 Test ifNotCached'),
                   ),
                 ),
               ],

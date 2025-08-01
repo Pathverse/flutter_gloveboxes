@@ -7,24 +7,29 @@
 /// ## How it works:
 ///
 /// 1. **Fragment Configuration**: Define how your data should be fragmented using `FragmentConfig`
-/// 2. **Lazy Loading**: Main data is fetched via callbacks only when not cached
-/// 3. **Fragment References**: Large objects store references to fragments instead of full data
-/// 4. **Automatic Resolution**: Fragment references are automatically resolved when accessed
-/// 5. **Independent Caching**: Each fragment can be cached/expired independently
+/// 2. **Glob Pattern Matching**: Both name and path support glob patterns for flexible key matching
+/// 3. **Lazy Loading**: Main data is fetched via callbacks only when not cached
+/// 4. **Fragment References**: Large objects store references to fragments instead of full data
+/// 5. **Automatic Resolution**: Fragment references are automatically resolved when accessed
+/// 6. **Independent Caching**: Each fragment can be cached/expired independently
 ///
 /// ## Usage Example:
 ///
 /// ```dart
-/// // Define fragment configurations
+/// // Define fragment configurations with glob patterns and smart fragments
 /// final fragmentConfigs = [
 ///   FragmentConfig(
-///     name: "world",
+///     name: "world*",           // Matches: world, world1, world2, etc.
 ///     path: "/",
 ///     callback: fetchWorldData,
-///     fragments: ["world/region1", "world/region2"], // Optional sub-fragments
+///     fragments: ["world*/region*"], // Regular fragments
+///     smartFragments: [
+///       SmartFragment("x/x*", "in_{name}_id"), // Dynamic key generation
+///       SmartFragment("users/*", "user_{id}_{name}"), // Multiple field interpolation
+///     ],
 ///   ),
-///   FragmentConfig(name: "region1", path: "world/region1", callback: fetchRegion1),
-///   FragmentConfig(name: "region2", path: "world/region2", callback: fetchRegion2),
+///   FragmentConfig(name: "region*", path: "world*/region*", callback: fetchRegionData),
+///   FragmentConfig(name: "user*", path: "users/*", callback: fetchUserData),
 /// ];
 ///
 /// // Create storage
@@ -33,22 +38,51 @@
 /// // Set up environment
 /// await PVCache.setEnv('game', storage);
 ///
-/// // Usage - data fragmentation for efficient caching
-/// final worldData = await PVCache.get('game:world'); // Triggers callback, fragments data into w1, w2, w3 pieces
-///                                                    // Returns: {'w1': '@fragment:w1', 'w2': '@fragment:w2', 'w3': '@fragment:w3'}
-/// final region1 = await PVCache.get('game:w1');      // Direct access to fragment piece
-/// final region2 = await PVCache.get('game:w2');      // Direct access to fragment piece
-/// final region3 = await PVCache.get('game:w3');      // Direct access to fragment piece
+/// // Usage - glob pattern matching for flexible key access
+/// final worldData = await PVCache.get('game:world1');    // Matches "world*" pattern
+/// final regionData = await PVCache.get('game:region1');  // Matches "region*" pattern
+/// final userData = await PVCache.get('game:user123');    // Matches "user*" pattern
+///
+/// // Smart fragment example:
+/// // For data: {"x": {"x1": {"name": "www", "id": 3}}}
+/// // SmartFragment("x/x*", "in_{name}_id") generates key: "in_www_3"
 /// ```
+///
+/// ## Glob Pattern Support:
+///
+/// - **Simple Patterns**: `world*` matches any key starting with "world"
+/// - **Suffix Patterns**: `*data` matches any key ending with "data"
+/// - **Exact Patterns**: `world1` matches only "world1"
+/// - **Path Patterns**: `world*/region*` matches hierarchical paths
+/// - **Collision Handling**: Only the first matching pattern is used
 ///
 /// ## Key Features:
 ///
+/// - **Glob Pattern Matching**: Flexible key matching using glob patterns
+/// - **Smart Fragments**: Dynamic key generation using data field interpolation
+/// - **Regular Fragments**: Traditional path-based fragment storage
 /// - **Automatic Fragment Management**: Fragments are created and resolved transparently
 /// - **Callback-based Loading**: Fresh data fetched only when cache misses occur
 /// - **Reference Resolution**: Fragment references (`@fragment:fragmentKey`) resolved automatically
 /// - **Expiry Support**: Individual fragments can have different expiry times
 /// - **Memory Efficient**: Large objects broken into smaller, manageable pieces
 /// - **Collision Detection**: Prevents fragment key conflicts during setup
+///
+/// ## Smart Fragments:
+///
+/// Smart fragments provide dynamic key generation based on data content:
+/// - **Path Patterns**: Use glob patterns to match data paths (e.g., `"x/x*"`)
+/// - **Name Resolution**: Generate keys using field interpolation (e.g., `"in_{name}_id"`)
+/// - **Field Interpolation**: Replace `{field}` with actual data values
+/// - **Multiple Fields**: Support multiple field replacements in a single pattern
+///
+/// ### Smart Fragment Examples:
+/// ```dart
+/// // Data: {"x": {"x1": {"name": "www", "id": 3}}}
+/// SmartFragment("x/x*", "in_{name}_id")     // Generates: "in_www_3"
+/// SmartFragment("users/*", "user_{id}")     // For user data with id field
+/// SmartFragment("*", "item_{type}_{status}") // Multiple field interpolation
+/// ```
 ///
 /// ## Fragment Reference Format:
 ///
@@ -61,9 +95,42 @@
 /// - User profiles with sections (profile → preferences → history)
 /// - Product catalogs (categories → subcategories → items)
 /// - Large configuration objects with logical groupings
+/// - Dynamic key patterns with similar data structures
+/// - Data with natural identifiers that make good cache keys
 
 import 'package:flutter/foundation.dart';
 import 'package:pv_cache/src/core/config.dart';
+import 'package:pv_cache/utils/glob.dart';
+
+/// Smart fragment configuration for dynamic key generation
+class SmartFragment {
+  final String pathPattern;
+  final String nameResolve;
+
+  SmartFragment(this.pathPattern, this.nameResolve);
+
+  /// Generate a key from data using the nameResolve pattern
+  String generateKey(Map<String, dynamic> data) {
+    String result = nameResolve;
+
+    // Replace {name} patterns with actual values from data
+    final regex = RegExp(r'\{([^}]+)\}');
+    result = result.replaceAllMapped(regex, (match) {
+      final fieldName = match.group(1);
+      if (fieldName != null && data.containsKey(fieldName)) {
+        return data[fieldName].toString();
+      }
+      return match.group(0) ?? '';
+    });
+
+    return result;
+  }
+
+  /// Check if this smart fragment matches a given path pattern
+  bool matchesPath(String path) {
+    return simpleGlob(pathPattern, path);
+  }
+}
 
 /// Configuration for a fragment in the advanced cache
 class FragmentConfig {
@@ -71,13 +138,30 @@ class FragmentConfig {
   final String path;
   final Future<Map<String, dynamic>> Function() callback;
   final List<String>? fragments;
+  final List<SmartFragment>? smartFragments;
 
   FragmentConfig({
     required this.name,
     required this.path,
     required this.callback,
     this.fragments,
+    this.smartFragments,
   });
+
+  /// Check if this config matches a given key using glob patterns
+  bool matchesKey(String key) {
+    return simpleGlob(name, key) || simpleGlob(path, key);
+  }
+
+  /// Check if this config's name matches a given key using glob patterns
+  bool matchesName(String key) {
+    return simpleGlob(name, key);
+  }
+
+  /// Check if this config's path matches a given key using glob patterns
+  bool matchesPath(String key) {
+    return simpleGlob(path, key);
+  }
 }
 
 /// Advanced fragment storage for hierarchical map caching
@@ -139,39 +223,48 @@ class AdvancedFragment extends PVCacheEnvConfig {
   @override
   Future<dynamic> preGet(String key, dynamic originalValue) async {
     debugPrint(
-        '[AdvancedFragment] preGet called: key=$key, originalValue=$originalValue');
+        '🔍 [AdvancedFragment] preGet called: key=$key, originalValue=$originalValue');
 
     if (defaultGet) {
       // If originalValue is null, check if we have a fragment config
       if (originalValue == null) {
         debugPrint(
-            '[AdvancedFragment] originalValue is null, checking for config...');
-        final config = _configMap[key];
+            '🔍 [AdvancedFragment] originalValue is null, checking for config...');
+        final config = _findMatchingConfig(key);
         if (config != null) {
           debugPrint(
-              '[AdvancedFragment] Found config for key=$key, calling _loadFragmentData');
+              '🔍 [AdvancedFragment] Found matching config for key=$key, calling _loadFragmentData');
           // Load fragment data using callback
           final result = await _loadFragmentData(key, config);
-          debugPrint('[AdvancedFragment] _loadFragmentData returned: $result');
+          debugPrint(
+              '🔍 [AdvancedFragment] _loadFragmentData returned: $result');
           return result;
         } else {
-          debugPrint('[AdvancedFragment] No config found for key=$key');
+          debugPrint(
+              '🔍 [AdvancedFragment] No matching config found for key=$key');
         }
       } else {
         debugPrint(
-            '[AdvancedFragment] originalValue exists, checking if needs fragment resolution');
-        // Value exists, resolve fragment references if needed
-        if (originalValue is Map<String, dynamic>) {
+            '🔍 [AdvancedFragment] originalValue exists, checking if needs fragment resolution');
+        // Value exists, check metadata to see if we should resolve fragments
+        final meta = await getMeta(key);
+        final shouldResolveFragments = meta?['resolve_fragments'] ?? true;
+
+        if (shouldResolveFragments && originalValue is Map<String, dynamic>) {
           debugPrint(
-              '[AdvancedFragment] Resolving fragment references for existing data');
+              '🔍 [AdvancedFragment] Resolving fragment references for existing data');
           return await _resolveFragmentReferences(originalValue);
+        } else {
+          debugPrint(
+              '🔍 [AdvancedFragment] Fragment resolution disabled or not needed, returning original value');
         }
       }
 
-      debugPrint('[AdvancedFragment] Returning original value: $originalValue');
+      debugPrint(
+          '🔍 [AdvancedFragment] Returning original value: $originalValue');
       return originalValue;
     } else {
-      debugPrint('[AdvancedFragment] Custom logic mode');
+      debugPrint('🔍 [AdvancedFragment] Custom logic mode');
       // Custom logic - handle everything ourselves
       final meta = await getMeta(key);
       if (meta == null) return null;
@@ -194,7 +287,7 @@ class AdvancedFragment extends PVCacheEnvConfig {
     Map<String, dynamic>? metadata,
   ) async {
     if (defaultSet) {
-      // Store metadata if provided (including expiry)
+      // Store metadata if provided (including expiry and fragment resolution control)
       if (metadata != null) {
         await setMeta(key, metadata);
       }
@@ -230,39 +323,80 @@ class AdvancedFragment extends PVCacheEnvConfig {
 
   @override
   Future<void> postSet(String key, dynamic value) async {
-    debugPrint('[AdvancedFragment] postSet called: key=$key, value=$value');
+    debugPrint('💾 [AdvancedFragment] postSet called: key=$key, value=$value');
 
     // Check if we have pending fragment data for this key
     final pendingData = _pendingFragmentData[key];
-    debugPrint('[AdvancedFragment] Pending data for key=$key: $pendingData');
+    debugPrint('💾 [AdvancedFragment] Pending data for key=$key: $pendingData');
 
     if (pendingData != null) {
-      final config = _configMap[key];
-      debugPrint(
-          '[AdvancedFragment] Config found: ${config?.name}, fragments: ${config?.fragments}');
+      final config = _findMatchingConfig(key);
+      debugPrint('💾 [AdvancedFragment] Config found: ${config?.name}');
 
-      if (config?.fragments != null) {
-        debugPrint(
-            '[AdvancedFragment] Processing ${config!.fragments!.length} fragments');
-        // Now store each fragment piece as an independent cache entry
-        for (final fragment in config.fragments!) {
-          final fragmentName = fragment.split('/').last;
-          final fragmentData = pendingData[fragmentName] ?? {};
-
-          debugPrint(
-              '[AdvancedFragment] Storing fragment: $fragmentName = $fragmentData');
-          // Store fragment using normal cache flow
-          await rawSet(fragmentName, fragmentData);
-          debugPrint(
-              '[AdvancedFragment] Fragment $fragmentName stored successfully');
-        }
+      if (config != null) {
+        await _storeFragmentData(config, pendingData);
       }
 
       // Clean up pending data
       _pendingFragmentData.remove(key);
-      debugPrint('[AdvancedFragment] Cleaned up pending data for key=$key');
+      debugPrint('💾 [AdvancedFragment] Cleaned up pending data for key=$key');
     } else {
-      debugPrint('[AdvancedFragment] No pending data found for key=$key');
+      debugPrint('💾 [AdvancedFragment] No pending data found for key=$key');
+    }
+  }
+
+  /// Store fragment data based on configuration
+  Future<void> _storeFragmentData(
+      FragmentConfig config, Map<String, dynamic> pendingData) async {
+    // Store regular fragments
+    if (config.fragments != null) {
+      await _storeRegularFragments(config.fragments!, pendingData);
+    }
+
+    // Store smart fragments
+    if (config.smartFragments != null) {
+      await _storeSmartFragments(config.smartFragments!, pendingData);
+    }
+  }
+
+  /// Store regular fragments
+  Future<void> _storeRegularFragments(
+      List<String> fragments, Map<String, dynamic> pendingData) async {
+    debugPrint(
+        '🧩 [AdvancedFragment] Storing ${fragments.length} regular fragments');
+
+    for (final fragment in fragments) {
+      final fragmentName = fragment.split('/').last;
+      final fragmentData = pendingData[fragmentName] ?? {};
+
+      debugPrint(
+          '🧩 [AdvancedFragment] Storing regular fragment: $fragmentName = $fragmentData');
+      await rawSet(fragmentName, fragmentData);
+      debugPrint(
+          '🧩 [AdvancedFragment] Regular fragment $fragmentName stored successfully');
+    }
+  }
+
+  /// Store smart fragments
+  Future<void> _storeSmartFragments(List<SmartFragment> smartFragments,
+      Map<String, dynamic> pendingData) async {
+    debugPrint('🧠 [AdvancedFragment] Storing smart fragments');
+
+    for (final smartFragment in smartFragments) {
+      final matchingPaths = getMapGlob(smartFragment.pathPattern, pendingData);
+
+      for (final path in matchingPaths) {
+        final pathData = _getDataAtPath(pendingData, path);
+        if (pathData is Map<String, dynamic>) {
+          final generatedKey = smartFragment.generateKey(pathData);
+
+          debugPrint(
+              '🧠 [AdvancedFragment] Storing smart fragment: $generatedKey = $pathData');
+          await rawSet(generatedKey, pathData);
+          debugPrint(
+              '🧠 [AdvancedFragment] Smart fragment $generatedKey stored successfully');
+        }
+      }
     }
   }
 
@@ -274,51 +408,144 @@ class AdvancedFragment extends PVCacheEnvConfig {
   /// Load fragment data using callback and prepare for caching
   Future<Map<String, dynamic>?> _loadFragmentData(
       String key, FragmentConfig config) async {
-    debugPrint('[AdvancedFragment] _loadFragmentData called for key=$key');
+    debugPrint('📥 [AdvancedFragment] _loadFragmentData called for key=$key');
 
     try {
       // Call the callback to get fresh data
-      debugPrint('[AdvancedFragment] Calling callback for key=$key');
-      final freshData = await config.callback();
-      debugPrint('[AdvancedFragment] Callback returned: $freshData');
+      final freshData = await _fetchDataFromCallback(key, config);
+      if (freshData == null) return null;
 
-      // If this config has fragments, prepare fragment data structure
-      if (config.fragments != null && config.fragments!.isNotEmpty) {
-        debugPrint(
-            '[AdvancedFragment] Processing ${config.fragments!.length} fragments for key=$key');
-
-        // Store the original fresh data temporarily for postSet to process
-        _pendingFragmentData[key] = freshData;
-        debugPrint(
-            '[AdvancedFragment] Stored pending data for key=$key: $freshData');
-
-        final fragmentReferences = <String, String>{};
-
-        for (final fragment in config.fragments!) {
-          // Extract fragment name from path (e.g., "w/w1" -> "w1")
-          final fragmentName = fragment.split('/').last;
-
-          // Create reference to where the fragment will be cached
-          fragmentReferences[fragmentName] = '@fragment:$fragmentName';
-          debugPrint(
-              '[AdvancedFragment] Created reference: $fragmentName -> @fragment:$fragmentName');
-        }
-
-        debugPrint(
-            '[AdvancedFragment] Returning fragment references: $fragmentReferences');
-        // Return the lightweight reference map (normal cache flow will store it)
-        return fragmentReferences;
+      // Process fragments if they exist
+      if (_hasFragments(config)) {
+        return await _processFragments(key, config, freshData);
       } else {
         debugPrint(
-            '[AdvancedFragment] No fragments, returning fresh data directly');
-        // No fragments, return the data directly (let normal cache flow store it)
+            '📥 [AdvancedFragment] No fragments, returning fresh data directly');
         return freshData;
       }
     } catch (e) {
-      debugPrint('[AdvancedFragment] Callback failed for key=$key: $e');
-      // If callback fails, return null
+      debugPrint(
+          '❌ [AdvancedFragment] Error loading fragment data for key=$key: $e');
       return null;
     }
+  }
+
+  /// Fetch data from callback
+  Future<Map<String, dynamic>?> _fetchDataFromCallback(
+      String key, FragmentConfig config) async {
+    debugPrint('📞 [AdvancedFragment] Calling callback for key=$key');
+    try {
+      final freshData = await config.callback();
+      debugPrint('📞 [AdvancedFragment] Callback returned: $freshData');
+      return freshData;
+    } catch (e) {
+      debugPrint('❌ [AdvancedFragment] Callback failed for key=$key: $e');
+      return null;
+    }
+  }
+
+  /// Check if config has any fragments
+  bool _hasFragments(FragmentConfig config) {
+    return (config.fragments != null && config.fragments!.isNotEmpty) ||
+        (config.smartFragments != null && config.smartFragments!.isNotEmpty);
+  }
+
+  /// Process fragments and smart fragments
+  Future<Map<String, dynamic>> _processFragments(
+      String key, FragmentConfig config, Map<String, dynamic> freshData) async {
+    debugPrint('⚙️ [AdvancedFragment] Processing fragments for key=$key');
+
+    // Store the original fresh data temporarily for postSet to process
+    _pendingFragmentData[key] = freshData;
+    debugPrint(
+        '⚙️ [AdvancedFragment] Stored pending data for key=$key: $freshData');
+
+    final fragmentReferences = <String, String>{};
+
+    // Process regular fragments
+    if (config.fragments != null) {
+      _processRegularFragments(config.fragments!, fragmentReferences);
+    }
+
+    // Process smart fragments
+    if (config.smartFragments != null) {
+      await _processSmartFragments(
+          config.smartFragments!, freshData, fragmentReferences);
+    }
+
+    debugPrint(
+        '⚙️ [AdvancedFragment] Returning fragment references: $fragmentReferences');
+    return fragmentReferences;
+  }
+
+  /// Process regular fragments
+  void _processRegularFragments(
+      List<String> fragments, Map<String, String> fragmentReferences) {
+    debugPrint(
+        '🧩 [AdvancedFragment] Processing ${fragments.length} regular fragments');
+
+    for (final fragment in fragments) {
+      // Extract fragment name from path (e.g., "w/w1" -> "w1")
+      final fragmentName = fragment.split('/').last;
+
+      // Create reference to where the fragment will be cached
+      fragmentReferences[fragmentName] = '@fragment:$fragmentName';
+      debugPrint(
+          '🧩 [AdvancedFragment] Created reference: $fragmentName -> @fragment:$fragmentName');
+    }
+  }
+
+  /// Process smart fragments
+  Future<void> _processSmartFragments(
+      List<SmartFragment> smartFragments,
+      Map<String, dynamic> freshData,
+      Map<String, String> fragmentReferences) async {
+    debugPrint(
+        '🧠 [AdvancedFragment] Processing ${smartFragments.length} smart fragments');
+
+    for (final smartFragment in smartFragments) {
+      final matchingPaths = getMapGlob(smartFragment.pathPattern, freshData);
+      debugPrint(
+          '🧠 [AdvancedFragment] SmartFragment pattern ${smartFragment.pathPattern} matches: $matchingPaths');
+
+      for (final path in matchingPaths) {
+        final pathData = _getDataAtPath(freshData, path);
+        if (pathData is Map<String, dynamic>) {
+          final generatedKey = smartFragment.generateKey(pathData);
+          fragmentReferences[path] = '@fragment:$generatedKey';
+          debugPrint(
+              '🧠 [AdvancedFragment] SmartFragment: $path -> @fragment:$generatedKey');
+        }
+      }
+    }
+  }
+
+  /// Get data at a specific path
+  dynamic _getDataAtPath(Map<String, dynamic> data, String path) {
+    final segments = path.split('/');
+    dynamic current = data;
+
+    for (final segment in segments) {
+      if (current is Map<String, dynamic> && current.containsKey(segment)) {
+        current = current[segment];
+      } else {
+        return null;
+      }
+    }
+
+    return current;
+  }
+
+  /// Find the first matching config for a given key using glob patterns
+  FragmentConfig? _findMatchingConfig(String key) {
+    for (final config in fragmentConfigs) {
+      if (config.matchesKey(key)) {
+        debugPrint(
+            '🔍 [AdvancedFragment] Found matching config: ${config.name} for key: $key');
+        return config;
+      }
+    }
+    return null;
   }
 
   /// Resolve fragment references in a map
@@ -332,7 +559,60 @@ class AdvancedFragment extends PVCacheEnvConfig {
       if (value is String && value.startsWith('@fragment:')) {
         // This is a fragment reference, resolve it
         final fragmentKey = value.substring('@fragment:'.length);
-        final fragmentData = await rawGet(fragmentKey);
+        debugPrint(
+            '🔗 [AdvancedFragment] Resolving fragment reference: $fragmentKey');
+
+        // First try to get the fragment directly
+        var fragmentData = await rawGet(fragmentKey);
+
+        // If fragment doesn't exist, check if we need to load the parent
+        if (fragmentData == null) {
+          debugPrint(
+              '🔗 [AdvancedFragment] Fragment $fragmentKey not found, checking if parent needs loading');
+
+          // Find which parent key this fragment belongs to using glob patterns
+          String? parentKey;
+          FragmentConfig? parentConfig;
+
+          for (final config in fragmentConfigs) {
+            if (config.fragments != null) {
+              for (final fragment in config.fragments!) {
+                final fragmentName = fragment.split('/').last;
+                if (fragmentName == fragmentKey) {
+                  parentKey = config.name;
+                  parentConfig = config;
+                  break;
+                }
+              }
+              if (parentKey != null) break;
+            }
+          }
+
+          if (parentKey != null && parentConfig != null) {
+            debugPrint(
+                '🔗 [AdvancedFragment] Found parent key: $parentKey, loading parent data');
+
+            // Check if parent exists
+            final parentData = await rawGet(parentKey);
+            if (parentData == null) {
+              // Parent doesn't exist, load it first
+              debugPrint(
+                  '🔗 [AdvancedFragment] Parent $parentKey doesn\'t exist, calling parent callback');
+              final loadedParentData =
+                  await _loadFragmentData(parentKey, parentConfig);
+              if (loadedParentData != null) {
+                // Now try to get the fragment again
+                fragmentData = await rawGet(fragmentKey);
+                debugPrint(
+                    '🔗 [AdvancedFragment] After loading parent, fragment $fragmentKey = $fragmentData');
+              }
+            } else {
+              debugPrint(
+                  '🔗 [AdvancedFragment] Parent $parentKey exists but fragment $fragmentKey is missing');
+            }
+          }
+        }
+
         resolvedData[entry.key] = fragmentData ?? {};
       } else {
         // Regular value, keep as is
@@ -369,9 +649,9 @@ class AdvancedFragment extends PVCacheEnvConfig {
     await rawSet(key, data);
   }
 
-  /// Clear all fragments for a given key
+  /// Clear all fragments for a given key using glob patterns
   Future<void> clearFragment(String key) async {
-    final config = _configMap[key];
+    final config = _findMatchingConfig(key);
     if (config?.fragments != null) {
       // Clear main key using rawDelete
       await rawDelete(key);
@@ -392,14 +672,14 @@ class AdvancedFragment extends PVCacheEnvConfig {
     return List.unmodifiable(fragmentConfigs);
   }
 
-  /// Check if a key has fragment configuration
+  /// Check if a key has fragment configuration using glob patterns
   bool hasFragmentConfig(String key) {
-    return _configMap.containsKey(key);
+    return _findMatchingConfig(key) != null;
   }
 
-  /// Get fragment configuration for a key
+  /// Get fragment configuration for a key using glob patterns
   FragmentConfig? getFragmentConfig(String key) {
-    return _configMap[key];
+    return _findMatchingConfig(key);
   }
 
   /// Get all used fragment keys (for debugging)

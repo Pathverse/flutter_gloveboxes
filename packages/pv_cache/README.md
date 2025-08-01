@@ -5,12 +5,11 @@ A modern Flutter caching package with a multi-environment architecture and speci
 ## Features
 
 - 🌍 **Multi-Environment Architecture**: Isolated environments with `{env}:{key}` format
-- ⏰ **Time-Based Expiry**: Automatic cleanup of expired entries  
-- 🗂️ **LRU/LFU Eviction**: Smart memory management with access tracking
-- 🔒 **Encrypted Storage**: Secure data with automatic encryption/decryption
-- 🧩 **Fragment Caching**: Break large objects into independently cacheable pieces
+- 🔧 **Flexible Storage Types**: Choose from 5 specialized storage strategies
 - 🚀 **Performance Optimized**: Lazy loading and efficient cache miss handling
 - 📱 **Cross-Platform**: Web, iOS, Android, and Desktop support
+- 🔒 **Secure Storage**: Built-in encryption support
+- 🧹 **Automatic Cleanup**: Expired and evicted data management
 
 ## Installation
 
@@ -27,29 +26,63 @@ Then run:
 flutter pub get
 ```
 
-## Quick Start
+## Cache System Overview
+
+PV Cache is built around a multi-environment architecture where each environment can use different storage strategies. The core system provides:
+
+### Environment-Based Caching
+- **Isolated Environments**: Each environment operates independently with its own storage configuration
+- **Key Format**: `{env}:{key}` format for environment-specific operations
+- **Flexible Configuration**: Different storage types for different use cases
+
+### Core API
+The cache system provides a simple, unified API regardless of the underlying storage type:
 
 ```dart
 import 'package:pv_cache/pv_cache.dart';
 
-// 1. Set up environments with different storage types
+// Set up environments
 await PVCache.setEnv('default', SimpleExpiry());
 await PVCache.setEnv('memory', SimpleLRU(maxSize: 100));
 
-// 2. Initialize the cache system
+// Initialize the system
 await PVCache.init();
 
-// 3. Use the cache
-await PVCache.set('user_name', 'John Doe');
-await PVCache.set('memory:session', {'token': 'abc123'});
+// Use the cache
+await PVCache.set('user_name', 'John Doe');           // Uses 'default' environment
+await PVCache.set('memory:session', {'token': 'abc'}); // Uses 'memory' environment
 
 final name = await PVCache.get('user_name');
 final session = await PVCache.get('memory:session');
 ```
 
+### Key Format
+- **Simple keys**: `'user_name'` → uses 'default' environment
+- **Environment keys**: `'production:api_data'` → uses 'production' environment
+- **Reserved prefixes**: Keys starting/ending with `__` are reserved for internal use
+
+### Core Methods
+
+```dart
+// Environment setup
+static Future<void> setEnv(String env, PVCacheEnvConfig config)
+
+// Initialization  
+static Future<void> init()
+
+// Data operations
+static Future<void> set(String key, dynamic value, {Map<String, dynamic>? metadata})
+static Future<dynamic> get(String key, {bool expiredReturnsNull = true})
+static Future<void> delete(String key)
+static Future<dynamic> pop(String key) // Get and delete in one operation
+
+// Cleanup
+static Future<void> clear({String? env}) // Clear environment or all data
+```
+
 ## Storage Types
 
-PV Cache provides 5 specialized storage types, each optimized for different use cases:
+PV Cache provides 5 specialized storage types, each optimized for different use cases. You can mix and match storage types across environments:
 
 ### 1. SimpleExpiry - Time-Based Cache
 
@@ -153,8 +186,13 @@ final credentials = await PVCache.get('secure:user_credentials');
 
 **Best for**: Large objects, API responses with related data, game worlds
 
+The `AdvancedFragment` storage type provides sophisticated fragment caching with two powerful features:
+
+#### Regular Fragments
+Traditional path-based fragmentation for breaking large objects into smaller pieces:
+
 ```dart
-// Define how data should be fragmented
+// Define fragment configurations
 final fragmentConfigs = [
   FragmentConfig(
     name: "game_world",
@@ -185,12 +223,41 @@ final region1 = await PVCache.get('game:region_1'); // Actual region data
 final region2 = await PVCache.get('game:region_2'); // Actual region data
 ```
 
-**Features:**
-- Breaks large objects into independently cacheable pieces
-- Callback-based loading only on cache miss
-- Each fragment can be accessed directly
-- Reduces memory usage for large data structures
-- Perfect for hierarchical data (game worlds, user profiles, etc.)
+#### Smart Fragments
+Dynamic key generation using data field interpolation and glob pattern matching:
+
+```dart
+// Define fragment configurations with smart fragments
+final fragmentConfigs = [
+  FragmentConfig(
+    name: "game_world",
+    path: "/",
+    callback: fetchGameWorld,
+    fragments: ["game_world/region_1", "game_world/region_2"],
+    smartFragments: [
+      SmartFragment("players/*", "player_{id}_{name}"),
+      SmartFragment("items/*", "item_{type}_{rarity}"),
+    ],
+  ),
+];
+
+// Smart fragments generate semantic keys based on data content
+// For data: {"players": {"player1": {"id": 123, "name": "john"}}}
+// SmartFragment("players/*", "player_{id}_{name}") generates: "player_123_john"
+
+// Access smart fragments with semantic keys
+final player = await PVCache.get('game:player_123_john'); // Based on player data
+final item = await PVCache.get('game:item_sword_legendary'); // Based on item data
+```
+
+**AdvancedFragment Features:**
+- **Regular Fragments**: Path-based fragmentation with callback loading
+- **Smart Fragments**: Dynamic key generation using field interpolation
+- **Glob Pattern Matching**: Flexible path matching for data discovery
+- **Callback-based Loading**: Fresh data fetched only on cache miss
+- **Independent Access**: Each fragment can be accessed directly
+- **Memory Efficient**: Large objects broken into manageable pieces
+- **Semantic Keys**: Smart fragments create meaningful cache keys based on data content
 
 ## Complete Examples
 
@@ -283,32 +350,50 @@ Future<void> setupFragmentCache() async {
 }
 ```
 
-## API Reference
-
-### Core Methods
+### Smart Fragment Example
 
 ```dart
-// Environment setup
-static Future<void> setEnv(String env, PVCacheEnvConfig config)
+// Callback function for smart fragment data
+Future<Map<String, dynamic>> fetchGameData() async {
+  return {
+    'players': {
+      'player1': {'id': 101, 'name': 'alice', 'level': 25},
+      'player2': {'id': 102, 'name': 'bob', 'level': 30},
+    },
+    'items': {
+      'item1': {'type': 'sword', 'rarity': 'legendary', 'damage': 100},
+      'item2': {'type': 'shield', 'rarity': 'rare', 'defense': 50},
+    },
+  };
+}
 
-// Initialization  
-static Future<void> init()
-
-// Data operations
-static Future<void> set(String key, dynamic value, {Map<String, dynamic>? metadata})
-static Future<dynamic> get(String key, {bool expiredReturnsNull = true})
-static Future<void> delete(String key)
-static Future<dynamic> pop(String key) // Get and delete in one operation
-
-// Cleanup
-static Future<void> clear({String? env}) // Clear environment or all data
+// Set up smart fragment caching
+Future<void> setupSmartFragmentCache() async {
+  final configs = [
+    FragmentConfig(
+      name: "game_data",
+      path: "/",
+      callback: fetchGameData,
+      smartFragments: [
+        SmartFragment("players/*", "player_{id}_{name}"),
+        SmartFragment("items/*", "item_{type}_{rarity}"),
+      ],
+    ),
+  ];
+  
+  await PVCache.setEnv('game', AdvancedFragment(fragmentConfigs: configs));
+  await PVCache.init();
+  
+  // Access main data (triggers callback and creates smart fragments)
+  final gameData = await PVCache.get('game:game_data');
+  
+  // Access smart fragments with semantic keys
+  final player = await PVCache.get('game:player_101_alice'); // Contains player1 data
+  final item = await PVCache.get('game:item_sword_legendary'); // Contains item1 data
+}
 ```
 
-### Key Format
-
-- **Simple keys**: `'user_name'` → uses 'default' environment
-- **Environment keys**: `'production:api_data'` → uses 'production' environment
-- **Reserved prefixes**: Keys starting/ending with `__` are reserved for internal use
+## API Reference
 
 ### Storage Type Constructors
 
@@ -332,6 +417,22 @@ AdvancedFragment({
   bool defaultSet = true, 
   bool defaultDelete = true,
 })
+```
+
+### Fragment Configuration
+
+```dart
+// Regular fragment configuration
+FragmentConfig({
+  required String name,
+  required String path,
+  required Future<Map<String, dynamic>> Function() callback,
+  List<String>? fragments,
+  List<SmartFragment>? smartFragments,
+})
+
+// Smart fragment configuration
+SmartFragment(String pathPattern, String nameResolve)
 ```
 
 ## Testing
@@ -360,6 +461,7 @@ Demonstrates:
 - Fragment configuration and setup
 - Callback-based data loading
 - Individual fragment access
+- Smart fragment testing with dynamic key generation
 - Cache miss optimization
 
 ## Architecture
@@ -384,6 +486,7 @@ PV Cache uses a multi-layer architecture:
 - **Performance Optimized**: Cache miss handling only when needed
 - **Extensible**: Easy to add new storage types
 - **Cross-Platform**: Works on web, mobile, and desktop
+- **Specialized Storage**: Each storage type optimized for specific use cases
 
 ## Dependencies
 

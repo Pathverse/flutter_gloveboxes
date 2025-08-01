@@ -6,6 +6,8 @@
 - **SHA1 Hash System**: 8-character hashes for meta box names instead of UUIDs
 - **Special Key Protection**: Reserved `__key__` format for internal tracking
 - **Persistent Tracking**: LRU/LFU access patterns survive browser restarts
+- **Smart Fragment System**: Dynamic key generation with field interpolation and glob pattern matching
+- **Modular Function Architecture**: Single-responsibility functions for maintainable code
 
 ## Core Patterns
 
@@ -27,6 +29,18 @@ Key Validation → Check for __pattern__ → Block if special → Allow if norma
 ### Persistent Tracking
 ```
 Operation → Update in-memory maps → Save to special metadata keys → Persist across restarts
+```
+
+### Smart Fragment Processing
+```
+Data Load → Glob Pattern Match → Field Interpolation → Dynamic Key Generation → Fragment Storage
+```
+
+### Modular Fragment Architecture
+```
+_loadFragmentData() → _fetchDataFromCallback() → _hasFragments() → _processFragments()
+                                                                    ↓
+_processRegularFragments() ← _processSmartFragments() ← _getDataAtPath()
 ```
 
 ## Type Safety Strategy
@@ -55,6 +69,54 @@ Operation → Update in-memory maps → Save to special metadata keys → Persis
 - Eviction based on lowest access count (time as tie-breaker)
 - Special keys: `__access_times__`, `__access_counts__`
 
+### AdvancedFragment
+- **Regular Fragments**: Path-based fragmentation with callback loading
+- **Smart Fragments**: Dynamic key generation with field interpolation
+- **Glob Pattern Matching**: Flexible path matching for both fragment types
+- **Modular Processing**: Separate functions for regular and smart fragment handling
+- **Fragment References**: `@fragment:key` format for lightweight references
+
+## Smart Fragment Patterns
+
+### Field Interpolation
+```
+Template: "user_{id}_{name}"
+Data: {"id": 123, "name": "john"}
+Result: "user_123_john"
+```
+
+### Glob Pattern Matching
+```
+Pattern: "x/x*"
+Data: {"x": {"x1": {...}, "x2": {...}}}
+Matches: ["x/x1", "x/x2"]
+```
+
+### Dynamic Key Generation
+```
+SmartFragment("users/*", "user_{id}_{name}")
+Data: {"users": {"user1": {"id": 101, "name": "alice"}}}
+Generated Key: "user_101_alice"
+```
+
+## Modular Function Patterns
+
+### Single Responsibility
+- Each function has one clear purpose
+- Functions are focused and testable
+- Clear separation of concerns
+- Easy to extend and maintain
+
+### Orchestration Pattern
+- High-level functions orchestrate lower-level operations
+- `_processFragments()` coordinates regular and smart fragment processing
+- `_storeFragmentData()` coordinates storage of different fragment types
+
+### Error Handling
+- Each function handles its own errors appropriately
+- Callback failures are isolated and don't affect other operations
+- Graceful degradation when fragments fail to process
+
 ## Guarantees
 - No LinkedMap leakage
 - Nested structure safety
@@ -63,3 +125,6 @@ Operation → Update in-memory maps → Save to special metadata keys → Persis
 - Persistent behavior across browser restarts
 - Protection against internal key conflicts
 - Efficient meta box naming with SHA1 hashes
+- Semantic cache keys through smart fragments
+- Modular design for maintainable code
+- Single-responsibility functions for better testing
