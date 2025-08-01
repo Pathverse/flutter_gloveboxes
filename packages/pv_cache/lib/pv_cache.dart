@@ -2,6 +2,7 @@ library pv_cache;
 
 export 'src/core/core.dart';
 export 'src/core/config.dart';
+export 'src/core/toplv.dart' show PVCacheCentral;
 export 'src/presets/storage/simple_expiry.dart';
 export 'src/presets/storage/simple_lru.dart';
 export 'src/presets/storage/simple_lfu.dart';
