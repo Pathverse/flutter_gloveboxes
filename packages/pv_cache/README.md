@@ -1,17 +1,15 @@
 # PV Cache
 
-A sophisticated Flutter caching package that provides an abstract layer for secure, flexible, and feature-rich data caching with support for encryption, expiry, sensitive data handling, and LRU/LFU eviction strategies.
+A modern Flutter caching package with a multi-environment architecture and specialized storage types for different caching needs. Built on Hive with support for web, mobile, and desktop platforms.
 
 ## Features
 
-- 🔒 **Encrypted Storage**: Secure sensitive data with automatic encryption
-- ⏰ **Expiry Management**: Set lifetimes for cache entries with automatic cleanup
-- 🔑 **Sensitive Data Protection**: Protect specific JSON fields with dependency-based encryption
-- 🗂️ **LRU/LFU Eviction**: Intelligent cache size management with configurable strategies
-- 📦 **JSON Support**: Seamless storage and retrieval of complex data structures
-- 🎯 **Type Safety**: Generic methods with type safety for better development experience
-- 🏷️ **Grouping**: Organize cache entries into logical groups
-- 📱 **Cross-Platform**: Works on iOS, Android, and Web
+- 🌍 **Multi-Environment Architecture**: Isolated environments with `{env}:{key}` format
+- 🔧 **Flexible Storage Types**: Choose from 5 specialized storage strategies
+- 🚀 **Performance Optimized**: Lazy loading and efficient cache miss handling
+- 📱 **Cross-Platform**: Web, iOS, Android, and Desktop support
+- 🔒 **Secure Storage**: Built-in encryption support
+- 🧹 **Automatic Cleanup**: Expired and evicted data management
 
 ## Installation
 
@@ -28,303 +26,467 @@ Then run:
 flutter pub get
 ```
 
-## Quick Start
+## Cache System Overview
 
-### Basic Usage
+PV Cache is built around a multi-environment architecture where each environment can use different storage strategies. The core system provides:
+
+### Environment-Based Caching
+- **Isolated Environments**: Each environment operates independently with its own storage configuration
+- **Key Format**: `{env}:{key}` format for environment-specific operations
+- **Flexible Configuration**: Different storage types for different use cases
+
+### Core API
+The cache system provides a simple, unified API regardless of the underlying storage type:
 
 ```dart
-import 'package:pv_cache/lib.dart';
+import 'package:pv_cache/pv_cache.dart';
 
-// Initialize cache
-final cache = await PVCache.getInstance();
+// Set up environments
+await PVCache.setEnv('default', SimpleExpiry());
+await PVCache.setEnv('memory', SimpleLRU(maxSize: 100));
 
-// Store simple values
-await cache.putWithOptions('user_name', 'John Doe');
-final name = await cache.getWithOptions<String>('user_name');
+// Initialize the system
+await PVCache.init();
 
-// Store JSON objects
-final userData = {
-  'name': 'John Doe',
-  'age': 30,
-  'email': 'john@example.com'
-};
-await cache.putWithOptions('user_profile', userData);
-final profile = await cache.getWithOptions<Map<String, dynamic>>('user_profile');
+// Use the cache
+await PVCache.set('user_name', 'John Doe');           // Uses 'default' environment
+await PVCache.set('memory:session', {'token': 'abc'}); // Uses 'memory' environment
+
+final name = await PVCache.get('user_name');
+final session = await PVCache.get('memory:session');
 ```
 
-### Advanced Features
+### Key Format
+- **Simple keys**: `'user_name'` → uses 'default' environment
+- **Environment keys**: `'production:api_data'` → uses 'production' environment
+- **Reserved prefixes**: Keys starting/ending with `__` are reserved for internal use
 
-#### Encrypted Storage
+### Core Methods
 
 ```dart
-// Store encrypted data
-await cache.putWithOptions(
-  'secret_token',
-  'super_secret_api_key',
-  options: const CacheOptions(encrypted: true),
-);
+// Environment setup
+static Future<void> setEnv(String env, PVCacheEnvConfig config)
 
-// Retrieve encrypted data
-final token = await cache.getWithOptions<String>(
-  'secret_token',
-  options: const CacheOptions(encrypted: true),
-);
+// Initialization  
+static Future<void> init()
+
+// Data operations
+static Future<void> set(String key, dynamic value, {Map<String, dynamic>? metadata})
+static Future<dynamic> get(String key, {bool expiredReturnsNull = true})
+static Future<void> delete(String key)
+static Future<dynamic> pop(String key) // Get and delete in one operation
+
+// Cleanup
+static Future<void> clear({String? env}) // Clear environment or all data
 ```
 
-#### Expiring Cache Entries
+## Storage Types
+
+PV Cache provides 5 specialized storage types, each optimized for different use cases. You can mix and match storage types across environments:
+
+### 1. SimpleExpiry - Time-Based Cache
+
+**Best for**: Session data, API responses, temporary data
 
 ```dart
-// Store data that expires in 60 seconds
-await cache.putWithOptions(
-  'session_data',
-  sessionInfo,
-  options: const CacheOptions(lifetime: 60),
+// Set up expiry-based caching
+await PVCache.setEnv('sessions', SimpleExpiry());
+
+// Store data with expiry time
+await PVCache.set(
+  'sessions:user_token',
+  'abc123',
+  metadata: {'expiry': DateTime.now().add(Duration(hours: 1)).toIso8601String()},
 );
+
+// Data automatically expires and gets cleaned up
+final token = await PVCache.get('sessions:user_token'); // null after 1 hour
 ```
 
-#### Sensitive JSON Fields
+**Features:**
+- Automatic expiry checking on every access
+- Physical cleanup of expired entries
+- ISO8601 timestamp format in metadata
+- No size limits
+
+### 2. SimpleLRU - Least Recently Used
+
+**Best for**: Fixed-size caches, frequently accessed data
 
 ```dart
-// Store JSON with encrypted sensitive fields
-final userCredentials = {
+// Set up LRU cache with size limit
+await PVCache.setEnv('memory', SimpleLRU(maxSize: 50));
+
+// Store data - oldest accessed items get evicted when full
+await PVCache.set('memory:user_1', userData1);
+await PVCache.set('memory:user_2', userData2);
+// ... 50 items ...
+await PVCache.set('memory:user_51', userData51); // user_1 gets evicted
+
+// Access updates the "recently used" status
+final user2 = await PVCache.get('memory:user_2'); // Moves user_2 to front
+```
+
+**Features:**
+- Fixed maximum size with automatic eviction
+- Access time tracking persists across app restarts
+- Most recently accessed items stay in cache
+- Perfect for user profiles, API responses
+
+### 3. SimpleLFU - Least Frequently Used
+
+**Best for**: Popular content caching, analytics data
+
+```dart
+// Set up LFU cache with size limit
+await PVCache.setEnv('popular', SimpleLFU(maxSize: 30));
+
+// Store data - least frequently accessed items get evicted
+await PVCache.set('popular:article_1', articleData);
+await PVCache.get('popular:article_1'); // access count: 1
+await PVCache.get('popular:article_1'); // access count: 2
+await PVCache.get('popular:article_1'); // access count: 3
+
+// Frequently accessed items stay in cache longer
+```
+
+**Features:**
+- Tracks access frequency, not just recency
+- Keeps popular content in cache
+- Frequency counts persist across app restarts
+- Ideal for content recommendation systems
+
+### 4. Encrypted - Secure Storage
+
+**Best for**: API keys, tokens, sensitive user data
+
+```dart
+// Set up encrypted storage
+await PVCache.setEnv('secure', Encrypted());
+
+// Data is automatically encrypted before storage
+await PVCache.set('secure:api_key', 'sk_live_1234567890');
+await PVCache.set('secure:user_credentials', {
   'username': 'john_doe',
-  'email': 'john@example.com',
-  'password': 'secret123',
-  'apiKey': 'sk_live_123456789'
-};
+  'password': 'secure_password',
+});
 
-// First, create a master key for encryption
-await cache.putWithOptions(
-  'master_key',
-  'encryption_key_value',
-  options: const CacheOptions(encrypted: true),
-);
-
-// Store with sensitive field protection
-await cache.putWithOptions(
-  'user_credentials',
-  userCredentials,
-  options: const CacheOptions(
-    sensitive: ['password', 'apiKey'],
-    depends: 'master_key',
-  ),
-);
-
-// Retrieve with same options
-final credentials = await cache.getWithOptions<Map<String, dynamic>>(
-  'user_credentials',
-  options: const CacheOptions(
-    sensitive: ['password', 'apiKey'],
-    depends: 'master_key',
-  ),
-);
+// Data is automatically decrypted on retrieval
+final apiKey = await PVCache.get('secure:api_key');
+final credentials = await PVCache.get('secure:user_credentials');
 ```
 
-#### LRU/LFU Cache Management
+**Features:**
+- Automatic encryption/decryption using Flutter Secure Storage
+- Supports expiry with encrypted metadata
+- Works with any JSON-serializable data
+- Cross-platform secure storage
+
+### 5. AdvancedFragment - Hierarchical Caching
+
+**Best for**: Large objects, API responses with related data, game worlds
+
+The `AdvancedFragment` storage type provides sophisticated fragment caching with two powerful features:
+
+#### Regular Fragments
+Traditional path-based fragmentation for breaking large objects into smaller pieces:
 
 ```dart
-// Enable LRU (Least Recently Used) eviction
-await cache.putWithOptions(
-  'cached_item',
-  'frequently_accessed_data',
-  options: const CacheOptions(lru: true),
-);
+// Define fragment configurations
+final fragmentConfigs = [
+  FragmentConfig(
+    name: "game_world",
+    path: "/",
+    callback: fetchGameWorld,
+    fragments: ["game_world/region_1", "game_world/region_2"],
+  ),
+  FragmentConfig(
+    name: "region_1", 
+    path: "game_world/region_1", 
+    callback: fetchRegion1
+  ),
+  FragmentConfig(
+    name: "region_2", 
+    path: "game_world/region_2", 
+    callback: fetchRegion2
+  ),
+];
 
-// Enable LFU (Least Frequently Used) with size limit
-await cache.putWithOptions(
-  'cached_item',
-  'size_managed_data',
-  options: const CacheOptions(lru: true, lruInCount: 100),
-);
+await PVCache.setEnv('game', AdvancedFragment(fragmentConfigs: fragmentConfigs));
+
+// Accessing main data triggers callback and creates fragments
+final world = await PVCache.get('game:game_world'); 
+// Returns: {'region_1': '@fragment:region_1', 'region_2': '@fragment:region_2'}
+
+// Access individual fragments directly (no callback needed)
+final region1 = await PVCache.get('game:region_1'); // Actual region data
+final region2 = await PVCache.get('game:region_2'); // Actual region data
+```
+
+#### Smart Fragments
+Dynamic key generation using data field interpolation and glob pattern matching:
+
+```dart
+// Define fragment configurations with smart fragments
+final fragmentConfigs = [
+  FragmentConfig(
+    name: "game_world",
+    path: "/",
+    callback: fetchGameWorld,
+    fragments: ["game_world/region_1", "game_world/region_2"],
+    smartFragments: [
+      SmartFragment("players/*", "player_{id}_{name}"),
+      SmartFragment("items/*", "item_{type}_{rarity}"),
+    ],
+  ),
+];
+
+// Smart fragments generate semantic keys based on data content
+// For data: {"players": {"player1": {"id": 123, "name": "john"}}}
+// SmartFragment("players/*", "player_{id}_{name}") generates: "player_123_john"
+
+// Access smart fragments with semantic keys
+final player = await PVCache.get('game:player_123_john'); // Based on player data
+final item = await PVCache.get('game:item_sword_legendary'); // Based on item data
+```
+
+**AdvancedFragment Features:**
+- **Regular Fragments**: Path-based fragmentation with callback loading
+- **Smart Fragments**: Dynamic key generation using field interpolation
+- **Glob Pattern Matching**: Flexible path matching for data discovery
+- **Callback-based Loading**: Fresh data fetched only on cache miss
+- **Independent Access**: Each fragment can be accessed directly
+- **Memory Efficient**: Large objects broken into manageable pieces
+- **Semantic Keys**: Smart fragments create meaningful cache keys based on data content
+
+## Complete Examples
+
+### Multi-Environment Setup
+
+```dart
+import 'package:pv_cache/pv_cache.dart';
+
+Future<void> setupCache() async {
+  // Different storage types for different needs
+  await PVCache.setEnv('default', SimpleExpiry());           // General cache with expiry
+  await PVCache.setEnv('memory', SimpleLRU(maxSize: 100));   // Fixed-size memory cache  
+  await PVCache.setEnv('popular', SimpleLFU(maxSize: 50));   // Popular content cache
+  await PVCache.setEnv('secure', Encrypted());              // Sensitive data
+  
+  await PVCache.init();
+}
+
+Future<void> useCache() async {
+  // Store user session (expires automatically)
+  await PVCache.set(
+    'default:user_session',
+    {'userId': 123, 'token': 'abc'},
+    metadata: {'expiry': DateTime.now().add(Duration(hours: 2)).toIso8601String()},
+  );
+  
+  // Cache frequently accessed user data (LRU eviction)
+  await PVCache.set('memory:user_123', {'name': 'John', 'email': 'john@example.com'});
+  
+  // Cache popular articles (LFU eviction)  
+  await PVCache.set('popular:article_1', {'title': 'Popular Article', 'views': 1000});
+  
+  // Store API keys securely (encrypted)
+  await PVCache.set('secure:api_key', 'sk_live_1234567890');
+}
+```
+
+### Fragment Caching Example
+
+```dart
+// Callback functions for data loading
+Future<Map<String, dynamic>> fetchUserProfile() async {
+  // Simulated API call
+  return {
+    'profile': {'name': 'John Doe', 'email': 'john@example.com'},
+    'preferences': {'theme': 'dark', 'notifications': true},
+    'history': {'lastLogin': '2024-01-01', 'loginCount': 42},
+  };
+}
+
+Future<Map<String, dynamic>> fetchUserPreferences() async {
+  return {'theme': 'dark', 'notifications': true, 'language': 'en'};
+}
+
+Future<Map<String, dynamic>> fetchUserHistory() async {
+  return {'lastLogin': '2024-01-01', 'loginCount': 42, 'purchases': []};
+}
+
+// Set up fragment caching
+Future<void> setupFragmentCache() async {
+  final configs = [
+    FragmentConfig(
+      name: "user_data",
+      path: "/",
+      callback: fetchUserProfile,
+      fragments: ["user_data/preferences", "user_data/history"],
+    ),
+    FragmentConfig(
+      name: "preferences",
+      path: "user_data/preferences", 
+      callback: fetchUserPreferences
+    ),
+    FragmentConfig(
+      name: "history",
+      path: "user_data/history",
+      callback: fetchUserHistory
+    ),
+  ];
+  
+  await PVCache.setEnv('fragments', AdvancedFragment(fragmentConfigs: configs));
+  await PVCache.init();
+  
+  // Access triggers callback and creates fragments
+  final userData = await PVCache.get('fragments:user_data');
+  // userData = {'preferences': '@fragment:preferences', 'history': '@fragment:history'}
+  
+  // Access fragments directly (no callback, uses cached data)
+  final preferences = await PVCache.get('fragments:preferences');
+  final history = await PVCache.get('fragments:history');
+}
+```
+
+### Smart Fragment Example
+
+```dart
+// Callback function for smart fragment data
+Future<Map<String, dynamic>> fetchGameData() async {
+  return {
+    'players': {
+      'player1': {'id': 101, 'name': 'alice', 'level': 25},
+      'player2': {'id': 102, 'name': 'bob', 'level': 30},
+    },
+    'items': {
+      'item1': {'type': 'sword', 'rarity': 'legendary', 'damage': 100},
+      'item2': {'type': 'shield', 'rarity': 'rare', 'defense': 50},
+    },
+  };
+}
+
+// Set up smart fragment caching
+Future<void> setupSmartFragmentCache() async {
+  final configs = [
+    FragmentConfig(
+      name: "game_data",
+      path: "/",
+      callback: fetchGameData,
+      smartFragments: [
+        SmartFragment("players/*", "player_{id}_{name}"),
+        SmartFragment("items/*", "item_{type}_{rarity}"),
+      ],
+    ),
+  ];
+  
+  await PVCache.setEnv('game', AdvancedFragment(fragmentConfigs: configs));
+  await PVCache.init();
+  
+  // Access main data (triggers callback and creates smart fragments)
+  final gameData = await PVCache.get('game:game_data');
+  
+  // Access smart fragments with semantic keys
+  final player = await PVCache.get('game:player_101_alice'); // Contains player1 data
+  final item = await PVCache.get('game:item_sword_legendary'); // Contains item1 data
+}
 ```
 
 ## API Reference
 
-### PVCache Class
-
-#### Core Methods
-
-- `getInstance({bool debug = false})` - Get singleton cache instance
-- `putWithOptions(String key, dynamic value, {CacheOptions? options})` - Store data with options
-- `getWithOptions<T>(String key, {CacheOptions? options})` - Retrieve typed data
-- `deleteWithOptions(String key, {CacheOptions? options})` - Delete entry
-- `containsKeyWithOptions(String key, {CacheOptions? options})` - Check existence
-- `getAllKeys()` - Get all cache keys
-- `clear()` - Clear all cache data
-
-#### Legacy JSON Methods
-
-- `putJson(String key, dynamic value)` - Store JSON data
-- `getJson<T>(String key, {T? defaultValue})` - Retrieve typed JSON
-- `getJsonMap(String key)` - Get JSON as Map
-- `getJsonList(String key)` - Get JSON as List
-
-### CacheOptions Class
-
-Configure cache behavior with these options:
+### Storage Type Constructors
 
 ```dart
-const CacheOptions({
-  String? group,           // Group for organizing entries
-  List<String>? sensitive, // Sensitive field patterns
-  String? depends,         // Dependency key for sensitive data or cache invalidation
-  int? lifetime,           // Expiry time in seconds
-  bool? lru,              // Enable LRU/LFU eviction
-  int? lruInCount,        // Size limit for LFU strategy
-  bool encrypted = false, // Enable encryption
-});
+// Time-based expiry
+SimpleExpiry()
+
+// Size-limited with LRU eviction
+SimpleLRU(maxSize: int)
+
+// Size-limited with LFU eviction  
+SimpleLFU(maxSize: int)
+
+// Encrypted storage
+Encrypted()
+
+// Fragment-based caching
+AdvancedFragment({
+  required List<FragmentConfig> fragmentConfigs,
+  bool defaultGet = true,
+  bool defaultSet = true, 
+  bool defaultDelete = true,
+})
 ```
 
-#### Dependency Logic (NEW)
-- `depends: 'ENCRYPTED:x'` — depends on secure storage key `x`
-- `depends: 'X:Y'` — depends on key `Y` in group `X` (Hive)
-- `depends: 'X:*'` — depends on group `X` being non-empty (Hive)
-- Enforced in `putWithOptions` (throws if not satisfied) and `getWithOptions` (returns null if not satisfied)
-
-#### Option Rules
-
-1. **Sensitive Data**: If `sensitive` is specified, `depends` must also be provided
-2. **Encryption**: `encrypted` cannot be used with `sensitive` or `depends`
-3. **Eviction**: `lru` and `lifetime` are mutually exclusive
-4. **LFU Strategy**: `lruInCount` only applies when `lru` is true
-
-#### Dependency Example
+### Fragment Configuration
 
 ```dart
-// Store a master key in secure storage
-await cache.putWithOptions(
-  'master_key',
-  'encryption_key_value',
-  options: const CacheOptions(encrypted: true),
-);
+// Regular fragment configuration
+FragmentConfig({
+  required String name,
+  required String path,
+  required Future<Map<String, dynamic>> Function() callback,
+  List<String>? fragments,
+  List<SmartFragment>? smartFragments,
+})
 
-// Store data that depends on the master key
-await cache.putWithOptions(
-  'dependent_data',
-  {'secret': 'hidden'},
-  options: const CacheOptions(depends: 'ENCRYPTED:master_key'),
-);
-
-// Store data that depends on another group/key
-await cache.putWithOptions(
-  'grouped_data',
-  {'info': 'grouped'},
-  options: const CacheOptions(depends: 'user_sessions:session_123'),
-);
-
-// Store data that depends on a group being non-empty
-await cache.putWithOptions(
-  'group_check',
-  {'info': 'must have users'},
-  options: const CacheOptions(depends: 'user_sessions:*'),
-);
-```
-
-## Examples
-
-### User Session Management
-
-```dart
-class SessionManager {
-  final PVCache cache;
-  
-  SessionManager(this.cache);
-  
-  Future<void> storeSession(Map<String, dynamic> session) async {
-    // Session expires in 30 minutes
-    await cache.putWithOptions(
-      'user_session',
-      session,
-      options: const CacheOptions(lifetime: 1800),
-    );
-  }
-  
-  Future<Map<String, dynamic>?> getSession() async {
-    return await cache.getWithOptions<Map<String, dynamic>>('user_session');
-  }
-}
-```
-
-### API Token Cache
-
-```dart
-class TokenCache {
-  final PVCache cache;
-  
-  TokenCache(this.cache);
-  
-  Future<void> storeTokens(String accessToken, String refreshToken) async {
-    // Store encrypted tokens
-    await cache.putWithOptions(
-      'access_token',
-      accessToken,
-      options: const CacheOptions(encrypted: true, lifetime: 3600),
-    );
-    
-    await cache.putWithOptions(
-      'refresh_token',
-      refreshToken,
-      options: const CacheOptions(encrypted: true, lifetime: 86400),
-    );
-  }
-}
-```
-
-### Cached API Responses
-
-```dart
-class ApiCache {
-  final PVCache cache;
-  
-  ApiCache(this.cache);
-  
-  Future<void> cacheResponse(String endpoint, Map<String, dynamic> data) async {
-    // Cache with LRU eviction, max 50 entries
-    await cache.putWithOptions(
-      'api_$endpoint',
-      data,
-      options: const CacheOptions(
-        lru: true,
-        lruInCount: 50,
-        group: 'api_responses',
-      ),
-    );
-  }
-}
+// Smart fragment configuration
+SmartFragment(String pathPattern, String nameResolve)
 ```
 
 ## Testing
 
-The package includes comprehensive tests covering:
+The package includes comprehensive testing applications:
 
-- Basic CRUD operations
-- JSON data handling
-- Encryption functionality
-- Expiry mechanisms
-- LRU/LFU eviction
-- Sensitive data protection
-- Error handling
-
-Run tests with:
-
+### Main Test App
 ```bash
-flutter test
+cd pv_cache_test
+flutter run -d chrome
 ```
 
-## Visual Testing
+Features:
+- Multi-environment testing
+- All storage type demonstrations  
+- Automated batch testing
+- Real-time cache visualization
 
-An example app is included that demonstrates all cache features with a visual interface. Run it with:
-
+### Advanced Fragment Example
 ```bash
-cd example
-flutter run
+cd pv_cache_test
+flutter run -d chrome --target=lib/main_advanced_fragment.dart
 ```
 
-The example app provides:
-- Interactive cache operations
-- Preset configurations for different use cases
-- Real-time cache state visualization
-- Comprehensive behavior testing
+Demonstrates:
+- Fragment configuration and setup
+- Callback-based data loading
+- Individual fragment access
+- Smart fragment testing with dynamic key generation
+- Cache miss optimization
+
+## Architecture
+
+PV Cache uses a multi-layer architecture:
+
+```
+┌─────────────────┐
+│   PVCache API   │  Static methods, key parsing
+├─────────────────┤
+│ PVCacheCentral  │  Environment management, Hive boxes
+├─────────────────┤
+│ Storage Types   │  SimpleExpiry, SimpleLRU, SimpleLFU, 
+│                 │  Encrypted, AdvancedFragment
+├─────────────────┤
+│ Hive + Secure   │  Data persistence, encryption
+└─────────────────┘
+```
+
+### Key Benefits
+- **Environment Isolation**: Each environment operates independently
+- **Performance Optimized**: Cache miss handling only when needed
+- **Extensible**: Easy to add new storage types
+- **Cross-Platform**: Works on web, mobile, and desktop
+- **Specialized Storage**: Each storage type optimized for specific use cases
 
 ## Dependencies
 
