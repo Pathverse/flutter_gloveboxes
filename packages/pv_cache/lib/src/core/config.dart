@@ -1,16 +1,9 @@
 import 'package:pv_cache/src/core/toplv.dart';
 import 'package:pv_cache/utils/json.dart';
 
-class PVCacheStorageType {
-  final String name;
-
-  PVCacheStorageType({required this.name});
-}
-
 enum PVBoxType { lazy, normal }
 
 abstract class PVCacheEnvConfig {
-  final PVCacheStorageType storageType;
   final PVBoxType boxType;
   final String metaId;
   final bool useMeta;
@@ -24,8 +17,9 @@ abstract class PVCacheEnvConfig {
   // Cache miss handling flag
   final bool handlesCacheMiss;
 
+  
+
   PVCacheEnvConfig({
-    required this.storageType,
     this.boxType = PVBoxType.lazy,
     this.useMeta = true,
     this.useSecureMeta = false,
@@ -35,7 +29,7 @@ abstract class PVCacheEnvConfig {
     this.defaultDelete = true,
     this.handlesCacheMiss = false,
   }) : metaId = metaId ??
-            '${storageType.name}_${DateTime.now().millisecondsSinceEpoch}';
+            'pvcache_${DateTime.now().millisecondsSinceEpoch}';
 
   /// Get the meta hash for this configuration
   String get metaHash => PVCacheCentral.generateMetaHash(metaId);
@@ -109,7 +103,7 @@ abstract class PVCacheEnvConfig {
       return await PVCacheCentral.secureMetaGet(env: metaHash, key: key);
     }
     // Use single meta box with environment-prefixed keys
-    final envKey = '${metaHash}:$key';
+    final envKey = '$metaHash:$key';
     final value = PVCacheCentral.metaBoxes['meta']?.get(envKey);
     if (value == null) return null;
     if (value is String) {
@@ -126,7 +120,7 @@ abstract class PVCacheEnvConfig {
       await PVCacheCentral.secureMetaSet(env: metaHash, key: key, value: value);
     }
     // Use single meta box with environment-prefixed keys
-    final envKey = '${metaHash}:$key';
+    final envKey = '$metaHash:$key';
     await PVCacheCentral.metaBoxes['meta']?.put(envKey, jsonDump(value));
   }
 

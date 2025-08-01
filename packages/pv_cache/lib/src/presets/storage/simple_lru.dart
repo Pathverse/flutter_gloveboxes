@@ -15,7 +15,7 @@ class SimpleLRU extends PVCacheEnvConfig {
     super.defaultSet = true,
     super.defaultDelete = true,
     required this.maxSize,
-  }) : super(storageType: PVCacheStorageType(name: "simple_lru"));
+  }) : super();
 
   /// Initialize tracking maps from persistent storage
   Future<void> _initializeTracking() async {

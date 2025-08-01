@@ -177,7 +177,6 @@ class AdvancedFragment extends PVCacheEnvConfig {
     super.defaultDelete = true,
     required this.fragmentConfigs,
   }) : super(
-          storageType: PVCacheStorageType(name: "advanced_fragment"),
           handlesCacheMiss: true, // Enable cache miss handling for callbacks
         ) {
     // Build config map for quick lookup and validate fragment keys

@@ -56,10 +56,6 @@ class _PVCacheWebTestState extends State<PVCacheWebTest> {
         final config = entry.value;
 
         try {
-          setState(() {
-            _status =
-                'Setting up $env environment with ${config.storageType.name}...';
-          });
 
           // Try to set up the environment, but don't fail if it already exists
           try {
@@ -70,9 +66,6 @@ class _PVCacheWebTestState extends State<PVCacheWebTest> {
               },
             );
             successfulEnvironments.add(env);
-            print(
-              '$env environment set successfully with ${config.storageType.name}',
-            );
           } catch (e) {
             // If environment already exists, consider it successful
             if (e.toString().contains('already exists')) {

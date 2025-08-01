@@ -6,7 +6,6 @@ class Encrypted extends PVCacheEnvConfig {
     super.defaultSet = true,
     super.defaultDelete = true,
   }) : super(
-          storageType: PVCacheStorageType(name: "encrypted"),
           useSecureMeta: true, // Always use secure storage for metadata
         );
 

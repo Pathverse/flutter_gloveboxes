@@ -5,7 +5,7 @@ class SimpleExpiry extends PVCacheEnvConfig {
     super.defaultGet = true,
     super.defaultSet = true,
     super.defaultDelete = true,
-  }) : super(storageType: PVCacheStorageType(name: "simple_expiry"));
+  }) : super();
 
   @override
   Future<bool> isValid(String key) async {
