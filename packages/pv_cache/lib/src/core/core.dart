@@ -179,6 +179,55 @@ class PVCache {
     return value;
   }
 
+  /// Gets a value from cache, or if not cached, executes the callback to get the value and caches it
+  /// Returns the cached value or the newly cached value from the callback
+  static Future<dynamic> ifNotCached(
+    String key,
+    Future<dynamic> Function() callback, {
+    Map<String, dynamic>? metadata,
+  }) async {
+    final (env, actualKey) = _parseKey(key);
+    final config = PVCacheCentral.environments[env];
+    if (config == null) return null;
+
+    // Validate key is not a special internal key
+    config.validateKey(actualKey);
+
+    // Ensure the box is ready
+    await PVCacheCentral.ensureBoxReady(env);
+
+    // Try to get the existing value
+    dynamic existingValue;
+    if (config.boxType == PVBoxType.lazy) {
+      existingValue = await PVCacheCentral.lazyBoxes[env]?.get(actualKey);
+    } else {
+      existingValue = PVCacheCentral.boxes[env]?.get(actualKey);
+    }
+
+    // If value exists and is valid, return it
+    if (existingValue != null) {
+      if (config.defaultGet) {
+        // Apply pre/post processing to existing value
+        final processedValue = await config.preGet(actualKey, existingValue);
+        if (processedValue != null) {
+          await config.postGet(actualKey, processedValue);
+          return processedValue;
+        }
+      } else {
+        // Use custom logic only
+        return await config.preGet(actualKey, existingValue);
+      }
+    }
+
+    // Value doesn't exist or is invalid, execute callback to get new value
+    final newValue = await callback();
+
+    // Cache the new value
+    await set(key, newValue, metadata: metadata);
+
+    return newValue;
+  }
+
   static Future<void> setEnv(String env, PVCacheEnvConfig config) async {
     if (env == 'meta') {
       throw Exception('Environment $env is reserved');
@@ -190,4 +239,16 @@ class PVCache {
     PVCacheCentral.environments[env] = config;
     PVCacheCentral.envToHash[env] = config.metaHash; // Store the hash mapping
   }
+
+    // iter env keys
+    static Future<Iterable<String>> iterEnvKeys(String env) async {
+      final config = PVCacheCentral.environments[env];
+      if (config == null) return [];
+
+      if (config.boxType == PVBoxType.lazy) {
+        return PVCacheCentral.lazyBoxes[env]?.keys.cast<String>() ?? [];
+      } else {
+        return PVCacheCentral.boxes[env]?.keys.cast<String>() ?? [];
+      }
+    }
 }
