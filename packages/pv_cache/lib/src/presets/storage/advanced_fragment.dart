@@ -222,7 +222,7 @@ class AdvancedFragment extends PVCacheEnvConfig {
   @override
   Future<dynamic> preGet(String key, dynamic originalValue) async {
     debugPrint(
-        '🔍 [AdvancedFragment] preGet called: key=$key, originalValue=$originalValue');
+        '🔍 [AdvancedFragment] preGet called: key=$key');
 
     if (defaultGet) {
       // If originalValue is null, check if we have a fragment config
