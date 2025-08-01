@@ -1,10 +1,12 @@
 import 'package:pv_cache/src/core/config.dart';
 
+import '../../core/toplv.dart';
+
 class Encrypted extends PVCacheEnvConfig {
   Encrypted({
-    super.defaultGet = true,
-    super.defaultSet = true,
-    super.defaultDelete = true,
+    super.defaultGet = false, // Use custom logic for secure storage
+    super.defaultSet = false, // Use custom logic for secure storage
+    super.defaultDelete = false, // Use custom logic for secure storage
   }) : super(
           useSecureMeta: true, // Always use secure storage for metadata
         );
@@ -26,33 +28,25 @@ class Encrypted extends PVCacheEnvConfig {
 
   @override
   Future<void> invalidCleanup(String key) async {
-    await rawDelete(key);
+    // Delete from secure storage
+    await PVCacheCentral.secureDelete(env: environmentName, key: key);
+    await deleteMeta(key);
   }
 
   @override
   Future<dynamic> preGet(String key, dynamic originalValue) async {
-    if (defaultGet) {
-      // Check if item is valid (not expired)
-      final isValid = await this.isValid(key);
-      if (!isValid) {
-        await invalidCleanup(key);
-        return null; // Return null to indicate expired/invalid
-      }
-      return originalValue; // Return original value if valid
-    } else {
-      // Custom logic - handle everything ourselves
-      final meta = await getMeta(key);
-      if (meta == null) return null;
+    // Custom logic - get from secure storage
+    final meta = await getMeta(key);
+    if (meta == null) return null;
 
-      final isValid = await this.isValid(key);
-      if (!isValid) {
-        await invalidCleanup(key);
-        return null;
-      }
-
-      // Custom retrieval logic here
-      return originalValue;
+    final isValid = await this.isValid(key);
+    if (!isValid) {
+      await invalidCleanup(key);
+      return null;
     }
+
+    // Get from secure storage instead of regular storage
+    return await PVCacheCentral.secureGet(env: environmentName, key: key);
   }
 
   @override
@@ -61,34 +55,24 @@ class Encrypted extends PVCacheEnvConfig {
     dynamic value,
     Map<String, dynamic>? metadata,
   ) async {
-    if (defaultSet) {
-      // Store metadata if provided (including expiry)
-      if (metadata != null) {
-        await setMeta(key, metadata);
-      }
-      return value; // Return the value to be stored
-    } else {
-      // Custom logic - handle everything ourselves
-      if (metadata != null) {
-        await setMeta(key, metadata);
-      }
-
-      // Custom processing logic here
-      return value;
+    // Store metadata if provided (including expiry)
+    if (metadata != null) {
+      await setMeta(key, metadata);
     }
+
+    // Store value in secure storage
+    await PVCacheCentral.secureSet(
+        env: environmentName, key: key, value: value);
+
+    // Return null to indicate we handled storage ourselves
+    return null;
   }
 
   @override
   Future<void> preDelete(String key) async {
-    if (defaultDelete) {
-      // Clean up metadata when deleting
-      await deleteMeta(key);
-    } else {
-      // Custom logic - handle everything ourselves
-      await deleteMeta(key);
-
-      // Custom deletion logic here
-    }
+    // Delete from both secure storage and metadata
+    await PVCacheCentral.secureDelete(env: environmentName, key: key);
+    await deleteMeta(key);
   }
 
   @override
