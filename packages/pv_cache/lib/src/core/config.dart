@@ -17,7 +17,6 @@ abstract class PVCacheEnvConfig {
   // Cache miss handling flag
   final bool handlesCacheMiss;
 
-  
 
   PVCacheEnvConfig({
     this.boxType = PVBoxType.lazy,
@@ -28,8 +27,7 @@ abstract class PVCacheEnvConfig {
     this.defaultSet = true,
     this.defaultDelete = true,
     this.handlesCacheMiss = false,
-  }) : metaId = metaId ??
-            'pvcache_${DateTime.now().millisecondsSinceEpoch}';
+  }) : metaId = metaId ?? 'pvcache_${DateTime.now().millisecondsSinceEpoch}';
 
   /// Get the meta hash for this configuration
   String get metaHash => PVCacheCentral.generateMetaHash(metaId);

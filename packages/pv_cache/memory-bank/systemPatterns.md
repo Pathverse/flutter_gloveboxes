@@ -8,8 +8,17 @@
 - **Persistent Tracking**: LRU/LFU access patterns survive browser restarts
 - **Smart Fragment System**: Dynamic key generation with field interpolation and glob pattern matching
 - **Modular Function Architecture**: Single-responsibility functions for maintainable code
+- **Adapter System**: Multiple adapters work together via config's overwrite* properties
 
 ## Core Patterns
+
+### Adapter Simplicity Rule
+**CRITICAL**: When creating specialized adapters (LRU, LFU, etc.):
+- **ONLY implement the specific logic needed** (eviction, expiry, etc.)
+- **Use `noSuchMethod()` for unimplemented interface methods** - never throw custom exceptions
+- **Let the config system handle storage** via overwrite* properties
+- **Never wrap or delegate to other adapters directly** - let the system handle adapter coordination
+- **Focus on pre/post hooks only** for specialized behavior
 
 ### Pre/Post Operation Flow
 ```

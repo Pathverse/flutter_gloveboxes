@@ -33,6 +33,24 @@ class PVCache {
     Map<String, dynamic>? metadata,
   }) async {
     final (env, actualKey) = _parseKey(key);
+
+    // Handle encrypted environment specially
+    if (env == 'encrypted') {
+      // Store metadata if provided
+      if (metadata != null) {
+        await PVCacheCentral.secureMetaSet(
+          env: 'encrypted',
+          key: '__meta__$actualKey',
+          value: metadata,
+        );
+      }
+
+      // Store value in secure storage
+      await PVCacheCentral.secureSet(
+          env: 'encrypted', key: actualKey, value: value);
+      return;
+    }
+
     final config = PVCacheCentral.environments[env];
     if (config == null) return;
 
@@ -66,6 +84,32 @@ class PVCache {
     bool expiredReturnsNull = true,
   }) async {
     final (env, actualKey) = _parseKey(key);
+
+    // Handle encrypted environment specially
+    if (env == 'encrypted') {
+      // Check metadata for expiry
+      final meta = await PVCacheCentral.secureMetaGet(
+        env: 'encrypted',
+        key: '__meta__$actualKey',
+      );
+
+      if (meta != null && expiredReturnsNull) {
+        final expiry = meta['expiry'];
+        if (expiry != null) {
+          final expiryTime = DateTime.tryParse(expiry.toString());
+          if (expiryTime != null && DateTime.now().isAfter(expiryTime)) {
+            // Expired - clean up and return null
+            await PVCacheCentral.secureDelete(env: 'encrypted', key: actualKey);
+            await PVCacheCentral.secureMetaDelete(
+                env: 'encrypted', key: '__meta__$actualKey');
+            return null;
+          }
+        }
+      }
+
+      return await PVCacheCentral.secureGet(env: 'encrypted', key: actualKey);
+    }
+
     final config = PVCacheCentral.environments[env];
     if (config == null) return null;
 
@@ -121,6 +165,15 @@ class PVCache {
 
   static Future<void> delete(String key) async {
     final (env, actualKey) = _parseKey(key);
+
+    // Handle encrypted environment specially
+    if (env == 'encrypted') {
+      await PVCacheCentral.secureDelete(env: 'encrypted', key: actualKey);
+      await PVCacheCentral.secureMetaDelete(
+          env: 'encrypted', key: '__meta__$actualKey');
+      return;
+    }
+
     final config = PVCacheCentral.environments[env];
     if (config == null) return;
 
@@ -152,6 +205,14 @@ class PVCache {
 
   static Future<void> clear({String? env}) async {
     final targetEnv = env ?? defaultEnv;
+
+    // Handle encrypted environment specially
+    if (targetEnv == 'encrypted') {
+      await PVCacheCentral.secureClear(env: 'encrypted');
+      await PVCacheCentral.secureMetaClear(env: 'encrypted');
+      return;
+    }
+
     final config = PVCacheCentral.environments[targetEnv];
     if (config == null) return;
 
@@ -187,6 +248,39 @@ class PVCache {
     Map<String, dynamic>? metadata,
   }) async {
     final (env, actualKey) = _parseKey(key);
+
+    // Handle encrypted environment specially
+    if (env == 'encrypted') {
+      final existingValue =
+          await PVCacheCentral.secureGet(env: 'encrypted', key: actualKey);
+
+      if (existingValue != null) {
+        // Check if expired
+        final meta = await PVCacheCentral.secureMetaGet(
+            env: 'encrypted', key: '__meta__$actualKey');
+        if (meta != null) {
+          final expiry = meta['expiry'];
+          if (expiry != null) {
+            final expiryTime = DateTime.tryParse(expiry.toString());
+            if (expiryTime != null && DateTime.now().isAfter(expiryTime)) {
+              // Expired - proceed to get new value
+            } else {
+              return existingValue; // Valid cached value
+            }
+          } else {
+            return existingValue; // No expiry set
+          }
+        } else {
+          return existingValue; // No metadata
+        }
+      }
+
+      // Get new value and cache it
+      final newValue = await callback();
+      await set(key, newValue, metadata: metadata);
+      return newValue;
+    }
+
     final config = PVCacheCentral.environments[env];
     if (config == null) return null;
 
@@ -229,7 +323,7 @@ class PVCache {
   }
 
   static Future<void> setEnv(String env, PVCacheEnvConfig config) async {
-    if (env == 'meta') {
+    if (env == 'meta' || env == 'encrypted') {
       throw Exception('Environment $env is reserved');
     }
     if (PVCacheCentral.environments.containsKey(env)) {
@@ -240,15 +334,26 @@ class PVCache {
     PVCacheCentral.envToHash[env] = config.metaHash; // Store the hash mapping
   }
 
-    // iter env keys
-    static Future<Iterable<String>> iterEnvKeys(String env) async {
-      final config = PVCacheCentral.environments[env];
-      if (config == null) return [];
-
-      if (config.boxType == PVBoxType.lazy) {
-        return PVCacheCentral.lazyBoxes[env]?.keys.cast<String>() ?? [];
-      } else {
-        return PVCacheCentral.boxes[env]?.keys.cast<String>() ?? [];
-      }
+  // iter env keys
+  static Future<Iterable<String>> iterEnvKeys(String env) async {
+    // Handle encrypted environment specially
+    if (env == 'encrypted') {
+      final allKeys = await PVCacheCentral.secureStorage.readAll();
+      return allKeys.keys
+          .where(
+              (key) => key.startsWith('${PVCacheCentral.prefix}::encrypted:'))
+          .map((key) =>
+              key.substring('${PVCacheCentral.prefix}::encrypted:'.length))
+          .where((key) => !key.startsWith('__meta__'));
     }
+
+    final config = PVCacheCentral.environments[env];
+    if (config == null) return [];
+
+    if (config.boxType == PVBoxType.lazy) {
+      return PVCacheCentral.lazyBoxes[env]?.keys.cast<String>() ?? [];
+    } else {
+      return PVCacheCentral.boxes[env]?.keys.cast<String>() ?? [];
+    }
+  }
 }

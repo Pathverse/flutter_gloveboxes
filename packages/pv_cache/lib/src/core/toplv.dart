@@ -7,6 +7,7 @@ import 'package:crypto/crypto.dart';
 
 class PVCacheCentral {
   static FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  static BoxCollection? boxCollection;
   static Map<String, PVCacheEnvConfig> environments = {};
   static Map<String, String> envToHash = {}; // Simple map: env -> hash
   static Map<String, LazyBox<dynamic>> lazyBoxes = {};
@@ -38,6 +39,11 @@ class PVCacheCentral {
   }
 
   static Future<void> init() async {
+    if (_initialized) {
+      return;
+    }
+
+    boxCollection = await BoxCollection.open("pvcache");
     // Open the single shared meta box first
     metaBoxes['meta'] = await Hive.openBox<dynamic>(
       'meta',
