@@ -102,6 +102,59 @@ class PVCacheCore {
     throw Exception('Invalid key format. Expected "env:key" but got "$input"');
   }
 
+  static Future<void> ensureMeta(PVCacheConfig config) async {
+    if (!config.useMeta) {
+      return;
+    }
+
+    if (config.secureMeta) {
+      return;
+    }
+
+    final metaName = '${config.name}-meta';
+
+    if (!_boxes.containsKey(metaName)) {
+      final metabox = await _boxCollection!.openBox<Map>(metaName);
+      _boxes[metaName] = metabox;
+    }
+  }
+
+  static Future<void> ensureBox(PVCacheConfig config) async {
+    if (config.secureData) {
+      return;
+    }
+
+    if (_boxes.containsKey(config.name)) {
+      return;
+    }
+
+    switch ([config.isLazy, config.isMap]) {
+      case [true, true]:
+        final box = await _boxCollection!.openBox<Map>(config.name, preload : false);
+        _boxes[config.name] = box;
+      case [true, false]:
+        final box = await _boxCollection!.openBox<dynamic>(
+          config.name,
+          preload : false,
+          // use proper json serialization, from json convert library
+          fromJson: (json) => Map<String, dynamic>.from(json as Map),
+        );
+        _boxes[config.name] = box;
+      case [false, true]:
+        final box = await _boxCollection!.openBox<Map>(config.name);
+        _boxes[config.name] = box;
+      case [false, false]:
+        final box = await _boxCollection!.openBox<dynamic>(
+          config.name,
+          // use proper json serialization, from json convert library
+          fromJson: (json) => Map<String, dynamic>.from(json as Map),
+        );
+        _boxes[config.name] = box;
+      default:
+        throw Exception('Invalid box configuration for ${config.name}');
+    }
+  }
+
   static Future<void> ensure(String name) async {
     if (name.contains("-meta")) {
       throw Exception('Cannot handle meta box: $name');
@@ -113,25 +166,8 @@ class PVCacheCore {
 
     final config = _registeredConfigs[name]!;
 
-    if (!config.secureData) {
-      if (config.isMap) {
-        final box = await _boxCollection!.openBox<Map>(
-          name,
-        );
-        _boxes[name] = box;
-      } else {
-        final box = await _boxCollection!.openBox<dynamic>(
-          name,
-          // use proper json serialization, from json convert library
-          fromJson: (json) => Map<String, dynamic>.from(json as Map),
-        );
-        _boxes[name] = box;
-      }
-    }
-    if (!config.secureMeta) {
-      final metabox = await _boxCollection!.openBox<Map>('$name-meta');
-      _boxes['$name-meta'] = metabox;
-    }
+    await ensureMeta(config);
+    await ensureBox(config);
 
     // init adapters
     for (var adapter in config.adapters.values) {

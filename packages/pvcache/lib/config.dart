@@ -68,6 +68,8 @@ class PVCacheConfig {
   final String name;
   final bool secureMeta;
   final bool secureData;
+  final bool useMeta;
+  final bool isLazy;
   final Type? type;
   final bool isMap;
   late final String overwriteGet;
@@ -88,8 +90,10 @@ class PVCacheConfig {
     this.defaultMeta = const {},
     this.secureMeta = false,
     this.secureData = false,
+    this.useMeta = true,
     this.type,
     this.isMap = false,
+    this.isLazy = true,
     LinkedHashMap<String, PVAdapter>? adapters,
     String? overwriteGet,
     String? overwriteSet,

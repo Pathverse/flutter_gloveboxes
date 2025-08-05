@@ -1,7 +1,7 @@
 name: pvcache
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: "A library that builds on top of Hive to provide additional adapters and secure storage options."
+version: 0.1.0
+homepage: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:
   sdk: ^3.8.1
