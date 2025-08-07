@@ -1,8 +1,15 @@
+import 'package:pvcache/src/builtin/storage/encrypted.dart';
+import 'package:pvcache/src/builtin/storage/kv.dart';
+import 'package:pvcache/src/builtin/storage/std/storage.dart';
 import 'package:pvcache/src/core/config.dart';
 import 'package:pvcache/src/core/interface.dart';
 import 'package:pvcache/src/core/toplv.dart';
 
 class PVCache {
+  static Future<void> init({String? boxPath, dynamic boxHiveCipher}) async {
+    await PVCacheTopLv.init(_configs, path: boxPath, cipher: boxHiveCipher);
+  }
+
   // env name related
   final String env;
 
@@ -50,9 +57,19 @@ class PVCache {
   }
 
   //! config management
-  static final Map<String, PVCacheConfig> _configs = {};
-
-  static void initialize() {}
+  static final Map<String, PVCacheConfig> _configs = {
+    'default': PVCacheConfig(
+      env: 'default',
+      storage: StdStorage(hiveBoxName: "default"),
+      adapters: [],
+    ),
+    "encrypted": PVCacheConfig(
+      env: 'encrypted',
+      storage: Encrypted(),
+      adapters: [],
+    ),
+    "kv": PVCacheConfig(env: 'kv', storage: KVStorage(), adapters: []),
+  };
 
   static void register(PVCacheConfig config, {bool isDefault = false}) {
     if (PVCacheTopLv.initialized) {
@@ -80,28 +97,38 @@ class PVCache {
     dynamic value, {
     Map<String, dynamic>? metadata,
   }) async {
-    var ctx = PVCacheAdapterCtx(handle: "pre_set", value: value, metadata: metadata);
+    var ctx = PVCacheAdapterCtx(
+      handle: "pre_set",
+      value: value,
+      metadata: metadata,
+    );
     config.handle(ctx: ctx);
     if (!ctx.isPrimaryOverride) {
-      return Future.value();
+      await config.storage.set(key, ctx.value, config, metadata: metadata);
     }
-    await config.storage.set(key, ctx.value, config, metadata: metadata);
 
-    ctx = PVCacheAdapterCtx(handle: "post_set", value: ctx.value, metadata: metadata);
+    ctx = PVCacheAdapterCtx(
+      handle: "post_set",
+      value: ctx.value,
+      metadata: metadata,
+    );
     config.handle(ctx: ctx);
   }
 
-  Future<dynamic> get(
-    String key, {
-    Map<String, dynamic>? metadata,
-  }) async {
+  Future<dynamic> get(String key, {Map<String, dynamic>? metadata}) async {
     var ctx = PVCacheAdapterCtx(handle: "pre_get", metadata: metadata);
     config.handle(ctx: ctx);
+    dynamic value;
     if (!ctx.isPrimaryOverride) {
-      return ctx.value;
+      value = await config.storage.get(key, config);
+    } else {
+      value = ctx.value;
     }
-    final value = await config.storage.get(key, config);
-    ctx = PVCacheAdapterCtx(handle: "post_get", value: value, metadata: metadata);
+    ctx = PVCacheAdapterCtx(
+      handle: "post_get",
+      value: value,
+      metadata: metadata,
+    );
     config.handle(ctx: ctx);
     return ctx.value;
   }
@@ -110,10 +137,8 @@ class PVCache {
     var ctx = PVCacheAdapterCtx(handle: "pre_delete");
     config.handle(ctx: ctx);
     if (!ctx.isPrimaryOverride) {
-      return Future.value();
+      await config.storage.set(key, null, config);
     }
-    await config.storage.set(key, null, config);
-
     ctx = PVCacheAdapterCtx(handle: "post_delete");
     config.handle(ctx: ctx);
   }
@@ -122,9 +147,8 @@ class PVCache {
     var ctx = PVCacheAdapterCtx(handle: "pre_clear");
     config.handle(ctx: ctx);
     if (!ctx.isPrimaryOverride) {
-      return Future.value();
+      await config.storage.set(key, null, config);
     }
-    await config.storage.set(key, null, config);
 
     ctx = PVCacheAdapterCtx(handle: "post_clear");
     config.handle(ctx: ctx);
@@ -133,21 +157,27 @@ class PVCache {
   Future<bool> has(String key) async {
     var ctx = PVCacheAdapterCtx(handle: "pre_has");
     config.handle(ctx: ctx);
+    dynamic value;
     if (!ctx.isPrimaryOverride) {
-      return Future.value(false);
+      value = await config.storage.get(key, config);
+    } else { 
+      value = ctx.value;
     }
-    final value = await config.storage.get(key, config);
+
     ctx = PVCacheAdapterCtx(handle: "post_has", value: value);
     config.handle(ctx: ctx);
     return ctx.value != null;
   }
 
-  Future<void> ifNotCached(String key, Function action, {Map<String, dynamic>? metadata}) async {
+  Future<dynamic> ifNotCached(
+    String key,
+    Function action, {
+    Map<String, dynamic>? metadata,
+  }) async {
     if (!await has(key)) {
       var value = await action();
       await set(key, value, metadata: metadata);
     }
     return await get(key, metadata: metadata);
   }
-
 }

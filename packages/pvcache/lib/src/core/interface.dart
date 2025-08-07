@@ -1,8 +1,13 @@
+
 abstract class IPVCacheStorage {
   bool get useHiveCollection => false;
   List<String> get hiveCollectionBoxes => [];
 
   Future<void> onInit(IPVCacheConfig config) async {
+    // default implementation does nothing
+  }
+
+  Future<void> postBoxInit(IPVCacheConfig config) async {
     // default implementation does nothing
   }
 
@@ -30,7 +35,6 @@ abstract class IPVCacheStorage {
   Future<bool> hasMeta(String key, IPVCacheConfig config);
   Future<Iterator<String>> iterKeys(IPVCacheConfig config);
   Future<Iterator<String>> iterMetaKeys(IPVCacheConfig config);
-  
 }
 
 abstract class IPVCacheConfig {
