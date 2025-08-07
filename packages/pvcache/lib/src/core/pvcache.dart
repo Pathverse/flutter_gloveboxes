@@ -1,5 +1,6 @@
 import 'package:pvcache/src/core/config.dart';
 import 'package:pvcache/src/core/interface.dart';
+import 'package:pvcache/src/core/toplv.dart';
 
 class PVCache {
   // env name related
@@ -49,13 +50,12 @@ class PVCache {
   }
 
   //! config management
-  static final bool _initialized = false;
   static final Map<String, PVCacheConfig> _configs = {};
 
   static void initialize() {}
 
   static void register(PVCacheConfig config, {bool isDefault = false}) {
-    if (_initialized) {
+    if (PVCacheTopLv.initialized) {
       throw Exception('PVCache is already initialized.');
     }
     if (_configs.containsKey(config.env)) {

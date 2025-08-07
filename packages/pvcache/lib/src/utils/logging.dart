@@ -1,7 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:pvcache/src/core/toplv.dart';
 
 class PVCacheLogger {
-  static bool enabled = true;
+  static bool get debugMode => PVCacheTopLv.debugMode;
+  static set debugMode(bool value) {
+    PVCacheTopLv.enableDebugMode();
+  }
 
   static Map<String, String> iconMap = {
     'info': 'ℹ️',
@@ -29,7 +33,7 @@ class PVCacheLogger {
   static List<String> filterScopes = [];
 
   static void log(String message) {
-    if (!enabled) return;
+    if (!PVCacheTopLv.debugMode) return;
 
     assert(() {
       if (filterScopes.isNotEmpty) {
