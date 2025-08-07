@@ -1,4 +1,5 @@
 import 'package:pvcache/src/core/sobject.dart';
+import 'dart:convert';
 
 class StdObject extends PVSObject {
   final Map<String, dynamic> metadata;
@@ -30,7 +31,19 @@ class StdObject extends PVSObject {
     }
     dynamic raw = map['raw'];
     String? jsonString = map['json'] as String?;
-    Map<String, dynamic>? metadata = map['metadata'] as Map<String, dynamic>?;
+    String? metadataString = map['metadata'] as String?;
+
+    Map<String, dynamic>? metadata;
+    if (metadataString != null && metadataString.isNotEmpty) {
+      try {
+        metadata = jsonDecode(metadataString) as Map<String, dynamic>;
+      } catch (e) {
+        metadata = {};
+      }
+    } else {
+      metadata = {};
+    }
+
     return StdObject._internal(
       rawValue: raw,
       jsonString: jsonString,
@@ -42,7 +55,14 @@ class StdObject extends PVSObject {
   @override
   Map<String, dynamic> toJson() {
     var map = super.toJson();
-    map['metadata'] = metadata;
+
+    // Serialize metadata to JSON string
+    try {
+      map['metadata'] = jsonEncode(metadata);
+    } catch (e) {
+      map['metadata'] = '{}'; // Empty JSON object as fallback
+    }
+
     return map;
   }
 }
