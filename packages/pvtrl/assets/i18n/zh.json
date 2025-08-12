@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "載入中",
+      "something_went_wrong": "出了問題",
+      "network_problem": "網路有問題",
+      "no_data_found": "未找到資料",
+      "no_results_found": "未找到結果",
+      "unsupported_file_type": "不支援的檔案類型",
+      "file_too_large": "檔案太大",
+      "operation_timed_out": "操作逾時",
+      "session_expired": "會話已過期",
+      "unsavable_changes": "無法儲存變更",
+      "no_server_connect": "無法連接到伺服器",
+      "access_denied": "存取被拒絕"
+    },
+    "game": {
+      "start": "開始遊戲",
+      "pause": "暫停遊戲",
+      "resume": "繼續遊戲",
+      "end": "結束遊戲",
+      "level_up": "升級",
+      "game_over": "遊戲結束",
+      "next_level": "下一關",
+      "previous_level": "上一關",
+      "restart": "重新開始遊戲"
+    },
+    "social": {
+      "like": "按讚",
+      "share": "分享",
+      "comment": "評論",
+      "follow": "追蹤",
+      "unfollow": "取消追蹤",
+      "unlike": "取消按讚",
+      "reply": "回覆",
+      "dislike": "不喜歡",
+      "block": "封鎖",
+      "block_user": "封鎖使用者",
+      "report": "檢舉",
+      "mute": "靜音",
+      "u_sent_friend_request": "您發送了好友請求",
+      "u_received_friend_request": "您收到了好友請求",
+      "sent_friend_request": "發送了好友請求",
+      "received_friend_request": "收到了好友請求",
+      "accepted_friend_request": "接受了好友請求",
+      "u_accepted_friend_request": "您接受了好友請求"
+    },
+    "views": {
+      "list": "清單",
+      "grid": "網格",
+      "table": "表格",
+      "form": "表單"
+    },
+    "units": {
+      "length": {
+        "kilometer": "公里",
+        "meter": "公尺",
+        "centimeter": "公分",
+        "millimeter": "公釐",
+        "micrometer": "微米",
+        "nanometer": "奈米"
+      },
+      "weight": {
+        "kilogram": "公斤",
+        "gram": "公克",
+        "milligram": "毫克",
+        "ton": "公噸"
+      },
+      "volume": {
+        "liter": "公升",
+        "milliliter": "毫升",
+        "cubic_meter": "立方公尺"
+      },
+      "time": {
+        "second": "秒",
+        "minute": "分鐘",
+        "hour": "小時",
+        "day": "天",
+        "week": "週",
+        "month": "月",
+        "year": "年"
+      },
+      "area": {
+        "square_meter": "平方公尺",
+        "hectare": "公頃",
+        "acre": "英畝"
+      }
+    },
+    "numbers": {
+      "1": "一",
+      "2": "二",
+      "3": "三",
+      "4": "四",
+      "5": "五",
+      "6": "六",
+      "7": "七",
+      "8": "八",
+      "9": "九",
+      "10": "十"
+    },
+    "ranks": {
+      "1": "第一",
+      "2": "第二",
+      "3": "第三",
+      "4": "第四",
+      "5": "第五",
+      "6": "第六",
+      "7": "第七",
+      "8": "第八",
+      "9": "第九",
+      "10": "第十"
+    },
+    "control": {
+      "on": "開",
+      "off": "關",
+      "yes": "是",
+      "no": "否",
+      "confirm": "確認",
+      "cancel": "取消",
+      "retry": "重試",
+      "logout": "登出",
+      "edit": "編輯",
+      "delete": "刪除",
+      "revert": "還原",
+      "save": "儲存"
+    },
+    "response": {
+      "success": "成功",
+      "error": "錯誤",
+      "info": "資訊",
+      "warning": "警告",
+      "tbd": "待定",
+      "wip": "進行中"
+    },
+    "priority": {
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    },
+    "date": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "tomorrow": "明天",
+      "just_now": "剛才",
+      "a_moment_ago": "剛剛",
+      "minutes_ago": "幾分鐘前",
+      "hours_ago": "幾小時前",
+      "days_ago": "{days}天前",
+      "weeks_ago": "幾週前",
+      "this_week": "本週",
+      "last_week": "上週",
+      "this_month": "本月",
+      "last_month": "上月",
+      "this_year": "今年",
+      "last_year": "去年",
+      "days_ahead": "{days}天後"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "星期日",
+        "monday": "星期一",
+        "tuesday": "星期二",
+        "wednesday": "星期三",
+        "thursday": "星期四",
+        "friday": "星期五",
+        "saturday": "星期六"
+      },
+      "short": {
+        "sunday": "日",
+        "monday": "一",
+        "tuesday": "二",
+        "wednesday": "三",
+        "thursday": "四",
+        "friday": "五",
+        "saturday": "六"
+      }
+    },
+    "formRestrictions": {
+      "required": "此欄位為必填。",
+      "minLength": "最小長度為{min}個字元。",
+      "maxLength": "最大長度為{max}個字元。",
+      "invalidFormat": "格式無效。",
+      "pattern": "此欄位必須遵循模式{pattern}。"
+    },
+    "tos": {
+      "accept": "我接受條款與條件",
+      "read_accept": "請閱讀並接受我們的條款與條件",
+      "title": "條款與條件",
+      "service": "服務條款",
+      "privacy": "隱私政策",
+      "continue_agree": "繼續即表示您同意我們的條款與條件",
+      "must_accept": "您必須接受條款與條件才能繼續",
+      "view": "查看條款與條件",
+      "last_updated": "最後更新：{date}",
+      "contact_info": "如需了解有關我們條款與條件的更多資訊，請聯繫我們"
+    },
+    "permissions": {
+      "allow_location": "允許存取位置？",
+      "allow_camera": "允許存取相機？",
+      "allow_microphone": "允許存取麥克風？",
+      "allow_notifications": "允許通知？",
+      "allow_contacts": "允許存取聯絡人？",
+      "allow_photos": "允許存取照片？",
+      "allow_storage": "允許存取儲存空間？",
+      "allow_bluetooth": "允許藍牙存取？",
+      "need_permission": "我們需要您的許可才能繼續",
+      "permission_denied": "權限被拒絕",
+      "permission_required": "此權限為必需",
+      "enable_in_settings": "請在設定中啟用"
+    },
+    "prompts": {
+      "session_expired": "您的會話已過期",
+      "are_you_sure": "您確定嗎？",
+      "cannot_be_undone": "此操作無法復原",
+      "unsaved_changes": "您有未儲存的變更",
+      "discard_changes": "捨棄變更？",
+      "location_disabled": "位置服務已停用",
+      "network_required": "需要網路連線",
+      "login_required": "需要登入才能繼續",
+      "confirm_delete": "您確定要刪除此項目嗎？",
+      "confirm_logout": "您確定要登出嗎？",
+      "save_before_exit": "離開前要儲存嗎？",
+      "reload_page": "您要重新載入頁面嗎？",
+      "update_available": "有可用更新",
+      "restart_required": "需要重新啟動以套用變更"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "登入成功。",
+      "error": "登入失敗。請重試。",
+      "wrong_password": "請驗證您的憑證。"
+    },
+    "form": {
+      "username": "使用者名稱",
+      "password": "密碼",
+      "submit": "登入",
+      "create_account": "建立新帳戶",
+      "Forgot password": "忘記密碼"
+    },
+    "tooltip": {
+      "username": "輸入您的使用者名稱",
+      "password": "輸入您的密碼",
+      "submit": "點擊登入"
+    },
+    "validation": {
+      "username": {
+        "required": "使用者名稱為必填。"
+      },
+      "password": {
+        "required": "密碼為必填。"
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "註冊成功。",
+      "error": "註冊失敗。請重試。"
+    },
+    "form": {
+      "username": "使用者名稱",
+      "email": "電子郵件",
+      "password": "密碼",
+      "submit": "註冊",
+      "accept_tos": "我接受服務條款"
+    },
+    "tooltip": {
+      "username": "輸入您的使用者名稱",
+      "email": "輸入您的電子郵件",
+      "password": "輸入您的密碼",
+      "submit": "點擊註冊"
+    },
+    "validation": {
+      "username": {
+        "required": "使用者名稱為必填。",
+        "minLength": "使用者名稱必須至少{min}個字元長。",
+        "maxLength": "使用者名稱最多{max}個字元長。"
+      },
+      "email": {
+        "required": "電子郵件為必填。",
+        "invalid": "電子郵件無效。"
+      },
+      "password": {
+        "required": "密碼為必填。",
+        "minLength": "密碼必須至少{min}個字元長。"
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "密碼重設郵件已發送。",
+      "error": "密碼重設失敗。請重試。"
+    },
+    "form": {
+      "email": "電子郵件",
+      "submit": "重設密碼"
+    },
+    "tooltip": {
+      "email": "輸入您的電子郵件",
+      "submit": "點擊重設密碼"
+    },
+    "validation": {
+      "email": {
+        "required": "電子郵件為必填。",
+        "invalid": "電子郵件無效。"
+      }
+    }
+  }
+}

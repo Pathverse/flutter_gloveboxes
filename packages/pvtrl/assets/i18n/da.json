@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Indlæser",
+      "something_went_wrong": "Noget gik galt",
+      "network_problem": "Der er et netværksproblem",
+      "no_data_found": "Ingen data fundet",
+      "no_results_found": "Ingen resultater fundet",
+      "unsupported_file_type": "Ikke-understøttet filtype",
+      "file_too_large": "Filen er for stor",
+      "operation_timed_out": "Operationen fik timeout",
+      "session_expired": "Sessionen er udløbet",
+      "unsavable_changes": "Ændringerne kunne ikke gemmes",
+      "no_server_connect": "Kunne ikke oprette forbindelse til serveren",
+      "access_denied": "Adgang nægtet"
+    },
+    "game": {
+      "start": "Start Spil",
+      "pause": "Pause Spil",
+      "resume": "Genoptag Spil",
+      "end": "Afslut Spil",
+      "level_up": "Niveau Op",
+      "game_over": "Spil Slut",
+      "next_level": "Næste Niveau",
+      "previous_level": "Forrige Niveau",
+      "restart": "Genstart Spil"
+    },
+    "social": {
+      "like": "Synes godt om",
+      "share": "Del",
+      "comment": "Kommentér",
+      "follow": "Følg",
+      "unfollow": "Stop med at følge",
+      "unlike": "Synes ikke om",
+      "reply": "Svar",
+      "dislike": "Synes ikke om",
+      "block": "Blokér",
+      "block_user": "Blokér Bruger",
+      "report": "Rapportér",
+      "mute": "Slå fra",
+      "u_sent_friend_request": "Du sendte en venneanmodning",
+      "u_received_friend_request": "Du modtog en venneanmodning",
+      "sent_friend_request": "sendte en venneanmodning",
+      "received_friend_request": "modtog en venneanmodning",
+      "accepted_friend_request": "accepterede en venneanmodning",
+      "u_accepted_friend_request": "Du accepterede en venneanmodning"
+    },
+    "views": {
+      "list": "Liste",
+      "grid": "Gitter",
+      "table": "Tabel",
+      "form": "Formular"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kilometer",
+        "meter": "Meter",
+        "centimeter": "Centimeter",
+        "millimeter": "Millimeter",
+        "micrometer": "Mikrometer",
+        "nanometer": "Nanometer"
+      },
+      "weight": {
+        "kilogram": "Kilogram",
+        "gram": "Gram",
+        "milligram": "Milligram",
+        "ton": "Ton"
+      },
+      "volume": {
+        "liter": "Liter",
+        "milliliter": "Milliliter",
+        "cubic_meter": "Kubikmeter"
+      },
+      "time": {
+        "second": "Sekund",
+        "minute": "Minut",
+        "hour": "Time",
+        "day": "Dag",
+        "week": "Uge",
+        "month": "Måned",
+        "year": "År"
+      },
+      "area": {
+        "square_meter": "Kvadratmeter",
+        "hectare": "Hektar",
+        "acre": "Acre"
+      }
+    },
+    "numbers": {
+      "1": "En",
+      "2": "To",
+      "3": "Tre",
+      "4": "Fire",
+      "5": "Fem",
+      "6": "Seks",
+      "7": "Syv",
+      "8": "Otte",
+      "9": "Ni",
+      "10": "Ti"
+    },
+    "ranks": {
+      "1": "første",
+      "2": "anden",
+      "3": "tredje",
+      "4": "fjerde",
+      "5": "femte",
+      "6": "sjette",
+      "7": "syvende",
+      "8": "ottende",
+      "9": "niende",
+      "10": "tiende"
+    },
+    "control": {
+      "on": "Til",
+      "off": "Fra",
+      "yes": "Ja",
+      "no": "Nej",
+      "confirm": "Bekræft",
+      "cancel": "Annuller",
+      "retry": "Prøv igen",
+      "logout": "Log ud",
+      "edit": "Rediger",
+      "delete": "Slet",
+      "revert": "Fortryd",
+      "save": "Gem"
+    },
+    "response": {
+      "success": "Succes",
+      "error": "Fejl",
+      "info": "Information",
+      "warning": "Advarsel",
+      "tbd": "Skal Bestemmes",
+      "wip": "Arbejde i Gang"
+    },
+    "priority": {
+      "high": "Høj",
+      "medium": "Mellem",
+      "low": "Lav"
+    },
+    "date": {
+      "today": "I dag",
+      "yesterday": "I går",
+      "tomorrow": "I morgen",
+      "just_now": "Lige nu",
+      "a_moment_ago": "Et øjeblik siden",
+      "minutes_ago": "Minutter siden",
+      "hours_ago": "Timer siden",
+      "days_ago": "{days} dage siden",
+      "weeks_ago": "Uger siden",
+      "this_week": "Denne uge",
+      "last_week": "Sidste uge",
+      "this_month": "Denne måned",
+      "last_month": "Sidste måned",
+      "this_year": "Dette år",
+      "last_year": "Sidste år",
+      "days_ahead": "Om {days} dage"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Søndag",
+        "monday": "Mandag",
+        "tuesday": "Tirsdag",
+        "wednesday": "Onsdag",
+        "thursday": "Torsdag",
+        "friday": "Fredag",
+        "saturday": "Lørdag"
+      },
+      "short": {
+        "sunday": "Søn",
+        "monday": "Man",
+        "tuesday": "Tir",
+        "wednesday": "Ons",
+        "thursday": "Tor",
+        "friday": "Fre",
+        "saturday": "Lør"
+      }
+    },
+    "formRestrictions": {
+      "required": "Dette felt er påkrævet.",
+      "minLength": "Minimum længde er {min} tegn.",
+      "maxLength": "Maksimum længde er {max} tegn.",
+      "invalidFormat": "Formatet er ugyldigt.",
+      "pattern": "Dette felt skal følge mønsteret {pattern}."
+    },
+    "tos": {
+      "accept": "Jeg accepterer Vilkår og Betingelser",
+      "read_accept": "Læs og accepter venligst vores Vilkår og Betingelser",
+      "title": "Vilkår og Betingelser",
+      "service": "Servicevilkår",
+      "privacy": "Privatlivspolitik",
+      "continue_agree": "Ved at fortsætte accepterer du vores Vilkår og Betingelser",
+      "must_accept": "Du skal acceptere Vilkår og Betingelser for at fortsætte",
+      "view": "Se Vilkår og Betingelser",
+      "last_updated": "Sidst opdateret: {date}",
+      "contact_info": "Kontakt os for mere information om vores Vilkår og Betingelser"
+    },
+    "permissions": {
+      "allow_location": "Tillad adgang til placering?",
+      "allow_camera": "Tillad adgang til kamera?",
+      "allow_microphone": "Tillad adgang til mikrofon?",
+      "allow_notifications": "Tillad notifikationer?",
+      "allow_contacts": "Tillad adgang til kontakter?",
+      "allow_photos": "Tillad adgang til billeder?",
+      "allow_storage": "Tillad adgang til lager?",
+      "allow_bluetooth": "Tillad Bluetooth adgang?",
+      "need_permission": "Vi har brug for din tilladelse for at fortsætte",
+      "permission_denied": "Tilladelse nægtet",
+      "permission_required": "Denne tilladelse er påkrævet",
+      "enable_in_settings": "Aktivér venligst i Indstillinger"
+    },
+    "prompts": {
+      "session_expired": "Din session er udløbet",
+      "are_you_sure": "Er du sikker?",
+      "cannot_be_undone": "Denne handling kan ikke fortrydes",
+      "unsaved_changes": "Du har ikke-gemte ændringer",
+      "discard_changes": "Kassér ændringer?",
+      "location_disabled": "Placeringstjenester er deaktiveret",
+      "network_required": "Netværksforbindelse påkrævet",
+      "login_required": "Login påkrævet for at fortsætte",
+      "confirm_delete": "Er du sikker på, at du vil slette dette?",
+      "confirm_logout": "Er du sikker på, at du vil logge ud?",
+      "save_before_exit": "Vil du gemme før du forlader?",
+      "reload_page": "Vil du genindlæse siden?",
+      "update_available": "En opdatering er tilgængelig",
+      "restart_required": "Genstart påkrævet for at anvende ændringer"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Login vellykket.",
+      "error": "Login fejlede. Prøv venligst igen.",
+      "wrong_password": "Verificer venligst dine legitimationsoplysninger."
+    },
+    "form": {
+      "username": "Brugernavn",
+      "password": "Adgangskode",
+      "submit": "Log ind",
+      "create_account": "Opret ny konto",
+      "Forgot password": "Glemt adgangskode"
+    },
+    "tooltip": {
+      "username": "Indtast dit brugernavn",
+      "password": "Indtast din adgangskode",
+      "submit": "Klik for at logge ind"
+    },
+    "validation": {
+      "username": {
+        "required": "Brugernavn er påkrævet."
+      },
+      "password": {
+        "required": "Adgangskode er påkrævet."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Registrering vellykket.",
+      "error": "Registrering fejlede. Prøv venligst igen."
+    },
+    "form": {
+      "username": "Brugernavn",
+      "email": "E-mail",
+      "password": "Adgangskode",
+      "submit": "Registrer",
+      "accept_tos": "Jeg accepterer Servicevilkårene"
+    },
+    "tooltip": {
+      "username": "Indtast dit brugernavn",
+      "email": "Indtast din e-mail",
+      "password": "Indtast din adgangskode",
+      "submit": "Klik for at registrere"
+    },
+    "validation": {
+      "username": {
+        "required": "Brugernavn er påkrævet.",
+        "minLength": "Brugernavn skal være mindst {min} tegn langt.",
+        "maxLength": "Brugernavn skal være højst {max} tegn langt."
+      },
+      "email": {
+        "required": "E-mail er påkrævet.",
+        "invalid": "E-mail er ikke gyldig."
+      },
+      "password": {
+        "required": "Adgangskode er påkrævet.",
+        "minLength": "Adgangskode skal være mindst {min} tegn lang."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "E-mail til nulstilling af adgangskode sendt.",
+      "error": "Nulstilling af adgangskode fejlede. Prøv venligst igen."
+    },
+    "form": {
+      "email": "E-mail",
+      "submit": "Nulstil Adgangskode"
+    },
+    "tooltip": {
+      "email": "Indtast din e-mail",
+      "submit": "Klik for at nulstille adgangskode"
+    },
+    "validation": {
+      "email": {
+        "required": "E-mail er påkrævet.",
+        "invalid": "E-mail er ikke gyldig."
+      }
+    }
+  }
+}

@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Laddar",
+      "something_went_wrong": "Något gick fel",
+      "network_problem": "Det finns ett nätverksproblem",
+      "no_data_found": "Ingen data hittades",
+      "no_results_found": "Inga resultat hittades",
+      "unsupported_file_type": "Filtyp som inte stöds",
+      "file_too_large": "Filen är för stor",
+      "operation_timed_out": "Operationen tog för lång tid",
+      "session_expired": "Sessionen har löpt ut",
+      "unsavable_changes": "Ändringar kunde inte sparas",
+      "no_server_connect": "Kunde inte ansluta till servern",
+      "access_denied": "Åtkomst nekad"
+    },
+    "game": {
+      "start": "Starta Spel",
+      "pause": "Pausa Spel",
+      "resume": "Återuppta Spel",
+      "end": "Avsluta Spel",
+      "level_up": "Nivå Upp",
+      "game_over": "Spel Slut",
+      "next_level": "Nästa Nivå",
+      "previous_level": "Föregående Nivå",
+      "restart": "Starta Om Spel"
+    },
+    "social": {
+      "like": "Gilla",
+      "share": "Dela",
+      "comment": "Kommentera",
+      "follow": "Följ",
+      "unfollow": "Sluta följa",
+      "unlike": "Ogilla",
+      "reply": "Svara",
+      "dislike": "Ogilla",
+      "block": "Blockera",
+      "block_user": "Blockera Användare",
+      "report": "Rapportera",
+      "mute": "Tysta",
+      "u_sent_friend_request": "Du skickade en vänförfrågan",
+      "u_received_friend_request": "Du fick en vänförfrågan",
+      "sent_friend_request": "skickade en vänförfrågan",
+      "received_friend_request": "fick en vänförfrågan",
+      "accepted_friend_request": "accepterade en vänförfrågan",
+      "u_accepted_friend_request": "Du accepterade en vänförfrågan"
+    },
+    "views": {
+      "list": "Lista",
+      "grid": "Rutnät",
+      "table": "Tabell",
+      "form": "Formulär"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kilometer",
+        "meter": "Meter",
+        "centimeter": "Centimeter",
+        "millimeter": "Millimeter",
+        "micrometer": "Mikrometer",
+        "nanometer": "Nanometer"
+      },
+      "weight": {
+        "kilogram": "Kilogram",
+        "gram": "Gram",
+        "milligram": "Milligram",
+        "ton": "Ton"
+      },
+      "volume": {
+        "liter": "Liter",
+        "milliliter": "Milliliter",
+        "cubic_meter": "Kubikmeter"
+      },
+      "time": {
+        "second": "Sekund",
+        "minute": "Minut",
+        "hour": "Timme",
+        "day": "Dag",
+        "week": "Vecka",
+        "month": "Månad",
+        "year": "År"
+      },
+      "area": {
+        "square_meter": "Kvadratmeter",
+        "hectare": "Hektar",
+        "acre": "Acre"
+      }
+    },
+    "numbers": {
+      "1": "Ett",
+      "2": "Två",
+      "3": "Tre",
+      "4": "Fyra",
+      "5": "Fem",
+      "6": "Sex",
+      "7": "Sju",
+      "8": "Åtta",
+      "9": "Nio",
+      "10": "Tio"
+    },
+    "ranks": {
+      "1": "första",
+      "2": "andra",
+      "3": "tredje",
+      "4": "fjärde",
+      "5": "femte",
+      "6": "sjätte",
+      "7": "sjunde",
+      "8": "åttonde",
+      "9": "nionde",
+      "10": "tionde"
+    },
+    "control": {
+      "on": "På",
+      "off": "Av",
+      "yes": "Ja",
+      "no": "Nej",
+      "confirm": "Bekräfta",
+      "cancel": "Avbryt",
+      "retry": "Försök igen",
+      "logout": "Logga ut",
+      "edit": "Redigera",
+      "delete": "Ta bort",
+      "revert": "Återställ",
+      "save": "Spara"
+    },
+    "response": {
+      "success": "Framgång",
+      "error": "Fel",
+      "info": "Information",
+      "warning": "Varning",
+      "tbd": "Att Bestämma",
+      "wip": "Pågående Arbete"
+    },
+    "priority": {
+      "high": "Hög",
+      "medium": "Medium",
+      "low": "Låg"
+    },
+    "date": {
+      "today": "Idag",
+      "yesterday": "Igår",
+      "tomorrow": "Imorgon",
+      "just_now": "Just nu",
+      "a_moment_ago": "För en stund sedan",
+      "minutes_ago": "Minuter sedan",
+      "hours_ago": "Timmar sedan",
+      "days_ago": "{days} dagar sedan",
+      "weeks_ago": "Veckor sedan",
+      "this_week": "Denna vecka",
+      "last_week": "Förra veckan",
+      "this_month": "Denna månad",
+      "last_month": "Förra månaden",
+      "this_year": "Detta år",
+      "last_year": "Förra året",
+      "days_ahead": "Om {days} dagar"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Söndag",
+        "monday": "Måndag",
+        "tuesday": "Tisdag",
+        "wednesday": "Onsdag",
+        "thursday": "Torsdag",
+        "friday": "Fredag",
+        "saturday": "Lördag"
+      },
+      "short": {
+        "sunday": "Sön",
+        "monday": "Mån",
+        "tuesday": "Tis",
+        "wednesday": "Ons",
+        "thursday": "Tor",
+        "friday": "Fre",
+        "saturday": "Lör"
+      }
+    },
+    "formRestrictions": {
+      "required": "Detta fält är obligatoriskt.",
+      "minLength": "Minimilängd är {min} tecken.",
+      "maxLength": "Maxlängd är {max} tecken.",
+      "invalidFormat": "Formatet är ogiltigt.",
+      "pattern": "Detta fält måste följa mönstret {pattern}."
+    },
+    "tos": {
+      "accept": "Jag accepterar Användarvillkoren",
+      "read_accept": "Läs och acceptera våra Användarvillkor",
+      "title": "Användarvillkor",
+      "service": "Tjänstvillkor",
+      "privacy": "Integritetspolicy",
+      "continue_agree": "Genom att fortsätta godkänner du våra Användarvillkor",
+      "must_accept": "Du måste acceptera Användarvillkoren för att fortsätta",
+      "view": "Visa Användarvillkor",
+      "last_updated": "Senast uppdaterad: {date}",
+      "contact_info": "Kontakta oss för mer information om våra Användarvillkor"
+    },
+    "permissions": {
+      "allow_location": "Tillåt åtkomst till plats?",
+      "allow_camera": "Tillåt åtkomst till kamera?",
+      "allow_microphone": "Tillåt åtkomst till mikrofon?",
+      "allow_notifications": "Tillåt notifieringar?",
+      "allow_contacts": "Tillåt åtkomst till kontakter?",
+      "allow_photos": "Tillåt åtkomst till foton?",
+      "allow_storage": "Tillåt åtkomst till lagring?",
+      "allow_bluetooth": "Tillåt Bluetooth-åtkomst?",
+      "need_permission": "Vi behöver din tillåtelse för att fortsätta",
+      "permission_denied": "Tillstånd nekat",
+      "permission_required": "Detta tillstånd krävs",
+      "enable_in_settings": "Aktivera i Inställningar"
+    },
+    "prompts": {
+      "session_expired": "Din session har löpt ut",
+      "are_you_sure": "Är du säker?",
+      "cannot_be_undone": "Denna åtgärd kan inte ångras",
+      "unsaved_changes": "Du har osparade ändringar",
+      "discard_changes": "Kassera ändringar?",
+      "location_disabled": "Platstjänster är inaktiverade",
+      "network_required": "Nätverksanslutning krävs",
+      "login_required": "Inloggning krävs för att fortsätta",
+      "confirm_delete": "Är du säker på att du vill ta bort detta?",
+      "confirm_logout": "Är du säker på att du vill logga ut?",
+      "save_before_exit": "Vill du spara innan du avslutar?",
+      "reload_page": "Vill du ladda om sidan?",
+      "update_available": "En uppdatering är tillgänglig",
+      "restart_required": "Omstart krävs för att tillämpa ändringar"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Inloggning lyckades.",
+      "error": "Inloggning misslyckades. Försök igen.",
+      "wrong_password": "Verifiera dina uppgifter."
+    },
+    "form": {
+      "username": "Användarnamn",
+      "password": "Lösenord",
+      "submit": "Logga in",
+      "create_account": "Skapa nytt konto",
+      "Forgot password": "Glömt lösenord"
+    },
+    "tooltip": {
+      "username": "Ange ditt användarnamn",
+      "password": "Ange ditt lösenord",
+      "submit": "Klicka för att logga in"
+    },
+    "validation": {
+      "username": {
+        "required": "Användarnamn krävs."
+      },
+      "password": {
+        "required": "Lösenord krävs."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Registrering lyckades.",
+      "error": "Registrering misslyckades. Försök igen."
+    },
+    "form": {
+      "username": "Användarnamn",
+      "email": "E-post",
+      "password": "Lösenord",
+      "submit": "Registrera",
+      "accept_tos": "Jag accepterar Tjänstvillkoren"
+    },
+    "tooltip": {
+      "username": "Ange ditt användarnamn",
+      "email": "Ange din e-post",
+      "password": "Ange ditt lösenord",
+      "submit": "Klicka för att registrera"
+    },
+    "validation": {
+      "username": {
+        "required": "Användarnamn krävs.",
+        "minLength": "Användarnamn måste vara minst {min} tecken långt.",
+        "maxLength": "Användarnamn får vara högst {max} tecken långt."
+      },
+      "email": {
+        "required": "E-post krävs.",
+        "invalid": "E-post är inte giltig."
+      },
+      "password": {
+        "required": "Lösenord krävs.",
+        "minLength": "Lösenord måste vara minst {min} tecken långt."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "E-post för lösenordsåterställning skickad.",
+      "error": "Lösenordsåterställning misslyckades. Försök igen."
+    },
+    "form": {
+      "email": "E-post",
+      "submit": "Återställ Lösenord"
+    },
+    "tooltip": {
+      "email": "Ange din e-post",
+      "submit": "Klicka för att återställa lösenord"
+    },
+    "validation": {
+      "email": {
+        "required": "E-post krävs.",
+        "invalid": "E-post är inte giltig."
+      }
+    }
+  }
+}

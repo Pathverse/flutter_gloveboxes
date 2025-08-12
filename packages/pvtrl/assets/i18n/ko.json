@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "로딩 중",
+      "something_went_wrong": "문제가 발생했습니다",
+      "network_problem": "네트워크 문제가 있습니다",
+      "no_data_found": "데이터를 찾을 수 없습니다",
+      "no_results_found": "결과를 찾을 수 없습니다",
+      "unsupported_file_type": "지원되지 않는 파일 형식",
+      "file_too_large": "파일이 너무 큽니다",
+      "operation_timed_out": "작업 시간이 초과되었습니다",
+      "session_expired": "세션이 만료되었습니다",
+      "unsavable_changes": "변경사항을 저장할 수 없습니다",
+      "no_server_connect": "서버에 연결할 수 없습니다",
+      "access_denied": "액세스가 거부되었습니다"
+    },
+    "game": {
+      "start": "게임 시작",
+      "pause": "게임 일시정지",
+      "resume": "게임 재개",
+      "end": "게임 종료",
+      "level_up": "레벨 업",
+      "game_over": "게임 오버",
+      "next_level": "다음 레벨",
+      "previous_level": "이전 레벨",
+      "restart": "게임 재시작"
+    },
+    "social": {
+      "like": "좋아요",
+      "share": "공유",
+      "comment": "댓글",
+      "follow": "팔로우",
+      "unfollow": "언팔로우",
+      "unlike": "좋아요 취소",
+      "reply": "답글",
+      "dislike": "싫어요",
+      "block": "차단",
+      "block_user": "사용자 차단",
+      "report": "신고",
+      "mute": "음소거",
+      "u_sent_friend_request": "친구 요청을 보냈습니다",
+      "u_received_friend_request": "친구 요청을 받았습니다",
+      "sent_friend_request": "친구 요청을 보냈습니다",
+      "received_friend_request": "친구 요청을 받았습니다",
+      "accepted_friend_request": "친구 요청을 수락했습니다",
+      "u_accepted_friend_request": "친구 요청을 수락했습니다"
+    },
+    "views": {
+      "list": "목록",
+      "grid": "격자",
+      "table": "표",
+      "form": "양식"
+    },
+    "units": {
+      "length": {
+        "kilometer": "킬로미터",
+        "meter": "미터",
+        "centimeter": "센티미터",
+        "millimeter": "밀리미터",
+        "micrometer": "마이크로미터",
+        "nanometer": "나노미터"
+      },
+      "weight": {
+        "kilogram": "킬로그램",
+        "gram": "그램",
+        "milligram": "밀리그램",
+        "ton": "톤"
+      },
+      "volume": {
+        "liter": "리터",
+        "milliliter": "밀리리터",
+        "cubic_meter": "세제곱미터"
+      },
+      "time": {
+        "second": "초",
+        "minute": "분",
+        "hour": "시간",
+        "day": "일",
+        "week": "주",
+        "month": "월",
+        "year": "년"
+      },
+      "area": {
+        "square_meter": "제곱미터",
+        "hectare": "헥타르",
+        "acre": "에이커"
+      }
+    },
+    "numbers": {
+      "1": "하나",
+      "2": "둘",
+      "3": "셋",
+      "4": "넷",
+      "5": "다섯",
+      "6": "여섯",
+      "7": "일곱",
+      "8": "여덟",
+      "9": "아홉",
+      "10": "열"
+    },
+    "ranks": {
+      "1": "첫 번째",
+      "2": "두 번째",
+      "3": "세 번째",
+      "4": "네 번째",
+      "5": "다섯 번째",
+      "6": "여섯 번째",
+      "7": "일곱 번째",
+      "8": "여덟 번째",
+      "9": "아홉 번째",
+      "10": "열 번째"
+    },
+    "control": {
+      "on": "켜기",
+      "off": "끄기",
+      "yes": "예",
+      "no": "아니오",
+      "confirm": "확인",
+      "cancel": "취소",
+      "retry": "다시 시도",
+      "logout": "로그아웃",
+      "edit": "편집",
+      "delete": "삭제",
+      "revert": "되돌리기",
+      "save": "저장"
+    },
+    "response": {
+      "success": "성공",
+      "error": "오류",
+      "info": "정보",
+      "warning": "경고",
+      "tbd": "미정",
+      "wip": "진행 중"
+    },
+    "priority": {
+      "high": "높음",
+      "medium": "보통",
+      "low": "낮음"
+    },
+    "date": {
+      "today": "오늘",
+      "yesterday": "어제",
+      "tomorrow": "내일",
+      "just_now": "방금",
+      "a_moment_ago": "잠깐 전",
+      "minutes_ago": "몇 분 전",
+      "hours_ago": "몇 시간 전",
+      "days_ago": "{days}일 전",
+      "weeks_ago": "몇 주 전",
+      "this_week": "이번 주",
+      "last_week": "지난 주",
+      "this_month": "이번 달",
+      "last_month": "지난 달",
+      "this_year": "올해",
+      "last_year": "작년",
+      "days_ahead": "{days}일 후"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "일요일",
+        "monday": "월요일",
+        "tuesday": "화요일",
+        "wednesday": "수요일",
+        "thursday": "목요일",
+        "friday": "금요일",
+        "saturday": "토요일"
+      },
+      "short": {
+        "sunday": "일",
+        "monday": "월",
+        "tuesday": "화",
+        "wednesday": "수",
+        "thursday": "목",
+        "friday": "금",
+        "saturday": "토"
+      }
+    },
+    "formRestrictions": {
+      "required": "이 필드는 필수입니다.",
+      "minLength": "최소 길이는 {min}자입니다.",
+      "maxLength": "최대 길이는 {max}자입니다.",
+      "invalidFormat": "형식이 올바르지 않습니다.",
+      "pattern": "이 필드는 패턴 {pattern}을 따라야 합니다."
+    },
+    "tos": {
+      "accept": "약관에 동의합니다",
+      "read_accept": "약관을 읽고 동의해 주세요",
+      "title": "약관",
+      "service": "서비스 약관",
+      "privacy": "개인정보처리방침",
+      "continue_agree": "계속하면 약관에 동의하는 것입니다",
+      "must_accept": "계속하려면 약관에 동의해야 합니다",
+      "view": "약관 보기",
+      "last_updated": "마지막 업데이트: {date}",
+      "contact_info": "약관에 대한 자세한 정보는 문의해 주세요"
+    },
+    "permissions": {
+      "allow_location": "위치 접근을 허용하시겠습니까?",
+      "allow_camera": "카메라 접근을 허용하시겠습니까?",
+      "allow_microphone": "마이크 접근을 허용하시겠습니까?",
+      "allow_notifications": "알림을 허용하시겠습니까?",
+      "allow_contacts": "연락처 접근을 허용하시겠습니까?",
+      "allow_photos": "사진 접근을 허용하시겠습니까?",
+      "allow_storage": "저장소 접근을 허용하시겠습니까?",
+      "allow_bluetooth": "블루투스 접근을 허용하시겠습니까?",
+      "need_permission": "계속하려면 권한이 필요합니다",
+      "permission_denied": "권한이 거부되었습니다",
+      "permission_required": "이 권한은 필수입니다",
+      "enable_in_settings": "설정에서 활성화해 주세요"
+    },
+    "prompts": {
+      "session_expired": "세션이 만료되었습니다",
+      "are_you_sure": "정말 확실합니까?",
+      "cannot_be_undone": "이 작업은 취소할 수 없습니다",
+      "unsaved_changes": "저장되지 않은 변경사항이 있습니다",
+      "discard_changes": "변경사항을 버리시겠습니까?",
+      "location_disabled": "위치 서비스가 비활성화되어 있습니다",
+      "network_required": "네트워크 연결이 필요합니다",
+      "login_required": "계속하려면 로그인이 필요합니다",
+      "confirm_delete": "정말 삭제하시겠습니까?",
+      "confirm_logout": "정말 로그아웃하시겠습니까?",
+      "save_before_exit": "종료하기 전에 저장하시겠습니까?",
+      "reload_page": "페이지를 새로고침하시겠습니까?",
+      "update_available": "업데이트가 있습니다",
+      "restart_required": "변경사항을 적용하려면 재시작이 필요합니다"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "로그인 성공.",
+      "error": "로그인 실패. 다시 시도해 주세요.",
+      "wrong_password": "자격 증명을 확인해 주세요."
+    },
+    "form": {
+      "username": "사용자명",
+      "password": "비밀번호",
+      "submit": "로그인",
+      "create_account": "새 계정 만들기",
+      "Forgot password": "비밀번호 찾기"
+    },
+    "tooltip": {
+      "username": "사용자명을 입력하세요",
+      "password": "비밀번호를 입력하세요",
+      "submit": "로그인하려면 클릭하세요"
+    },
+    "validation": {
+      "username": {
+        "required": "사용자명은 필수입니다."
+      },
+      "password": {
+        "required": "비밀번호는 필수입니다."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "회원가입 성공.",
+      "error": "회원가입 실패. 다시 시도해 주세요."
+    },
+    "form": {
+      "username": "사용자명",
+      "email": "이메일",
+      "password": "비밀번호",
+      "submit": "회원가입",
+      "accept_tos": "서비스 약관에 동의합니다"
+    },
+    "tooltip": {
+      "username": "사용자명을 입력하세요",
+      "email": "이메일을 입력하세요",
+      "password": "비밀번호를 입력하세요",
+      "submit": "회원가입하려면 클릭하세요"
+    },
+    "validation": {
+      "username": {
+        "required": "사용자명은 필수입니다.",
+        "minLength": "사용자명은 최소 {min}자여야 합니다.",
+        "maxLength": "사용자명은 최대 {max}자여야 합니다."
+      },
+      "email": {
+        "required": "이메일은 필수입니다.",
+        "invalid": "이메일이 유효하지 않습니다."
+      },
+      "password": {
+        "required": "비밀번호는 필수입니다.",
+        "minLength": "비밀번호는 최소 {min}자여야 합니다."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "비밀번호 재설정 이메일이 전송되었습니다.",
+      "error": "비밀번호 재설정 실패. 다시 시도해 주세요."
+    },
+    "form": {
+      "email": "이메일",
+      "submit": "비밀번호 재설정"
+    },
+    "tooltip": {
+      "email": "이메일을 입력하세요",
+      "submit": "비밀번호를 재설정하려면 클릭하세요"
+    },
+    "validation": {
+      "email": {
+        "required": "이메일은 필수입니다.",
+        "invalid": "이메일이 유효하지 않습니다."
+      }
+    }
+  }
+}

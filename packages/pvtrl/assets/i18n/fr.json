@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Chargement",
+      "something_went_wrong": "Quelque chose s'est mal passé",
+      "network_problem": "Il y a un problème de réseau",
+      "no_data_found": "Aucune donnée trouvée",
+      "no_results_found": "Aucun résultat trouvé",
+      "unsupported_file_type": "Type de fichier non pris en charge",
+      "file_too_large": "Le fichier est trop volumineux",
+      "operation_timed_out": "L'opération a expiré",
+      "session_expired": "La session a expiré",
+      "unsavable_changes": "Les modifications n'ont pas pu être sauvegardées",
+      "no_server_connect": "Impossible de se connecter au serveur",
+      "access_denied": "Accès refusé"
+    },
+    "game": {
+      "start": "Commencer le Jeu",
+      "pause": "Mettre en Pause",
+      "resume": "Reprendre le Jeu",
+      "end": "Terminer le Jeu",
+      "level_up": "Niveau Supérieur",
+      "game_over": "Fin du Jeu",
+      "next_level": "Niveau Suivant",
+      "previous_level": "Niveau Précédent",
+      "restart": "Redémarrer le Jeu"
+    },
+    "social": {
+      "like": "J'aime",
+      "share": "Partager",
+      "comment": "Commenter",
+      "follow": "Suivre",
+      "unfollow": "Ne plus suivre",
+      "unlike": "Je n'aime plus",
+      "reply": "Répondre",
+      "dislike": "Je n'aime pas",
+      "block": "Bloquer",
+      "block_user": "Bloquer l'utilisateur",
+      "report": "Signaler",
+      "mute": "Muet",
+      "u_sent_friend_request": "Vous avez envoyé une demande d'ami",
+      "u_received_friend_request": "Vous avez reçu une demande d'ami",
+      "sent_friend_request": "a envoyé une demande d'ami",
+      "received_friend_request": "a reçu une demande d'ami",
+      "accepted_friend_request": "a accepté une demande d'ami",
+      "u_accepted_friend_request": "Vous avez accepté une demande d'ami"
+    },
+    "views": {
+      "list": "Liste",
+      "grid": "Grille",
+      "table": "Tableau",
+      "form": "Formulaire"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kilomètre",
+        "meter": "Mètre",
+        "centimeter": "Centimètre",
+        "millimeter": "Millimètre",
+        "micrometer": "Micromètre",
+        "nanometer": "Nanomètre"
+      },
+      "weight": {
+        "kilogram": "Kilogramme",
+        "gram": "Gramme",
+        "milligram": "Milligramme",
+        "ton": "Tonne"
+      },
+      "volume": {
+        "liter": "Litre",
+        "milliliter": "Millilitre",
+        "cubic_meter": "Mètre Cube"
+      },
+      "time": {
+        "second": "Seconde",
+        "minute": "Minute",
+        "hour": "Heure",
+        "day": "Jour",
+        "week": "Semaine",
+        "month": "Mois",
+        "year": "Année"
+      },
+      "area": {
+        "square_meter": "Mètre Carré",
+        "hectare": "Hectare",
+        "acre": "Acre"
+      }
+    },
+    "numbers": {
+      "1": "Un",
+      "2": "Deux",
+      "3": "Trois",
+      "4": "Quatre",
+      "5": "Cinq",
+      "6": "Six",
+      "7": "Sept",
+      "8": "Huit",
+      "9": "Neuf",
+      "10": "Dix"
+    },
+    "ranks": {
+      "1": "premier",
+      "2": "deuxième",
+      "3": "troisième",
+      "4": "quatrième",
+      "5": "cinquième",
+      "6": "sixième",
+      "7": "septième",
+      "8": "huitième",
+      "9": "neuvième",
+      "10": "dixième"
+    },
+    "control": {
+      "on": "Activé",
+      "off": "Désactivé",
+      "yes": "Oui",
+      "no": "Non",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "retry": "Réessayer",
+      "logout": "Se déconnecter",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "revert": "Annuler",
+      "save": "Sauvegarder"
+    },
+    "response": {
+      "success": "Succès",
+      "error": "Erreur",
+      "info": "Information",
+      "warning": "Avertissement",
+      "tbd": "À Déterminer",
+      "wip": "Travail en Cours"
+    },
+    "priority": {
+      "high": "Élevée",
+      "medium": "Moyenne",
+      "low": "Faible"
+    },
+    "date": {
+      "today": "Aujourd'hui",
+      "yesterday": "Hier",
+      "tomorrow": "Demain",
+      "just_now": "À l'instant",
+      "a_moment_ago": "Il y a un moment",
+      "minutes_ago": "Il y a quelques minutes",
+      "hours_ago": "Il y a quelques heures",
+      "days_ago": "Il y a {days} jours",
+      "weeks_ago": "Il y a quelques semaines",
+      "this_week": "Cette semaine",
+      "last_week": "La semaine dernière",
+      "this_month": "Ce mois-ci",
+      "last_month": "Le mois dernier",
+      "this_year": "Cette année",
+      "last_year": "L'année dernière",
+      "days_ahead": "Dans {days} jours"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Dimanche",
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi"
+      },
+      "short": {
+        "sunday": "Dim",
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mer",
+        "thursday": "Jeu",
+        "friday": "Ven",
+        "saturday": "Sam"
+      }
+    },
+    "formRestrictions": {
+      "required": "Ce champ est obligatoire.",
+      "minLength": "La longueur minimale est {min} caractères.",
+      "maxLength": "La longueur maximale est {max} caractères.",
+      "invalidFormat": "Le format est invalide.",
+      "pattern": "Ce champ doit suivre le modèle {pattern}."
+    },
+    "tos": {
+      "accept": "J'accepte les Conditions Générales",
+      "read_accept": "Veuillez lire et accepter nos Conditions Générales",
+      "title": "Conditions Générales",
+      "service": "Conditions de Service",
+      "privacy": "Politique de Confidentialité",
+      "continue_agree": "En continuant, vous acceptez nos Conditions Générales",
+      "must_accept": "Vous devez accepter les Conditions Générales pour continuer",
+      "view": "Voir les Conditions Générales",
+      "last_updated": "Dernière mise à jour : {date}",
+      "contact_info": "Contactez-nous pour plus d'informations sur nos Conditions Générales"
+    },
+    "permissions": {
+      "allow_location": "Autoriser l'accès à la localisation ?",
+      "allow_camera": "Autoriser l'accès à la caméra ?",
+      "allow_microphone": "Autoriser l'accès au microphone ?",
+      "allow_notifications": "Autoriser les notifications ?",
+      "allow_contacts": "Autoriser l'accès aux contacts ?",
+      "allow_photos": "Autoriser l'accès aux photos ?",
+      "allow_storage": "Autoriser l'accès au stockage ?",
+      "allow_bluetooth": "Autoriser l'accès Bluetooth ?",
+      "need_permission": "Nous avons besoin de votre permission pour continuer",
+      "permission_denied": "Permission refusée",
+      "permission_required": "Cette permission est requise",
+      "enable_in_settings": "Veuillez activer dans les Paramètres"
+    },
+    "prompts": {
+      "session_expired": "Votre session a expiré",
+      "are_you_sure": "Êtes-vous sûr ?",
+      "cannot_be_undone": "Cette action ne peut pas être annulée",
+      "unsaved_changes": "Vous avez des modifications non sauvegardées",
+      "discard_changes": "Abandonner les modifications ?",
+      "location_disabled": "Les services de localisation sont désactivés",
+      "network_required": "Connexion réseau requise",
+      "login_required": "Connexion requise pour continuer",
+      "confirm_delete": "Êtes-vous sûr de vouloir supprimer ceci ?",
+      "confirm_logout": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "save_before_exit": "Voulez-vous sauvegarder avant de quitter ?",
+      "reload_page": "Souhaitez-vous recharger la page ?",
+      "update_available": "Une mise à jour est disponible",
+      "restart_required": "Redémarrage requis pour appliquer les modifications"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Connexion réussie.",
+      "error": "Échec de la connexion. Veuillez réessayer.",
+      "wrong_password": "Veuillez vérifier vos identifiants."
+    },
+    "form": {
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "create_account": "Créer un nouveau compte",
+      "Forgot password": "Mot de passe oublié"
+    },
+    "tooltip": {
+      "username": "Entrez votre nom d'utilisateur",
+      "password": "Entrez votre mot de passe",
+      "submit": "Cliquez pour vous connecter"
+    },
+    "validation": {
+      "username": {
+        "required": "Le nom d'utilisateur est obligatoire."
+      },
+      "password": {
+        "required": "Le mot de passe est obligatoire."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Inscription réussie.",
+      "error": "Échec de l'inscription. Veuillez réessayer."
+    },
+    "form": {
+      "username": "Nom d'utilisateur",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "S'inscrire",
+      "accept_tos": "J'accepte les Conditions de Service"
+    },
+    "tooltip": {
+      "username": "Entrez votre nom d'utilisateur",
+      "email": "Entrez votre e-mail",
+      "password": "Entrez votre mot de passe",
+      "submit": "Cliquez pour vous inscrire"
+    },
+    "validation": {
+      "username": {
+        "required": "Le nom d'utilisateur est obligatoire.",
+        "minLength": "Le nom d'utilisateur doit contenir au moins {min} caractères.",
+        "maxLength": "Le nom d'utilisateur doit contenir au maximum {max} caractères."
+      },
+      "email": {
+        "required": "L'e-mail est obligatoire.",
+        "invalid": "L'e-mail n'est pas valide."
+      },
+      "password": {
+        "required": "Le mot de passe est obligatoire.",
+        "minLength": "Le mot de passe doit contenir au moins {min} caractères."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "E-mail de réinitialisation du mot de passe envoyé.",
+      "error": "Échec de la réinitialisation du mot de passe. Veuillez réessayer."
+    },
+    "form": {
+      "email": "E-mail",
+      "submit": "Réinitialiser le Mot de Passe"
+    },
+    "tooltip": {
+      "email": "Entrez votre e-mail",
+      "submit": "Cliquez pour réinitialiser le mot de passe"
+    },
+    "validation": {
+      "email": {
+        "required": "L'e-mail est obligatoire.",
+        "invalid": "L'e-mail n'est pas valide."
+      }
+    }
+  }
+}

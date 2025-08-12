@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Laster",
+      "something_went_wrong": "Noe gikk galt",
+      "network_problem": "Det er et nettverksproblem",
+      "no_data_found": "Ingen data funnet",
+      "no_results_found": "Ingen resultat funnet",
+      "unsupported_file_type": "Ikkje-støtta filtype",
+      "file_too_large": "Fila er for stor",
+      "operation_timed_out": "Operasjonen fekk tidsavbrot",
+      "session_expired": "Sesjonen er utløpt",
+      "unsavable_changes": "Endringar kunne ikkje lagrast",
+      "no_server_connect": "Kunne ikkje kopla til tenaren",
+      "access_denied": "Tilgang nekta"
+    },
+    "game": {
+      "start": "Start Spel",
+      "pause": "Pause Spel",
+      "resume": "Gjenoppta Spel",
+      "end": "Avslutt Spel",
+      "level_up": "Nivå Opp",
+      "game_over": "Spel Over",
+      "next_level": "Neste Nivå",
+      "previous_level": "Førre Nivå",
+      "restart": "Start Spel På Nytt"
+    },
+    "social": {
+      "like": "Lik",
+      "share": "Del",
+      "comment": "Kommenter",
+      "follow": "Følg",
+      "unfollow": "Slutt å følgje",
+      "unlike": "Ikkje lik",
+      "reply": "Svar",
+      "dislike": "Lik ikkje",
+      "block": "Blokker",
+      "block_user": "Blokker Brukar",
+      "report": "Rapporter",
+      "mute": "Demp",
+      "u_sent_friend_request": "Du sende ei veneførespurnad",
+      "u_received_friend_request": "Du fekk ei veneførespurnad",
+      "sent_friend_request": "sende ei veneførespurnad",
+      "received_friend_request": "fekk ei veneførespurnad",
+      "accepted_friend_request": "aksepterte ei veneførespurnad",
+      "u_accepted_friend_request": "Du aksepterte ei veneførespurnad"
+    },
+    "views": {
+      "list": "Liste",
+      "grid": "Rutenett",
+      "table": "Tabell",
+      "form": "Skjema"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kilometer",
+        "meter": "Meter",
+        "centimeter": "Centimeter",
+        "millimeter": "Millimeter",
+        "micrometer": "Mikrometer",
+        "nanometer": "Nanometer"
+      },
+      "weight": {
+        "kilogram": "Kilogram",
+        "gram": "Gram",
+        "milligram": "Milligram",
+        "ton": "Tonn"
+      },
+      "volume": {
+        "liter": "Liter",
+        "milliliter": "Milliliter",
+        "cubic_meter": "Kubikkmeter"
+      },
+      "time": {
+        "second": "Sekund",
+        "minute": "Minutt",
+        "hour": "Time",
+        "day": "Dag",
+        "week": "Veke",
+        "month": "Månad",
+        "year": "År"
+      },
+      "area": {
+        "square_meter": "Kvadratmeter",
+        "hectare": "Hektar",
+        "acre": "Acre"
+      }
+    },
+    "numbers": {
+      "1": "Ein",
+      "2": "To",
+      "3": "Tre",
+      "4": "Fire",
+      "5": "Fem",
+      "6": "Seks",
+      "7": "Syv",
+      "8": "Åtte",
+      "9": "Ni",
+      "10": "Ti"
+    },
+    "ranks": {
+      "1": "første",
+      "2": "andre",
+      "3": "tredje",
+      "4": "fjerde",
+      "5": "femte",
+      "6": "sjette",
+      "7": "sjuande",
+      "8": "åttande",
+      "9": "niande",
+      "10": "tiande"
+    },
+    "control": {
+      "on": "På",
+      "off": "Av",
+      "yes": "Ja",
+      "no": "Nei",
+      "confirm": "Stadfest",
+      "cancel": "Avbryt",
+      "retry": "Prøv igjen",
+      "logout": "Logg ut",
+      "edit": "Rediger",
+      "delete": "Slett",
+      "revert": "Tilbakestill",
+      "save": "Lagre"
+    },
+    "response": {
+      "success": "Suksess",
+      "error": "Feil",
+      "info": "Informasjon",
+      "warning": "Åtvaring",
+      "tbd": "Skal Fastsetjast",
+      "wip": "Pågåande Arbeid"
+    },
+    "priority": {
+      "high": "Høg",
+      "medium": "Medium",
+      "low": "Låg"
+    },
+    "date": {
+      "today": "I dag",
+      "yesterday": "I går",
+      "tomorrow": "I morgon",
+      "just_now": "Akkurat no",
+      "a_moment_ago": "Eit augeblikk sidan",
+      "minutes_ago": "Minutt sidan",
+      "hours_ago": "Timar sidan",
+      "days_ago": "{days} dagar sidan",
+      "weeks_ago": "Veker sidan",
+      "this_week": "Denne veka",
+      "last_week": "Førre veke",
+      "this_month": "Denne månaden",
+      "last_month": "Førre månad",
+      "this_year": "Dette året",
+      "last_year": "I fjor",
+      "days_ahead": "Om {days} dagar"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Sundag",
+        "monday": "Måndag",
+        "tuesday": "Tysdag",
+        "wednesday": "Onsdag",
+        "thursday": "Torsdag",
+        "friday": "Fredag",
+        "saturday": "Laurdag"
+      },
+      "short": {
+        "sunday": "Sun",
+        "monday": "Mån",
+        "tuesday": "Tys",
+        "wednesday": "Ons",
+        "thursday": "Tor",
+        "friday": "Fre",
+        "saturday": "Lau"
+      }
+    },
+    "formRestrictions": {
+      "required": "Dette feltet er påkravd.",
+      "minLength": "Minimum lengd er {min} teikn.",
+      "maxLength": "Maksimum lengd er {max} teikn.",
+      "invalidFormat": "Formatet er ugyldig.",
+      "pattern": "Dette feltet må følgje mønsteret {pattern}."
+    },
+    "tos": {
+      "accept": "Eg aksepterer Vilkår og Føresetnader",
+      "read_accept": "Les og aksepter våre Vilkår og Føresetnader",
+      "title": "Vilkår og Føresetnader",
+      "service": "Tenestvilkår",
+      "privacy": "Personvernpolitikk",
+      "continue_agree": "Ved å halde fram godtek du våre Vilkår og Føresetnader",
+      "must_accept": "Du må akseptere Vilkår og Føresetnader for å halde fram",
+      "view": "Sjå Vilkår og Føresetnader",
+      "last_updated": "Sist oppdatert: {date}",
+      "contact_info": "Kontakt oss for meir informasjon om våre Vilkår og Føresetnader"
+    },
+    "permissions": {
+      "allow_location": "Tillat tilgang til posisjon?",
+      "allow_camera": "Tillat tilgang til kamera?",
+      "allow_microphone": "Tillat tilgang til mikrofon?",
+      "allow_notifications": "Tillat varsel?",
+      "allow_contacts": "Tillat tilgang til kontaktar?",
+      "allow_photos": "Tillat tilgang til bilete?",
+      "allow_storage": "Tillat tilgang til lagring?",
+      "allow_bluetooth": "Tillat Bluetooth-tilgang?",
+      "need_permission": "Vi treng din tillatelse for å halde fram",
+      "permission_denied": "Tillatelse nekta",
+      "permission_required": "Denne tillatelsen er påkravd",
+      "enable_in_settings": "Aktiver i Innstillingar"
+    },
+    "prompts": {
+      "session_expired": "Sesjonen din er utløpt",
+      "are_you_sure": "Er du sikker?",
+      "cannot_be_undone": "Denne handlinga kan ikkje angrast",
+      "unsaved_changes": "Du har ulagra endringar",
+      "discard_changes": "Forkast endringar?",
+      "location_disabled": "Posisjonstenester er deaktivert",
+      "network_required": "Nettverkstilkopling påkravd",
+      "login_required": "Innlogging påkravd for å halde fram",
+      "confirm_delete": "Er du sikker på at du vil slette dette?",
+      "confirm_logout": "Er du sikker på at du vil logge ut?",
+      "save_before_exit": "Vil du lagre før du avsluttar?",
+      "reload_page": "Vil du laste sida på nytt?",
+      "update_available": "Ei oppdatering er tilgjengeleg",
+      "restart_required": "Omstart påkravd for å aktivere endringar"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Innlogging vellykka.",
+      "error": "Innlogging mislukkast. Prøv igjen.",
+      "wrong_password": "Stadfest legitimasjonen din."
+    },
+    "form": {
+      "username": "Brukarnamn",
+      "password": "Passord",
+      "submit": "Logg inn",
+      "create_account": "Opprett ny konto",
+      "Forgot password": "Gløymt passord"
+    },
+    "tooltip": {
+      "username": "Skriv inn brukarnamnet ditt",
+      "password": "Skriv inn passordet ditt",
+      "submit": "Klikk for å logge inn"
+    },
+    "validation": {
+      "username": {
+        "required": "Brukarnamn er påkravd."
+      },
+      "password": {
+        "required": "Passord er påkravd."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Registrering vellykka.",
+      "error": "Registrering mislukkast. Prøv igjen."
+    },
+    "form": {
+      "username": "Brukarnamn",
+      "email": "E-post",
+      "password": "Passord",
+      "submit": "Registrer",
+      "accept_tos": "Eg aksepterer Tenestvilkåra"
+    },
+    "tooltip": {
+      "username": "Skriv inn brukarnamnet ditt",
+      "email": "Skriv inn e-posten din",
+      "password": "Skriv inn passordet ditt",
+      "submit": "Klikk for å registrere"
+    },
+    "validation": {
+      "username": {
+        "required": "Brukarnamn er påkravd.",
+        "minLength": "Brukarnamn må vere minst {min} teikn langt.",
+        "maxLength": "Brukarnamn må vere maksimalt {max} teikn langt."
+      },
+      "email": {
+        "required": "E-post er påkravd.",
+        "invalid": "E-post er ikkje gyldig."
+      },
+      "password": {
+        "required": "Passord er påkravd.",
+        "minLength": "Passord må vere minst {min} teikn langt."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "E-post for tilbakestilling av passord sendt.",
+      "error": "Tilbakestilling av passord mislukkast. Prøv igjen."
+    },
+    "form": {
+      "email": "E-post",
+      "submit": "Tilbakestill Passord"
+    },
+    "tooltip": {
+      "email": "Skriv inn e-posten din",
+      "submit": "Klikk for å tilbakestille passord"
+    },
+    "validation": {
+      "email": {
+        "required": "E-post er påkravd.",
+        "invalid": "E-post er ikkje gyldig."
+      }
+    }
+  }
+}

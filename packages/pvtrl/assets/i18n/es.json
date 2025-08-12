@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Cargando",
+      "something_went_wrong": "Algo salió mal",
+      "network_problem": "Hay un problema de red",
+      "no_data_found": "No se encontraron datos",
+      "no_results_found": "No se encontraron resultados",
+      "unsupported_file_type": "Tipo de archivo no compatible",
+      "file_too_large": "El archivo es demasiado grande",
+      "operation_timed_out": "La operación expiró",
+      "session_expired": "La sesión expiró",
+      "unsavable_changes": "No se pudieron guardar los cambios",
+      "no_server_connect": "No se pudo conectar al servidor",
+      "access_denied": "Acceso denegado"
+    },
+    "game": {
+      "start": "Iniciar Juego",
+      "pause": "Pausar Juego",
+      "resume": "Reanudar Juego",
+      "end": "Terminar Juego",
+      "level_up": "Subir de Nivel",
+      "game_over": "Juego Terminado",
+      "next_level": "Siguiente Nivel",
+      "previous_level": "Nivel Anterior",
+      "restart": "Reiniciar Juego"
+    },
+    "social": {
+      "like": "Me gusta",
+      "share": "Compartir",
+      "comment": "Comentar",
+      "follow": "Seguir",
+      "unfollow": "Dejar de seguir",
+      "unlike": "No me gusta",
+      "reply": "Responder",
+      "dislike": "No me gusta",
+      "block": "Bloquear",
+      "block_user": "Bloquear Usuario",
+      "report": "Reportar",
+      "mute": "Silenciar",
+      "u_sent_friend_request": "Enviaste una solicitud de amistad",
+      "u_received_friend_request": "Recibiste una solicitud de amistad",
+      "sent_friend_request": "envió una solicitud de amistad",
+      "received_friend_request": "recibió una solicitud de amistad",
+      "accepted_friend_request": "aceptó una solicitud de amistad",
+      "u_accepted_friend_request": "Aceptaste una solicitud de amistad"
+    },
+    "views": {
+      "list": "Lista",
+      "grid": "Cuadrícula",
+      "table": "Tabla",
+      "form": "Formulario"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kilómetro",
+        "meter": "Metro",
+        "centimeter": "Centímetro",
+        "millimeter": "Milímetro",
+        "micrometer": "Micrómetro",
+        "nanometer": "Nanómetro"
+      },
+      "weight": {
+        "kilogram": "Kilogramo",
+        "gram": "Gramo",
+        "milligram": "Miligramo",
+        "ton": "Tonelada"
+      },
+      "volume": {
+        "liter": "Litro",
+        "milliliter": "Mililitro",
+        "cubic_meter": "Metro Cúbico"
+      },
+      "time": {
+        "second": "Segundo",
+        "minute": "Minuto",
+        "hour": "Hora",
+        "day": "Día",
+        "week": "Semana",
+        "month": "Mes",
+        "year": "Año"
+      },
+      "area": {
+        "square_meter": "Metro Cuadrado",
+        "hectare": "Hectárea",
+        "acre": "Acre"
+      }
+    },
+    "numbers": {
+      "1": "Uno",
+      "2": "Dos",
+      "3": "Tres",
+      "4": "Cuatro",
+      "5": "Cinco",
+      "6": "Seis",
+      "7": "Siete",
+      "8": "Ocho",
+      "9": "Nueve",
+      "10": "Diez"
+    },
+    "ranks": {
+      "1": "primero",
+      "2": "segundo",
+      "3": "tercero",
+      "4": "cuarto",
+      "5": "quinto",
+      "6": "sexto",
+      "7": "séptimo",
+      "8": "octavo",
+      "9": "noveno",
+      "10": "décimo"
+    },
+    "control": {
+      "on": "Encendido",
+      "off": "Apagado",
+      "yes": "Sí",
+      "no": "No",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar",
+      "retry": "Reintentar",
+      "logout": "Cerrar sesión",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "revert": "Revertir",
+      "save": "Guardar"
+    },
+    "response": {
+      "success": "Éxito",
+      "error": "Error",
+      "info": "Información",
+      "warning": "Advertencia",
+      "tbd": "Por Determinar",
+      "wip": "Trabajo en Progreso"
+    },
+    "priority": {
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Baja"
+    },
+    "date": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "tomorrow": "Mañana",
+      "just_now": "Justo ahora",
+      "a_moment_ago": "Hace un momento",
+      "minutes_ago": "Hace minutos",
+      "hours_ago": "Hace horas",
+      "days_ago": "Hace {days} días",
+      "weeks_ago": "Hace semanas",
+      "this_week": "Esta semana",
+      "last_week": "La semana pasada",
+      "this_month": "Este mes",
+      "last_month": "El mes pasado",
+      "this_year": "Este año",
+      "last_year": "El año pasado",
+      "days_ahead": "En {days} días"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Domingo",
+        "monday": "Lunes",
+        "tuesday": "Martes",
+        "wednesday": "Miércoles",
+        "thursday": "Jueves",
+        "friday": "Viernes",
+        "saturday": "Sábado"
+      },
+      "short": {
+        "sunday": "Dom",
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mié",
+        "thursday": "Jue",
+        "friday": "Vie",
+        "saturday": "Sáb"
+      }
+    },
+    "formRestrictions": {
+      "required": "Este campo es obligatorio.",
+      "minLength": "La longitud mínima es {min} caracteres.",
+      "maxLength": "La longitud máxima es {max} caracteres.",
+      "invalidFormat": "El formato es inválido.",
+      "pattern": "Este campo debe seguir el patrón {pattern}."
+    },
+    "tos": {
+      "accept": "Acepto los Términos y Condiciones",
+      "read_accept": "Por favor lee y acepta nuestros Términos y Condiciones",
+      "title": "Términos y Condiciones",
+      "service": "Términos de Servicio",
+      "privacy": "Política de Privacidad",
+      "continue_agree": "Al continuar, aceptas nuestros Términos y Condiciones",
+      "must_accept": "Debes aceptar los Términos y Condiciones para continuar",
+      "view": "Ver Términos y Condiciones",
+      "last_updated": "Última actualización: {date}",
+      "contact_info": "Contáctanos para más información sobre nuestros Términos y Condiciones"
+    },
+    "permissions": {
+      "allow_location": "¿Permitir acceso a la ubicación?",
+      "allow_camera": "¿Permitir acceso a la cámara?",
+      "allow_microphone": "¿Permitir acceso al micrófono?",
+      "allow_notifications": "¿Permitir notificaciones?",
+      "allow_contacts": "¿Permitir acceso a los contactos?",
+      "allow_photos": "¿Permitir acceso a las fotos?",
+      "allow_storage": "¿Permitir acceso al almacenamiento?",
+      "allow_bluetooth": "¿Permitir acceso Bluetooth?",
+      "need_permission": "Necesitamos tu permiso para continuar",
+      "permission_denied": "Permiso denegado",
+      "permission_required": "Este permiso es requerido",
+      "enable_in_settings": "Por favor habilita en Configuración"
+    },
+    "prompts": {
+      "session_expired": "Tu sesión ha expirado",
+      "are_you_sure": "¿Estás seguro?",
+      "cannot_be_undone": "Esta acción no se puede deshacer",
+      "unsaved_changes": "Tienes cambios sin guardar",
+      "discard_changes": "¿Descartar cambios?",
+      "location_disabled": "Los servicios de ubicación están deshabilitados",
+      "network_required": "Se requiere conexión de red",
+      "login_required": "Se requiere iniciar sesión para continuar",
+      "confirm_delete": "¿Estás seguro de que quieres eliminar esto?",
+      "confirm_logout": "¿Estás seguro de que quieres cerrar sesión?",
+      "save_before_exit": "¿Quieres guardar antes de salir?",
+      "reload_page": "¿Te gustaría recargar la página?",
+      "update_available": "Hay una actualización disponible",
+      "restart_required": "Se requiere reiniciar para aplicar los cambios"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Inicio de sesión exitoso.",
+      "error": "Error al iniciar sesión. Por favor intenta de nuevo.",
+      "wrong_password": "Por favor verifica tus credenciales."
+    },
+    "form": {
+      "username": "Usuario",
+      "password": "Contraseña",
+      "submit": "Iniciar Sesión",
+      "create_account": "Crear nueva cuenta",
+      "Forgot password": "¿Olvidaste tu contraseña?"
+    },
+    "tooltip": {
+      "username": "Ingresa tu usuario",
+      "password": "Ingresa tu contraseña",
+      "submit": "Haz clic para iniciar sesión"
+    },
+    "validation": {
+      "username": {
+        "required": "El usuario es obligatorio."
+      },
+      "password": {
+        "required": "La contraseña es obligatoria."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Registro exitoso.",
+      "error": "Error en el registro. Por favor intenta de nuevo."
+    },
+    "form": {
+      "username": "Usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Registrarse",
+      "accept_tos": "Acepto los Términos de Servicio"
+    },
+    "tooltip": {
+      "username": "Ingresa tu usuario",
+      "email": "Ingresa tu correo electrónico",
+      "password": "Ingresa tu contraseña",
+      "submit": "Haz clic para registrarte"
+    },
+    "validation": {
+      "username": {
+        "required": "El usuario es obligatorio.",
+        "minLength": "El usuario debe tener al menos {min} caracteres.",
+        "maxLength": "El usuario debe tener como máximo {max} caracteres."
+      },
+      "email": {
+        "required": "El correo electrónico es obligatorio.",
+        "invalid": "El correo electrónico no es válido."
+      },
+      "password": {
+        "required": "La contraseña es obligatoria.",
+        "minLength": "La contraseña debe tener al menos {min} caracteres."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "Correo de restablecimiento de contraseña enviado.",
+      "error": "Error al restablecer contraseña. Por favor intenta de nuevo."
+    },
+    "form": {
+      "email": "Correo electrónico",
+      "submit": "Restablecer Contraseña"
+    },
+    "tooltip": {
+      "email": "Ingresa tu correo electrónico",
+      "submit": "Haz clic para restablecer contraseña"
+    },
+    "validation": {
+      "email": {
+        "required": "El correo electrónico es obligatorio.",
+        "invalid": "El correo electrónico no es válido."
+      }
+    }
+  }
+}

@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Laden",
+      "something_went_wrong": "Er is iets misgegaan",
+      "network_problem": "Er is een netwerkprobleem",
+      "no_data_found": "Geen gegevens gevonden",
+      "no_results_found": "Geen resultaten gevonden",
+      "unsupported_file_type": "Niet-ondersteund bestandstype",
+      "file_too_large": "Bestand is te groot",
+      "operation_timed_out": "Bewerking is verlopen",
+      "session_expired": "Sessie is verlopen",
+      "unsavable_changes": "Wijzigingen konden niet worden opgeslagen",
+      "no_server_connect": "Kon geen verbinding maken met de server",
+      "access_denied": "Toegang geweigerd"
+    },
+    "game": {
+      "start": "Spel Starten",
+      "pause": "Spel Pauzeren",
+      "resume": "Spel Hervatten",
+      "end": "Spel Beëindigen",
+      "level_up": "Level Omhoog",
+      "game_over": "Spel Voorbij",
+      "next_level": "Volgend Level",
+      "previous_level": "Vorig Level",
+      "restart": "Spel Herstarten"
+    },
+    "social": {
+      "like": "Leuk vinden",
+      "share": "Delen",
+      "comment": "Reactie",
+      "follow": "Volgen",
+      "unfollow": "Ontvolgen",
+      "unlike": "Niet meer leuk vinden",
+      "reply": "Antwoorden",
+      "dislike": "Niet leuk vinden",
+      "block": "Blokkeren",
+      "block_user": "Gebruiker Blokkeren",
+      "report": "Rapporteren",
+      "mute": "Dempen",
+      "u_sent_friend_request": "Je hebt een vriendschapsverzoek gestuurd",
+      "u_received_friend_request": "Je hebt een vriendschapsverzoek ontvangen",
+      "sent_friend_request": "heeft een vriendschapsverzoek gestuurd",
+      "received_friend_request": "heeft een vriendschapsverzoek ontvangen",
+      "accepted_friend_request": "heeft een vriendschapsverzoek geaccepteerd",
+      "u_accepted_friend_request": "Je hebt een vriendschapsverzoek geaccepteerd"
+    },
+    "views": {
+      "list": "Lijst",
+      "grid": "Raster",
+      "table": "Tabel",
+      "form": "Formulier"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kilometer",
+        "meter": "Meter",
+        "centimeter": "Centimeter",
+        "millimeter": "Millimeter",
+        "micrometer": "Micrometer",
+        "nanometer": "Nanometer"
+      },
+      "weight": {
+        "kilogram": "Kilogram",
+        "gram": "Gram",
+        "milligram": "Milligram",
+        "ton": "Ton"
+      },
+      "volume": {
+        "liter": "Liter",
+        "milliliter": "Milliliter",
+        "cubic_meter": "Kubieke Meter"
+      },
+      "time": {
+        "second": "Seconde",
+        "minute": "Minuut",
+        "hour": "Uur",
+        "day": "Dag",
+        "week": "Week",
+        "month": "Maand",
+        "year": "Jaar"
+      },
+      "area": {
+        "square_meter": "Vierkante Meter",
+        "hectare": "Hectare",
+        "acre": "Acre"
+      }
+    },
+    "numbers": {
+      "1": "Een",
+      "2": "Twee",
+      "3": "Drie",
+      "4": "Vier",
+      "5": "Vijf",
+      "6": "Zes",
+      "7": "Zeven",
+      "8": "Acht",
+      "9": "Negen",
+      "10": "Tien"
+    },
+    "ranks": {
+      "1": "eerste",
+      "2": "tweede",
+      "3": "derde",
+      "4": "vierde",
+      "5": "vijfde",
+      "6": "zesde",
+      "7": "zevende",
+      "8": "achtste",
+      "9": "negende",
+      "10": "tiende"
+    },
+    "control": {
+      "on": "Aan",
+      "off": "Uit",
+      "yes": "Ja",
+      "no": "Nee",
+      "confirm": "Bevestigen",
+      "cancel": "Annuleren",
+      "retry": "Opnieuw proberen",
+      "logout": "Uitloggen",
+      "edit": "Bewerken",
+      "delete": "Verwijderen",
+      "revert": "Terugzetten",
+      "save": "Opslaan"
+    },
+    "response": {
+      "success": "Succes",
+      "error": "Fout",
+      "info": "Informatie",
+      "warning": "Waarschuwing",
+      "tbd": "Nog Te Bepalen",
+      "wip": "In Bewerking"
+    },
+    "priority": {
+      "high": "Hoog",
+      "medium": "Gemiddeld",
+      "low": "Laag"
+    },
+    "date": {
+      "today": "Vandaag",
+      "yesterday": "Gisteren",
+      "tomorrow": "Morgen",
+      "just_now": "Zojuist",
+      "a_moment_ago": "Een moment geleden",
+      "minutes_ago": "Minuten geleden",
+      "hours_ago": "Uren geleden",
+      "days_ago": "{days} dagen geleden",
+      "weeks_ago": "Weken geleden",
+      "this_week": "Deze week",
+      "last_week": "Vorige week",
+      "this_month": "Deze maand",
+      "last_month": "Vorige maand",
+      "this_year": "Dit jaar",
+      "last_year": "Vorig jaar",
+      "days_ahead": "Over {days} dagen"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Zondag",
+        "monday": "Maandag",
+        "tuesday": "Dinsdag",
+        "wednesday": "Woensdag",
+        "thursday": "Donderdag",
+        "friday": "Vrijdag",
+        "saturday": "Zaterdag"
+      },
+      "short": {
+        "sunday": "Zo",
+        "monday": "Ma",
+        "tuesday": "Di",
+        "wednesday": "Wo",
+        "thursday": "Do",
+        "friday": "Vr",
+        "saturday": "Za"
+      }
+    },
+    "formRestrictions": {
+      "required": "Dit veld is verplicht.",
+      "minLength": "Minimale lengte is {min} karakters.",
+      "maxLength": "Maximale lengte is {max} karakters.",
+      "invalidFormat": "Het formaat is ongeldig.",
+      "pattern": "Dit veld moet het patroon {pattern} volgen."
+    },
+    "tos": {
+      "accept": "Ik accepteer de Algemene Voorwaarden",
+      "read_accept": "Lees en accepteer onze Algemene Voorwaarden",
+      "title": "Algemene Voorwaarden",
+      "service": "Servicevoorwaarden",
+      "privacy": "Privacybeleid",
+      "continue_agree": "Door door te gaan, ga je akkoord met onze Algemene Voorwaarden",
+      "must_accept": "Je moet de Algemene Voorwaarden accepteren om door te gaan",
+      "view": "Bekijk Algemene Voorwaarden",
+      "last_updated": "Laatst bijgewerkt: {date}",
+      "contact_info": "Neem contact met ons op voor meer informatie over onze Algemene Voorwaarden"
+    },
+    "permissions": {
+      "allow_location": "Toegang tot locatie toestaan?",
+      "allow_camera": "Toegang tot camera toestaan?",
+      "allow_microphone": "Toegang tot microfoon toestaan?",
+      "allow_notifications": "Meldingen toestaan?",
+      "allow_contacts": "Toegang tot contacten toestaan?",
+      "allow_photos": "Toegang tot foto's toestaan?",
+      "allow_storage": "Toegang tot opslag toestaan?",
+      "allow_bluetooth": "Bluetooth-toegang toestaan?",
+      "need_permission": "We hebben je toestemming nodig om door te gaan",
+      "permission_denied": "Toestemming geweigerd",
+      "permission_required": "Deze toestemming is vereist",
+      "enable_in_settings": "Schakel in bij Instellingen"
+    },
+    "prompts": {
+      "session_expired": "Je sessie is verlopen",
+      "are_you_sure": "Weet je het zeker?",
+      "cannot_be_undone": "Deze actie kan niet ongedaan worden gemaakt",
+      "unsaved_changes": "Je hebt niet-opgeslagen wijzigingen",
+      "discard_changes": "Wijzigingen verwerpen?",
+      "location_disabled": "Locatieservices zijn uitgeschakeld",
+      "network_required": "Netwerkverbinding vereist",
+      "login_required": "Inloggen vereist om door te gaan",
+      "confirm_delete": "Weet je zeker dat je dit wilt verwijderen?",
+      "confirm_logout": "Weet je zeker dat je wilt uitloggen?",
+      "save_before_exit": "Wil je opslaan voordat je afsluit?",
+      "reload_page": "Wil je de pagina herladen?",
+      "update_available": "Er is een update beschikbaar",
+      "restart_required": "Herstart vereist om wijzigingen toe te passen"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Inloggen succesvol.",
+      "error": "Inloggen mislukt. Probeer opnieuw.",
+      "wrong_password": "Controleer je inloggegevens."
+    },
+    "form": {
+      "username": "Gebruikersnaam",
+      "password": "Wachtwoord",
+      "submit": "Inloggen",
+      "create_account": "Nieuw account aanmaken",
+      "Forgot password": "Wachtwoord vergeten"
+    },
+    "tooltip": {
+      "username": "Voer je gebruikersnaam in",
+      "password": "Voer je wachtwoord in",
+      "submit": "Klik om in te loggen"
+    },
+    "validation": {
+      "username": {
+        "required": "Gebruikersnaam is verplicht."
+      },
+      "password": {
+        "required": "Wachtwoord is verplicht."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Registratie succesvol.",
+      "error": "Registratie mislukt. Probeer opnieuw."
+    },
+    "form": {
+      "username": "Gebruikersnaam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "submit": "Registreren",
+      "accept_tos": "Ik accepteer de Servicevoorwaarden"
+    },
+    "tooltip": {
+      "username": "Voer je gebruikersnaam in",
+      "email": "Voer je e-mail in",
+      "password": "Voer je wachtwoord in",
+      "submit": "Klik om te registreren"
+    },
+    "validation": {
+      "username": {
+        "required": "Gebruikersnaam is verplicht.",
+        "minLength": "Gebruikersnaam moet minimaal {min} karakters lang zijn.",
+        "maxLength": "Gebruikersnaam mag maximaal {max} karakters lang zijn."
+      },
+      "email": {
+        "required": "E-mail is verplicht.",
+        "invalid": "E-mail is niet geldig."
+      },
+      "password": {
+        "required": "Wachtwoord is verplicht.",
+        "minLength": "Wachtwoord moet minimaal {min} karakters lang zijn."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "Wachtwoord reset e-mail verzonden.",
+      "error": "Wachtwoord reset mislukt. Probeer opnieuw."
+    },
+    "form": {
+      "email": "E-mail",
+      "submit": "Wachtwoord Resetten"
+    },
+    "tooltip": {
+      "email": "Voer je e-mail in",
+      "submit": "Klik om wachtwoord te resetten"
+    },
+    "validation": {
+      "email": {
+        "required": "E-mail is verplicht.",
+        "invalid": "E-mail is niet geldig."
+      }
+    }
+  }
+}

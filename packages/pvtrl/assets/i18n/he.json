@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "טוען",
+      "something_went_wrong": "משהו השתבש",
+      "network_problem": "יש בעיית רשת",
+      "no_data_found": "לא נמצאו נתונים",
+      "no_results_found": "לא נמצאו תוצאות",
+      "unsupported_file_type": "סוג קובץ לא נתמך",
+      "file_too_large": "הקובץ גדול מדי",
+      "operation_timed_out": "הפעולה תמה בהקצאת הזמן",
+      "session_expired": "ההפעלה פגה",
+      "unsavable_changes": "לא ניתן לשמור את השינויים",
+      "no_server_connect": "לא ניתן להתחבר לשרת",
+      "access_denied": "הגישה נדחתה"
+    },
+    "game": {
+      "start": "התחל משחק",
+      "pause": "השהה משחק",
+      "resume": "המשך משחק",
+      "end": "סיים משחק",
+      "level_up": "עלייה ברמה",
+      "game_over": "המשחק הסתיים",
+      "next_level": "הרמה הבאה",
+      "previous_level": "הרמה הקודמת",
+      "restart": "הפעל מחדש את המשחק"
+    },
+    "social": {
+      "like": "אהבתי",
+      "share": "שתף",
+      "comment": "הגב",
+      "follow": "עקוב",
+      "unfollow": "הפסק לעקוב",
+      "unlike": "ביטול אהבתי",
+      "reply": "השב",
+      "dislike": "לא אהבתי",
+      "block": "חסום",
+      "block_user": "חסום משתמש",
+      "report": "דווח",
+      "mute": "השתק",
+      "u_sent_friend_request": "שלחת בקשת חברות",
+      "u_received_friend_request": "קיבלת בקשת חברות",
+      "sent_friend_request": "שלח בקשת חברות",
+      "received_friend_request": "קיבל בקשת חברות",
+      "accepted_friend_request": "אישר בקשת חברות",
+      "u_accepted_friend_request": "אישרת בקשת חברות"
+    },
+    "views": {
+      "list": "רשימה",
+      "grid": "רשת",
+      "table": "טבלה",
+      "form": "טופס"
+    },
+    "units": {
+      "length": {
+        "kilometer": "קילומטר",
+        "meter": "מטר",
+        "centimeter": "סנטימטר",
+        "millimeter": "מילימטר",
+        "micrometer": "מיקרומטר",
+        "nanometer": "נאנומטר"
+      },
+      "weight": {
+        "kilogram": "קילוגרם",
+        "gram": "גרם",
+        "milligram": "מיליגרם",
+        "ton": "טון"
+      },
+      "volume": {
+        "liter": "ליטר",
+        "milliliter": "מיליליטר",
+        "cubic_meter": "מטר מעוקב"
+      },
+      "time": {
+        "second": "שנייה",
+        "minute": "דקה",
+        "hour": "שעה",
+        "day": "יום",
+        "week": "שבוע",
+        "month": "חודש",
+        "year": "שנה"
+      },
+      "area": {
+        "square_meter": "מטר רבוע",
+        "hectare": "הקטר",
+        "acre": "אקר"
+      }
+    },
+    "numbers": {
+      "1": "אחד",
+      "2": "שניים",
+      "3": "שלושה",
+      "4": "ארבעה",
+      "5": "חמישה",
+      "6": "שישה",
+      "7": "שבעה",
+      "8": "שמונה",
+      "9": "תשעה",
+      "10": "עשרה"
+    },
+    "ranks": {
+      "1": "ראשון",
+      "2": "שני",
+      "3": "שלישי",
+      "4": "רביעי",
+      "5": "חמישי",
+      "6": "שישי",
+      "7": "שביעי",
+      "8": "שמיני",
+      "9": "תשיעי",
+      "10": "עשירי"
+    },
+    "control": {
+      "on": "פועל",
+      "off": "כבוי",
+      "yes": "כן",
+      "no": "לא",
+      "confirm": "אישור",
+      "cancel": "ביטול",
+      "retry": "נסה שוב",
+      "logout": "התנתק",
+      "edit": "ערוך",
+      "delete": "מחק",
+      "revert": "החזר",
+      "save": "שמור"
+    },
+    "response": {
+      "success": "הצלחה",
+      "error": "שגיאה",
+      "info": "מידע",
+      "warning": "אזהרה",
+      "tbd": "עוד לא הוחלט",
+      "wip": "בעבודה"
+    },
+    "priority": {
+      "high": "גבוהה",
+      "medium": "בינונית",
+      "low": "נמוכה"
+    },
+    "date": {
+      "today": "היום",
+      "yesterday": "אתמול",
+      "tomorrow": "מחר",
+      "just_now": "עכשיו",
+      "a_moment_ago": "לפני רגע",
+      "minutes_ago": "לפני דקות",
+      "hours_ago": "לפני שעות",
+      "days_ago": "לפני {days} ימים",
+      "weeks_ago": "לפני שבועות",
+      "this_week": "השבוע",
+      "last_week": "השבוע שעבר",
+      "this_month": "החודש",
+      "last_month": "החודש שעבר",
+      "this_year": "השנה",
+      "last_year": "השנה שעברה",
+      "days_ahead": "בעוד {days} ימים"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "ראשון",
+        "monday": "שני",
+        "tuesday": "שלישי",
+        "wednesday": "רביעי",
+        "thursday": "חמישי",
+        "friday": "שישי",
+        "saturday": "שבת"
+      },
+      "short": {
+        "sunday": "א'",
+        "monday": "ב'",
+        "tuesday": "ג'",
+        "wednesday": "ד'",
+        "thursday": "ה'",
+        "friday": "ו'",
+        "saturday": "ש'"
+      }
+    },
+    "formRestrictions": {
+      "required": "שדה זה הוא חובה.",
+      "minLength": "האורך המינימלי הוא {min} תווים.",
+      "maxLength": "האורך המקסימלי הוא {max} תווים.",
+      "invalidFormat": "הפורמט לא תקין.",
+      "pattern": "שדה זה חייב לעקוב אחר התבנית {pattern}."
+    },
+    "tos": {
+      "accept": "אני מסכים לתנאי השימוש",
+      "read_accept": "אנא קרא ואשר את תנאי השימוש שלנו",
+      "title": "תנאי השימוש",
+      "service": "תנאי השירות",
+      "privacy": "מדיניות פרטיות",
+      "continue_agree": "המשך פעולה מהווה הסכמה לתנאי השימוש שלנו",
+      "must_accept": "עליך לאשר את תנאי השימוש כדי להמשיך",
+      "view": "צפה בתנאי השימוש",
+      "last_updated": "עודכן לאחרונה: {date}",
+      "contact_info": "צור קשר למידע נוסף על תנאי השימוש שלנו"
+    },
+    "permissions": {
+      "allow_location": "לאפשר גישה למיקום?",
+      "allow_camera": "לאפשר גישה למצלמה?",
+      "allow_microphone": "לאפשר גישה למיקרופון?",
+      "allow_notifications": "לאפשר התראות?",
+      "allow_contacts": "לאפשר גישה לאנשי קשר?",
+      "allow_photos": "לאפשר גישה לתמונות?",
+      "allow_storage": "לאפשר גישה לאחסון?",
+      "allow_bluetooth": "לאפשר גישה לבלוטות'?",
+      "need_permission": "אנחנו זקוקים להרשאה שלך כדי להמשיך",
+      "permission_denied": "ההרשאה נדחתה",
+      "permission_required": "הרשאה זו נדרשת",
+      "enable_in_settings": "אנא הפעל בהגדרות"
+    },
+    "prompts": {
+      "session_expired": "ההפעלה שלך פגה",
+      "are_you_sure": "האם אתה בטוח?",
+      "cannot_be_undone": "פעולה זו לא ניתנת לביטול",
+      "unsaved_changes": "יש לך שינויים שלא נשמרו",
+      "discard_changes": "לבטל שינויים?",
+      "location_disabled": "שירותי מיקום מבוטלים",
+      "network_required": "נדרש חיבור רשת",
+      "login_required": "נדרשת התחברות כדי להמשיך",
+      "confirm_delete": "האם אתה בטוח שברצונך למחוק את זה?",
+      "confirm_logout": "האם אתה בטוח שברצונך להתנתק?",
+      "save_before_exit": "האם ברצונך לשמור לפני היציאה?",
+      "reload_page": "האם ברצונך לטעון מחדש את הדף?",
+      "update_available": "עדכון זמין",
+      "restart_required": "נדרש אתחול כדי להחיל שינויים"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "התחברות הצליחה.",
+      "error": "התחברות נכשלה. אנא נסה שוב.",
+      "wrong_password": "אנא בדוק את פרטי ההתחברות שלך."
+    },
+    "form": {
+      "username": "שם משתמש",
+      "password": "סיסמה",
+      "submit": "התחבר",
+      "create_account": "צור חשבון חדש",
+      "Forgot password": "שכחת סיסמה"
+    },
+    "tooltip": {
+      "username": "הזן את שם המשתמש שלך",
+      "password": "הזן את הסיסמה שלך",
+      "submit": "לחץ להתחברות"
+    },
+    "validation": {
+      "username": {
+        "required": "שם משתמש הוא חובה."
+      },
+      "password": {
+        "required": "סיסמה היא חובה."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "הרשמה הצליחה.",
+      "error": "הרשמה נכשלה. אנא נסה שוב."
+    },
+    "form": {
+      "username": "שם משתמש",
+      "email": "דוא\"ל",
+      "password": "סיסמה",
+      "submit": "הירשם",
+      "accept_tos": "אני מסכים לתנאי השירות"
+    },
+    "tooltip": {
+      "username": "הזן את שם המשתמש שלך",
+      "email": "הזן את הדוא\"ל שלך",
+      "password": "הזן את הסיסמה שלך",
+      "submit": "לחץ להירשם"
+    },
+    "validation": {
+      "username": {
+        "required": "שם משתמש הוא חובה.",
+        "minLength": "שם משתמש חייב להיות באורך של לפחות {min} תווים.",
+        "maxLength": "שם משתמש חייב להיות באורך של לכל היותר {max} תווים."
+      },
+      "email": {
+        "required": "דוא\"ל הוא חובה.",
+        "invalid": "דוא\"ל לא תקין."
+      },
+      "password": {
+        "required": "סיסמה היא חובה.",
+        "minLength": "סיסמה חייבת להיות באורך של לפחות {min} תווים."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "דוא\"ל לאיפוס סיסמה נשלח.",
+      "error": "איפוס סיסמה נכשל. אנא נסה שוב."
+    },
+    "form": {
+      "email": "דוא\"ל",
+      "submit": "איפוס סיסמה"
+    },
+    "tooltip": {
+      "email": "הזן את הדוא\"ל שלך",
+      "submit": "לחץ לאיפוס סיסמה"
+    },
+    "validation": {
+      "email": {
+        "required": "דוא\"ל הוא חובה.",
+        "invalid": "דוא\"ל לא תקין."
+      }
+    }
+  }
+}

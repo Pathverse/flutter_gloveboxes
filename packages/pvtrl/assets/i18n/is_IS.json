@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "Hleður",
+      "something_went_wrong": "Eitthvað fór úrskeiðis",
+      "network_problem": "Það er netverksvandi",
+      "no_data_found": "Engin gögn fundust",
+      "no_results_found": "Engar niðurstöður fundust",
+      "unsupported_file_type": "Óstudd skráargerð",
+      "file_too_large": "Skráin er of stór",
+      "operation_timed_out": "Aðgerð rann út á tíma",
+      "session_expired": "Lota er útrunnin",
+      "unsavable_changes": "Ekki var hægt að vista breytingar",
+      "no_server_connect": "Gat ekki tengst þjóninum",
+      "access_denied": "Aðgangi hafnað"
+    },
+    "game": {
+      "start": "Byrja leik",
+      "pause": "Gera hlé á leik",
+      "resume": "Halda áfram með leik",
+      "end": "Enda leik",
+      "level_up": "Stig upp",
+      "game_over": "Leik lokið",
+      "next_level": "Næsta stig",
+      "previous_level": "Fyrra stig",
+      "restart": "Endurræsa leik"
+    },
+    "social": {
+      "like": "Líkar",
+      "share": "Deila",
+      "comment": "Athugasemd",
+      "follow": "Fylgja",
+      "unfollow": "Hætta að fylgja",
+      "unlike": "Líkar ekki",
+      "reply": "Svara",
+      "dislike": "Líkar ekki",
+      "block": "Loka á",
+      "block_user": "Loka á notanda",
+      "report": "Tilkynna",
+      "mute": "Þagga",
+      "u_sent_friend_request": "Þú sendir vinabeiðni",
+      "u_received_friend_request": "Þú fékkst vinabeiðni",
+      "sent_friend_request": "sendi vinabeiðni",
+      "received_friend_request": "fékk vinabeiðni",
+      "accepted_friend_request": "samþykkti vinabeiðni",
+      "u_accepted_friend_request": "Þú samþykktir vinabeiðni"
+    },
+    "views": {
+      "list": "Listi",
+      "grid": "Net",
+      "table": "Tafla",
+      "form": "Eyðublað"
+    },
+    "units": {
+      "length": {
+        "kilometer": "Kílómetri",
+        "meter": "Metri",
+        "centimeter": "Sentímetri",
+        "millimeter": "Millímetri",
+        "micrometer": "Míkrómetri",
+        "nanometer": "Nanómetri"
+      },
+      "weight": {
+        "kilogram": "Kílógramm",
+        "gram": "Gramm",
+        "milligram": "Milligramm",
+        "ton": "Tonn"
+      },
+      "volume": {
+        "liter": "Lítri",
+        "milliliter": "Millilítri",
+        "cubic_meter": "Rúmmetri"
+      },
+      "time": {
+        "second": "Sekúnda",
+        "minute": "Mínúta",
+        "hour": "Klukkustund",
+        "day": "Dagur",
+        "week": "Vika",
+        "month": "Mánuður",
+        "year": "Ár"
+      },
+      "area": {
+        "square_meter": "Fermetri",
+        "hectare": "Hektari",
+        "acre": "Ekra"
+      }
+    },
+    "numbers": {
+      "1": "Einn",
+      "2": "Tveir",
+      "3": "Þrír",
+      "4": "Fjórir",
+      "5": "Fimm",
+      "6": "Sex",
+      "7": "Sjö",
+      "8": "Átta",
+      "9": "Níu",
+      "10": "Tíu"
+    },
+    "ranks": {
+      "1": "fyrsti",
+      "2": "annar",
+      "3": "þriðji",
+      "4": "fjórði",
+      "5": "fimmti",
+      "6": "sjötti",
+      "7": "sjöundi",
+      "8": "áttundi",
+      "9": "níundi",
+      "10": "tíundi"
+    },
+    "control": {
+      "on": "Kveikt",
+      "off": "Slökkt",
+      "yes": "Já",
+      "no": "Nei",
+      "confirm": "Staðfesta",
+      "cancel": "Hætta við",
+      "retry": "Reyna aftur",
+      "logout": "Skrá út",
+      "edit": "Breyta",
+      "delete": "Eyða",
+      "revert": "Afturkalla",
+      "save": "Vista"
+    },
+    "response": {
+      "success": "Árangur",
+      "error": "Villa",
+      "info": "Upplýsingar",
+      "warning": "Viðvörun",
+      "tbd": "Á eftir að ákveða",
+      "wip": "Í vinnslu"
+    },
+    "priority": {
+      "high": "Hátt",
+      "medium": "Miðlungs",
+      "low": "Lágt"
+    },
+    "date": {
+      "today": "Í dag",
+      "yesterday": "Í gær",
+      "tomorrow": "Á morgun",
+      "just_now": "Akkúrat núna",
+      "a_moment_ago": "Fyrir augnablik",
+      "minutes_ago": "Fyrir mínútum",
+      "hours_ago": "Fyrir klukkustundum",
+      "days_ago": "Fyrir {days} dögum",
+      "weeks_ago": "Fyrir vikum",
+      "this_week": "Þessa viku",
+      "last_week": "Síðustu viku",
+      "this_month": "Þennan mánuð",
+      "last_month": "Síðasta mánuð",
+      "this_year": "Þetta ár",
+      "last_year": "Síðasta ár",
+      "days_ahead": "Eftir {days} daga"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "Sunnudagur",
+        "monday": "Mánudagur",
+        "tuesday": "Þriðjudagur",
+        "wednesday": "Miðvikudagur",
+        "thursday": "Fimmtudagur",
+        "friday": "Föstudagur",
+        "saturday": "Laugardagur"
+      },
+      "short": {
+        "sunday": "Sun",
+        "monday": "Mán",
+        "tuesday": "Þri",
+        "wednesday": "Mið",
+        "thursday": "Fim",
+        "friday": "Fös",
+        "saturday": "Lau"
+      }
+    },
+    "formRestrictions": {
+      "required": "Þessi reitur er nauðsynlegur.",
+      "minLength": "Lágmarkslengd er {min} stafir.",
+      "maxLength": "Hámarkslengd er {max} stafir.",
+      "invalidFormat": "Snið er ógilt.",
+      "pattern": "Þessi reitur verður að fylgja mynstrinu {pattern}."
+    },
+    "tos": {
+      "accept": "Ég samþykki Skilmála og Skilyrði",
+      "read_accept": "Vinsamlegast lestu og samþykktu Skilmála og Skilyrði okkar",
+      "title": "Skilmálar og Skilyrði",
+      "service": "Þjónustuskilmálar",
+      "privacy": "Persónuverndarstefna",
+      "continue_agree": "Með því að halda áfram samþykkir þú Skilmála og Skilyrði okkar",
+      "must_accept": "Þú verður að samþykkja Skilmála og Skilyrði til að halda áfram",
+      "view": "Skoða Skilmála og Skilyrði",
+      "last_updated": "Síðast uppfært: {date}",
+      "contact_info": "Hafðu samband við okkur fyrir frekari upplýsingar um Skilmála og Skilyrði okkar"
+    },
+    "permissions": {
+      "allow_location": "Leyfa aðgang að staðsetningu?",
+      "allow_camera": "Leyfa aðgang að myndavél?",
+      "allow_microphone": "Leyfa aðgang að hljóðnema?",
+      "allow_notifications": "Leyfa tilkynningar?",
+      "allow_contacts": "Leyfa aðgang að tengiliðum?",
+      "allow_photos": "Leyfa aðgang að myndum?",
+      "allow_storage": "Leyfa aðgang að geymslu?",
+      "allow_bluetooth": "Leyfa Bluetooth aðgang?",
+      "need_permission": "Við þurfum þitt leyfi til að halda áfram",
+      "permission_denied": "Leyfi hafnað",
+      "permission_required": "Þetta leyfi er nauðsynlegt",
+      "enable_in_settings": "Vinsamlegast virkjaðu í stillingum"
+    },
+    "prompts": {
+      "session_expired": "Lota þín er útrunnin",
+      "are_you_sure": "Ertu viss?",
+      "cannot_be_undone": "Þessa aðgerð er ekki hægt að afturkalla",
+      "unsaved_changes": "Þú ert með óvistaðar breytingar",
+      "discard_changes": "Hafna breytingum?",
+      "location_disabled": "Staðsetningarþjónusta er óvirk",
+      "network_required": "Nettenging nauðsynleg",
+      "login_required": "Innskráning nauðsynleg til að halda áfram",
+      "confirm_delete": "Ertu viss um að þú viljir eyða þessu?",
+      "confirm_logout": "Ertu viss um að þú viljir skrá þig út?",
+      "save_before_exit": "Viltu vista áður en þú ferð út?",
+      "reload_page": "Viltu endurhlaða síðunni?",
+      "update_available": "Uppfærsla er í boði",
+      "restart_required": "Endurræsing nauðsynleg til að virkja breytingar"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "Innskráning tókst.",
+      "error": "Innskráning mistókst. Vinsamlegast reyndu aftur.",
+      "wrong_password": "Vinsamlegast staðfestu innskráningarupplýsingarnar þínar."
+    },
+    "form": {
+      "username": "Notandanafn",
+      "password": "Lykilorð",
+      "submit": "Skrá inn",
+      "create_account": "Búa til nýjan reikning",
+      "Forgot password": "Gleymt lykilorð"
+    },
+    "tooltip": {
+      "username": "Sláðu inn notandanafnið þitt",
+      "password": "Sláðu inn lykilorðið þitt",
+      "submit": "Smelltu til að skrá inn"
+    },
+    "validation": {
+      "username": {
+        "required": "Notandanafn er nauðsynlegt."
+      },
+      "password": {
+        "required": "Lykilorð er nauðsynlegt."
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "Skráning tókst.",
+      "error": "Skráning mistókst. Vinsamlegast reyndu aftur."
+    },
+    "form": {
+      "username": "Notandanafn",
+      "email": "Netfang",
+      "password": "Lykilorð",
+      "submit": "Skrá sig",
+      "accept_tos": "Ég samþykki þjónustuskilmálana"
+    },
+    "tooltip": {
+      "username": "Sláðu inn notandanafnið þitt",
+      "email": "Sláðu inn netfangið þitt",
+      "password": "Sláðu inn lykilorðið þitt",
+      "submit": "Smelltu til að skrá þig"
+    },
+    "validation": {
+      "username": {
+        "required": "Notandanafn er nauðsynlegt.",
+        "minLength": "Notandanafn verður að vera að minnsta kosti {min} stafir að lengd.",
+        "maxLength": "Notandanafn má vera að hámarki {max} stafir að lengd."
+      },
+      "email": {
+        "required": "Netfang er nauðsynlegt.",
+        "invalid": "Netfang er ekki gilt."
+      },
+      "password": {
+        "required": "Lykilorð er nauðsynlegt.",
+        "minLength": "Lykilorð verður að vera að minnsta kosti {min} stafir að lengd."
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "Netfang fyrir endurstillingu lykilorðs sent.",
+      "error": "Endurstilling lykilorðs mistókst. Vinsamlegast reyndu aftur."
+    },
+    "form": {
+      "email": "Netfang",
+      "submit": "Endurstilla lykilorð"
+    },
+    "tooltip": {
+      "email": "Sláðu inn netfangið þitt",
+      "submit": "Smelltu til að endurstilla lykilorð"
+    },
+    "validation": {
+      "email": {
+        "required": "Netfang er nauðsynlegt.",
+        "invalid": "Netfang er ekki gilt."
+      }
+    }
+  }
+}

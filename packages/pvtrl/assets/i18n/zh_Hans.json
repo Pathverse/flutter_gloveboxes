@@ -1,0 +1,309 @@
+{
+  "common": {
+    "message": {
+      "loading": "正在加载",
+      "something_went_wrong": "出了点问题",
+      "network_problem": "网络有问题",
+      "no_data_found": "未找到数据",
+      "no_results_found": "未找到结果",
+      "unsupported_file_type": "不支持的文件类型",
+      "file_too_large": "文件太大",
+      "operation_timed_out": "操作超时",
+      "session_expired": "会话已过期",
+      "unsavable_changes": "无法保存更改",
+      "no_server_connect": "无法连接到服务器",
+      "access_denied": "访问被拒绝"
+    },
+    "game": {
+      "start": "开始游戏",
+      "pause": "暂停游戏",
+      "resume": "继续游戏",
+      "end": "结束游戏",
+      "level_up": "升级",
+      "game_over": "游戏结束",
+      "next_level": "下一关",
+      "previous_level": "上一关",
+      "restart": "重新开始游戏"
+    },
+    "social": {
+      "like": "点赞",
+      "share": "分享",
+      "comment": "评论",
+      "follow": "关注",
+      "unfollow": "取消关注",
+      "unlike": "取消点赞",
+      "reply": "回复",
+      "dislike": "不喜欢",
+      "block": "屏蔽",
+      "block_user": "屏蔽用户",
+      "report": "举报",
+      "mute": "静音",
+      "u_sent_friend_request": "您发送了好友请求",
+      "u_received_friend_request": "您收到了好友请求",
+      "sent_friend_request": "发送了好友请求",
+      "received_friend_request": "收到了好友请求",
+      "accepted_friend_request": "接受了好友请求",
+      "u_accepted_friend_request": "您接受了好友请求"
+    },
+    "views": {
+      "list": "列表",
+      "grid": "网格",
+      "table": "表格",
+      "form": "表单"
+    },
+    "units": {
+      "length": {
+        "kilometer": "千米",
+        "meter": "米",
+        "centimeter": "厘米",
+        "millimeter": "毫米",
+        "micrometer": "微米",
+        "nanometer": "纳米"
+      },
+      "weight": {
+        "kilogram": "千克",
+        "gram": "克",
+        "milligram": "毫克",
+        "ton": "吨"
+      },
+      "volume": {
+        "liter": "升",
+        "milliliter": "毫升",
+        "cubic_meter": "立方米"
+      },
+      "time": {
+        "second": "秒",
+        "minute": "分钟",
+        "hour": "小时",
+        "day": "天",
+        "week": "周",
+        "month": "月",
+        "year": "年"
+      },
+      "area": {
+        "square_meter": "平方米",
+        "hectare": "公顷",
+        "acre": "英亩"
+      }
+    },
+    "numbers": {
+      "1": "一",
+      "2": "二",
+      "3": "三",
+      "4": "四",
+      "5": "五",
+      "6": "六",
+      "7": "七",
+      "8": "八",
+      "9": "九",
+      "10": "十"
+    },
+    "ranks": {
+      "1": "第一",
+      "2": "第二",
+      "3": "第三",
+      "4": "第四",
+      "5": "第五",
+      "6": "第六",
+      "7": "第七",
+      "8": "第八",
+      "9": "第九",
+      "10": "第十"
+    },
+    "control": {
+      "on": "开",
+      "off": "关",
+      "yes": "是",
+      "no": "否",
+      "confirm": "确认",
+      "cancel": "取消",
+      "retry": "重试",
+      "logout": "退出登录",
+      "edit": "编辑",
+      "delete": "删除",
+      "revert": "恢复",
+      "save": "保存"
+    },
+    "response": {
+      "success": "成功",
+      "error": "错误",
+      "info": "信息",
+      "warning": "警告",
+      "tbd": "待定",
+      "wip": "正在进行"
+    },
+    "priority": {
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    },
+    "date": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "tomorrow": "明天",
+      "just_now": "刚刚",
+      "a_moment_ago": "刚才",
+      "minutes_ago": "几分钟前",
+      "hours_ago": "几小时前",
+      "days_ago": "{days}天前",
+      "weeks_ago": "几周前",
+      "this_week": "本周",
+      "last_week": "上周",
+      "this_month": "本月",
+      "last_month": "上月",
+      "this_year": "今年",
+      "last_year": "去年",
+      "days_ahead": "{days}天后"
+    },
+    "weekdays": {
+      "full": {
+        "sunday": "星期日",
+        "monday": "星期一",
+        "tuesday": "星期二",
+        "wednesday": "星期三",
+        "thursday": "星期四",
+        "friday": "星期五",
+        "saturday": "星期六"
+      },
+      "short": {
+        "sunday": "日",
+        "monday": "一",
+        "tuesday": "二",
+        "wednesday": "三",
+        "thursday": "四",
+        "friday": "五",
+        "saturday": "六"
+      }
+    },
+    "formRestrictions": {
+      "required": "此字段为必填项。",
+      "minLength": "最小长度为{min}个字符。",
+      "maxLength": "最大长度为{max}个字符。",
+      "invalidFormat": "格式无效。",
+      "pattern": "此字段必须遵循模式{pattern}。"
+    },
+    "tos": {
+      "accept": "我接受条款和条件",
+      "read_accept": "请阅读并接受我们的条款和条件",
+      "title": "条款和条件",
+      "service": "服务条款",
+      "privacy": "隐私政策",
+      "continue_agree": "继续即表示您同意我们的条款和条件",
+      "must_accept": "您必须接受条款和条件才能继续",
+      "view": "查看条款和条件",
+      "last_updated": "最后更新：{date}",
+      "contact_info": "如需了解有关我们条款和条件的更多信息，请联系我们"
+    },
+    "permissions": {
+      "allow_location": "允许访问位置？",
+      "allow_camera": "允许访问摄像头？",
+      "allow_microphone": "允许访问麦克风？",
+      "allow_notifications": "允许通知？",
+      "allow_contacts": "允许访问联系人？",
+      "allow_photos": "允许访问照片？",
+      "allow_storage": "允许访问存储？",
+      "allow_bluetooth": "允许蓝牙访问？",
+      "need_permission": "我们需要您的许可才能继续",
+      "permission_denied": "权限被拒绝",
+      "permission_required": "此权限是必需的",
+      "enable_in_settings": "请在设置中启用"
+    },
+    "prompts": {
+      "session_expired": "您的会话已过期",
+      "are_you_sure": "您确定吗？",
+      "cannot_be_undone": "此操作无法撤销",
+      "unsaved_changes": "您有未保存的更改",
+      "discard_changes": "丢弃更改？",
+      "location_disabled": "位置服务已禁用",
+      "network_required": "需要网络连接",
+      "login_required": "需要登录才能继续",
+      "confirm_delete": "您确定要删除这个吗？",
+      "confirm_logout": "您确定要退出登录吗？",
+      "save_before_exit": "退出前要保存吗？",
+      "reload_page": "您要重新加载页面吗？",
+      "update_available": "有可用更新",
+      "restart_required": "需要重启以应用更改"
+    }
+  },
+  "login": {
+    "message": {
+      "success": "登录成功。",
+      "error": "登录失败。请重试。",
+      "wrong_password": "请验证您的凭据。"
+    },
+    "form": {
+      "username": "用户名",
+      "password": "密码",
+      "submit": "登录",
+      "create_account": "创建新帐户",
+      "Forgot password": "忘记密码"
+    },
+    "tooltip": {
+      "username": "输入您的用户名",
+      "password": "输入您的密码",
+      "submit": "点击登录"
+    },
+    "validation": {
+      "username": {
+        "required": "用户名是必需的。"
+      },
+      "password": {
+        "required": "密码是必需的。"
+      }
+    }
+  },
+  "register": {
+    "message": {
+      "success": "注册成功。",
+      "error": "注册失败。请重试。"
+    },
+    "form": {
+      "username": "用户名",
+      "email": "电子邮件",
+      "password": "密码",
+      "submit": "注册",
+      "accept_tos": "我接受服务条款"
+    },
+    "tooltip": {
+      "username": "输入您的用户名",
+      "email": "输入您的电子邮件",
+      "password": "输入您的密码",
+      "submit": "点击注册"
+    },
+    "validation": {
+      "username": {
+        "required": "用户名是必需的。",
+        "minLength": "用户名必须至少{min}个字符长。",
+        "maxLength": "用户名最多{max}个字符长。"
+      },
+      "email": {
+        "required": "电子邮件是必需的。",
+        "invalid": "电子邮件无效。"
+      },
+      "password": {
+        "required": "密码是必需的。",
+        "minLength": "密码必须至少{min}个字符长。"
+      }
+    }
+  },
+  "passwordReset": {
+    "message": {
+      "success": "密码重置邮件已发送。",
+      "error": "密码重置失败。请重试。"
+    },
+    "form": {
+      "email": "电子邮件",
+      "submit": "重置密码"
+    },
+    "tooltip": {
+      "email": "输入您的电子邮件",
+      "submit": "点击重置密码"
+    },
+    "validation": {
+      "email": {
+        "required": "电子邮件是必需的。",
+        "invalid": "电子邮件无效。"
+      }
+    }
+  }
+}
