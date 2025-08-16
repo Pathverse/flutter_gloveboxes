@@ -5,15 +5,11 @@ import 'package:pvlog/core/logger.dart';
 
 PVLogger createStandardLogger({
   PVLevel? lv,
-  String? filepath,
-  String? package,
-  String? function,
+  String? namespace
 }) {
   return PVLogger(
     level: lv ?? PVLevel.all,
-    filepath: filepath,
-    package: package,
-    function: function,
+    namespace: namespace,
     adapters: {
       StdPrinter(),
       StoreHistory(

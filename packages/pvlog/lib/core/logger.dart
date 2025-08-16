@@ -9,51 +9,30 @@ part 'adapter.dart';
 
 class PVLogger {
   final PVLevel level;
-  final String? package;
-  final String? filepath;
-  final String? function;
+  final String? namespace;
   final Set<PvLogAdapter> _adapters;
 
   PVLogger({
     this.level = PVLevel.all,
     Set<PvLogAdapter> adapters = const {},
-    this.filepath,
-    this.package,
-    this.function,
+    this.namespace,
   }) : _adapters = adapters;
 
   Set<PvLogAdapter> get adapters => _adapters.toSet();
 
   PVLogger sub({
     PVLevel? level,
-    String? package,
-    String? filepath,
-    String? function,
+    String? namespace,
   }) {
     PVLevel newlevel = level ?? this.level;
-    if (this.package != null && package != null) {
-      throw ArgumentError("Package is already set");
+    // namespace inherits via .
+    if (this.namespace != null) {
+      namespace = '${this.namespace}.$namespace'; 
     }
-    String? newpackage = package ?? this.package;
-    String? newfilePath;
-    if (this.filepath != null) {
-      if (filepath != null) {
-        newfilePath = '${this.filepath}/$filepath';
-      } else {
-        newfilePath = this.filepath;
-      }
-    }
-
-    if (this.function != null && function != null) {
-      throw ArgumentError("Function is already set");
-    }
-    String? newfunction = function ?? this.function;
 
     return PVLogger(
       level: newlevel,
-      package: newpackage,
-      filepath: newfilePath,
-      function: newfunction,
+      namespace: namespace,
       adapters: adapters,
     );
   }
@@ -135,7 +114,7 @@ class PVLogger {
       logger: this,
       raw: message,
       trigger: getTop(),
-      metadata: extra ?? {}
+      metadata: extra ?? {},
     );
 
     _handle(event);
@@ -151,7 +130,7 @@ class PVLogger {
       logger: this,
       raw: message,
       trigger: getTop(),
-      metadata: extra ?? {}
+      metadata: extra ?? {},
     );
 
     _handle(event);
@@ -162,8 +141,8 @@ class PVLogger {
       return;
     }
 
-    var catMap = {"__e" : e, "__s" : s};
-    if (extra != null){
+    var catMap = {"__e": e, "__s": s};
+    if (extra != null) {
       catMap.addAll(extra);
     }
 
@@ -172,10 +151,9 @@ class PVLogger {
       logger: this,
       raw: e.toString(),
       trigger: getTop(),
-      metadata: catMap
+      metadata: catMap,
     );
 
     _handle(event);
   }
-
 }
