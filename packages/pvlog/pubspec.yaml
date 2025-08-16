@@ -1,7 +1,7 @@
 name: pvlog
-description: "A new Flutter package project."
+description: "pathverse logging solution with better extension to logger"
 version: 0.0.1
-homepage:
+homepage: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:
   sdk: ^3.8.1
