@@ -12,9 +12,9 @@ Provides common UI constants in 13 languages. No setup required.
 import 'package:pvtrl/pvtrl.dart';
 
 // Use translations
-Text(t.common.message.loading)
-Text(t.common.control.save)
-Text(t.login.form.username)
+Text(pvtrl.common.message.loading)
+Text(pvtrl.common.control.save)
+Text(pvtrl.login.form.username)
 ```
 
 ## Languages
