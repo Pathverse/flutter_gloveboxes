@@ -124,6 +124,34 @@
       "revert": "되돌리기",
       "save": "저장"
     },
+    "buttons": {
+      "submit": "제출",
+      "close": "닫기",
+      "reset": "재설정",
+      "cancel": "취소",
+      "continue": "계속",
+      "back": "뒤로",
+      "next": "다음",
+      "done": "완료",
+      "upload": "업로드",
+      "choose": "선택",
+      "select": "선택",
+      "clear": "지우기"
+    },
+    "labels": {
+      "required": "필수",
+      "optional": "선택사항",
+      "instructions": "지침:",
+      "status": "상태",
+      "progress": "진행률",
+      "question": "질문",
+      "answer": "답변",
+      "response": "응답",
+      "loading": "로딩 중...",
+      "error": "오류",
+      "success": "성공",
+      "warning": "경고"
+    },
     "response": {
       "success": "성공",
       "error": "오류",

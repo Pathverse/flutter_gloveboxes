@@ -12,7 +12,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	/// Returns the current translations of the given [context].
 	///
 	/// Usage:
-	/// final t = Translations.of(context);
+	/// final pvtrl = Translations.of(context);
 	static Translations of(BuildContext context) => InheritedLocaleData.of<AppLocale, Translations>(context).translations;
 
 	/// You can call this constructor and build your own translation instance of this locale.
@@ -60,6 +60,8 @@ class TranslationsCommonEn {
 	late final TranslationsCommonNumbersEn numbers = TranslationsCommonNumbersEn.internal(_root);
 	late final TranslationsCommonRanksEn ranks = TranslationsCommonRanksEn.internal(_root);
 	late final TranslationsCommonControlEn control = TranslationsCommonControlEn.internal(_root);
+	late final TranslationsCommonButtonsEn buttons = TranslationsCommonButtonsEn.internal(_root);
+	late final TranslationsCommonLabelsEn labels = TranslationsCommonLabelsEn.internal(_root);
 	late final TranslationsCommonResponseEn response = TranslationsCommonResponseEn.internal(_root);
 	late final TranslationsCommonPriorityEn priority = TranslationsCommonPriorityEn.internal(_root);
 	late final TranslationsCommonDateEn date = TranslationsCommonDateEn.internal(_root);
@@ -409,6 +411,96 @@ class TranslationsCommonControlEn {
 
 	/// en: 'Save'
 	String get save => 'Save';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Submit'
+	String get submit => 'Submit';
+
+	/// en: 'Close'
+	String get close => 'Close';
+
+	/// en: 'Reset'
+	String get reset => 'Reset';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
+
+	/// en: 'Continue'
+	String get kContinue => 'Continue';
+
+	/// en: 'Back'
+	String get back => 'Back';
+
+	/// en: 'Next'
+	String get next => 'Next';
+
+	/// en: 'Done'
+	String get done => 'Done';
+
+	/// en: 'Upload'
+	String get upload => 'Upload';
+
+	/// en: 'Choose'
+	String get choose => 'Choose';
+
+	/// en: 'Select'
+	String get select => 'Select';
+
+	/// en: 'Clear'
+	String get clear => 'Clear';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Required'
+	String get required => 'Required';
+
+	/// en: 'Optional'
+	String get optional => 'Optional';
+
+	/// en: 'Instructions:'
+	String get instructions => 'Instructions:';
+
+	/// en: 'Status'
+	String get status => 'Status';
+
+	/// en: 'Progress'
+	String get progress => 'Progress';
+
+	/// en: 'Question'
+	String get question => 'Question';
+
+	/// en: 'Answer'
+	String get answer => 'Answer';
+
+	/// en: 'Response'
+	String get response => 'Response';
+
+	/// en: 'Loading...'
+	String get loading => 'Loading...';
+
+	/// en: 'Error'
+	String get error => 'Error';
+
+	/// en: 'Success'
+	String get success => 'Success';
+
+	/// en: 'Warning'
+	String get warning => 'Warning';
 }
 
 // Path: common.response
@@ -1245,6 +1337,30 @@ extension on Translations {
 			case 'common.control.delete': return 'Delete';
 			case 'common.control.revert': return 'Revert';
 			case 'common.control.save': return 'Save';
+			case 'common.buttons.submit': return 'Submit';
+			case 'common.buttons.close': return 'Close';
+			case 'common.buttons.reset': return 'Reset';
+			case 'common.buttons.cancel': return 'Cancel';
+			case 'common.buttons.kContinue': return 'Continue';
+			case 'common.buttons.back': return 'Back';
+			case 'common.buttons.next': return 'Next';
+			case 'common.buttons.done': return 'Done';
+			case 'common.buttons.upload': return 'Upload';
+			case 'common.buttons.choose': return 'Choose';
+			case 'common.buttons.select': return 'Select';
+			case 'common.buttons.clear': return 'Clear';
+			case 'common.labels.required': return 'Required';
+			case 'common.labels.optional': return 'Optional';
+			case 'common.labels.instructions': return 'Instructions:';
+			case 'common.labels.status': return 'Status';
+			case 'common.labels.progress': return 'Progress';
+			case 'common.labels.question': return 'Question';
+			case 'common.labels.answer': return 'Answer';
+			case 'common.labels.response': return 'Response';
+			case 'common.labels.loading': return 'Loading...';
+			case 'common.labels.error': return 'Error';
+			case 'common.labels.success': return 'Success';
+			case 'common.labels.warning': return 'Warning';
 			case 'common.response.success': return 'Success';
 			case 'common.response.error': return 'Error';
 			case 'common.response.info': return 'Info';

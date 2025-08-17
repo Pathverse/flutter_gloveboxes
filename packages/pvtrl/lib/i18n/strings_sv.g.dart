@@ -59,6 +59,8 @@ class TranslationsCommonSv extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersSv numbers = TranslationsCommonNumbersSv._(_root);
 	@override late final TranslationsCommonRanksSv ranks = TranslationsCommonRanksSv._(_root);
 	@override late final TranslationsCommonControlSv control = TranslationsCommonControlSv._(_root);
+	@override late final TranslationsCommonButtonsSv buttons = TranslationsCommonButtonsSv._(_root);
+	@override late final TranslationsCommonLabelsSv labels = TranslationsCommonLabelsSv._(_root);
 	@override late final TranslationsCommonResponseSv response = TranslationsCommonResponseSv._(_root);
 	@override late final TranslationsCommonPrioritySv priority = TranslationsCommonPrioritySv._(_root);
 	@override late final TranslationsCommonDateSv date = TranslationsCommonDateSv._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlSv extends TranslationsCommonControlEn {
 	@override String get delete => 'Ta bort';
 	@override String get revert => 'Återställ';
 	@override String get save => 'Spara';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsSv extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsSv._(TranslationsSv root) : this._root = root, super.internal(root);
+
+	final TranslationsSv _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => 'Skicka';
+	@override String get close => 'Stäng';
+	@override String get reset => 'Återställ';
+	@override String get cancel => 'Avbryt';
+	@override String get kContinue => 'Fortsätt';
+	@override String get back => 'Tillbaka';
+	@override String get next => 'Nästa';
+	@override String get done => 'Klar';
+	@override String get upload => 'Ladda upp';
+	@override String get choose => 'Välj';
+	@override String get select => 'Välj';
+	@override String get clear => 'Rensa';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsSv extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsSv._(TranslationsSv root) : this._root = root, super.internal(root);
+
+	final TranslationsSv _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => 'Obligatorisk';
+	@override String get optional => 'Valfritt';
+	@override String get instructions => 'Instruktioner:';
+	@override String get status => 'Status';
+	@override String get progress => 'Framsteg';
+	@override String get question => 'Fråga';
+	@override String get answer => 'Svar';
+	@override String get response => 'Respons';
+	@override String get loading => 'Laddar...';
+	@override String get error => 'Fel';
+	@override String get success => 'Framgång';
+	@override String get warning => 'Varning';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsSv {
 			case 'common.control.delete': return 'Ta bort';
 			case 'common.control.revert': return 'Återställ';
 			case 'common.control.save': return 'Spara';
+			case 'common.buttons.submit': return 'Skicka';
+			case 'common.buttons.close': return 'Stäng';
+			case 'common.buttons.reset': return 'Återställ';
+			case 'common.buttons.cancel': return 'Avbryt';
+			case 'common.buttons.kContinue': return 'Fortsätt';
+			case 'common.buttons.back': return 'Tillbaka';
+			case 'common.buttons.next': return 'Nästa';
+			case 'common.buttons.done': return 'Klar';
+			case 'common.buttons.upload': return 'Ladda upp';
+			case 'common.buttons.choose': return 'Välj';
+			case 'common.buttons.select': return 'Välj';
+			case 'common.buttons.clear': return 'Rensa';
+			case 'common.labels.required': return 'Obligatorisk';
+			case 'common.labels.optional': return 'Valfritt';
+			case 'common.labels.instructions': return 'Instruktioner:';
+			case 'common.labels.status': return 'Status';
+			case 'common.labels.progress': return 'Framsteg';
+			case 'common.labels.question': return 'Fråga';
+			case 'common.labels.answer': return 'Svar';
+			case 'common.labels.response': return 'Respons';
+			case 'common.labels.loading': return 'Laddar...';
+			case 'common.labels.error': return 'Fel';
+			case 'common.labels.success': return 'Framgång';
+			case 'common.labels.warning': return 'Varning';
 			case 'common.response.success': return 'Framgång';
 			case 'common.response.error': return 'Fel';
 			case 'common.response.info': return 'Information';

@@ -59,6 +59,8 @@ class TranslationsCommonZh extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersZh numbers = TranslationsCommonNumbersZh._(_root);
 	@override late final TranslationsCommonRanksZh ranks = TranslationsCommonRanksZh._(_root);
 	@override late final TranslationsCommonControlZh control = TranslationsCommonControlZh._(_root);
+	@override late final TranslationsCommonButtonsZh buttons = TranslationsCommonButtonsZh._(_root);
+	@override late final TranslationsCommonLabelsZh labels = TranslationsCommonLabelsZh._(_root);
 	@override late final TranslationsCommonResponseZh response = TranslationsCommonResponseZh._(_root);
 	@override late final TranslationsCommonPriorityZh priority = TranslationsCommonPriorityZh._(_root);
 	@override late final TranslationsCommonDateZh date = TranslationsCommonDateZh._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlZh extends TranslationsCommonControlEn {
 	@override String get delete => '刪除';
 	@override String get revert => '還原';
 	@override String get save => '儲存';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsZh extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsZh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => '提交';
+	@override String get close => '關閉';
+	@override String get reset => '重置';
+	@override String get cancel => '取消';
+	@override String get kContinue => '繼續';
+	@override String get back => '返回';
+	@override String get next => '下一步';
+	@override String get done => '完成';
+	@override String get upload => '上傳';
+	@override String get choose => '選擇';
+	@override String get select => '選取';
+	@override String get clear => '清除';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsZh extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsZh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => '必填';
+	@override String get optional => '可選';
+	@override String get instructions => '說明:';
+	@override String get status => '狀態';
+	@override String get progress => '進度';
+	@override String get question => '問題';
+	@override String get answer => '答案';
+	@override String get response => '回覆';
+	@override String get loading => '載入中...';
+	@override String get error => '錯誤';
+	@override String get success => '成功';
+	@override String get warning => '警告';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsZh {
 			case 'common.control.delete': return '刪除';
 			case 'common.control.revert': return '還原';
 			case 'common.control.save': return '儲存';
+			case 'common.buttons.submit': return '提交';
+			case 'common.buttons.close': return '關閉';
+			case 'common.buttons.reset': return '重置';
+			case 'common.buttons.cancel': return '取消';
+			case 'common.buttons.kContinue': return '繼續';
+			case 'common.buttons.back': return '返回';
+			case 'common.buttons.next': return '下一步';
+			case 'common.buttons.done': return '完成';
+			case 'common.buttons.upload': return '上傳';
+			case 'common.buttons.choose': return '選擇';
+			case 'common.buttons.select': return '選取';
+			case 'common.buttons.clear': return '清除';
+			case 'common.labels.required': return '必填';
+			case 'common.labels.optional': return '可選';
+			case 'common.labels.instructions': return '說明:';
+			case 'common.labels.status': return '狀態';
+			case 'common.labels.progress': return '進度';
+			case 'common.labels.question': return '問題';
+			case 'common.labels.answer': return '答案';
+			case 'common.labels.response': return '回覆';
+			case 'common.labels.loading': return '載入中...';
+			case 'common.labels.error': return '錯誤';
+			case 'common.labels.success': return '成功';
+			case 'common.labels.warning': return '警告';
 			case 'common.response.success': return '成功';
 			case 'common.response.error': return '錯誤';
 			case 'common.response.info': return '資訊';

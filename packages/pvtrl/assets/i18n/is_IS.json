@@ -124,6 +124,34 @@
       "revert": "Afturkalla",
       "save": "Vista"
     },
+    "buttons": {
+      "submit": "Senda",
+      "close": "Loka",
+      "reset": "Endurstilla",
+      "cancel": "Hætta við",
+      "continue": "Halda áfram",
+      "back": "Til baka",
+      "next": "Næsta",
+      "done": "Lokið",
+      "upload": "Hlaða upp",
+      "choose": "Velja",
+      "select": "Velja",
+      "clear": "Hreinsa"
+    },
+    "labels": {
+      "required": "Nauðsynlegt",
+      "optional": "Valfrjálst",
+      "instructions": "Leiðbeiningar:",
+      "status": "Staða",
+      "progress": "Framvindu",
+      "question": "Spurning",
+      "answer": "Svar",
+      "response": "Svörun",
+      "loading": "Hleður...",
+      "error": "Villa",
+      "success": "Árangur",
+      "warning": "Viðvörun"
+    },
     "response": {
       "success": "Árangur",
       "error": "Villa",

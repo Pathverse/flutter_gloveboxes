@@ -59,6 +59,8 @@ class TranslationsCommonHe extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersHe numbers = TranslationsCommonNumbersHe._(_root);
 	@override late final TranslationsCommonRanksHe ranks = TranslationsCommonRanksHe._(_root);
 	@override late final TranslationsCommonControlHe control = TranslationsCommonControlHe._(_root);
+	@override late final TranslationsCommonButtonsHe buttons = TranslationsCommonButtonsHe._(_root);
+	@override late final TranslationsCommonLabelsHe labels = TranslationsCommonLabelsHe._(_root);
 	@override late final TranslationsCommonResponseHe response = TranslationsCommonResponseHe._(_root);
 	@override late final TranslationsCommonPriorityHe priority = TranslationsCommonPriorityHe._(_root);
 	@override late final TranslationsCommonDateHe date = TranslationsCommonDateHe._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlHe extends TranslationsCommonControlEn {
 	@override String get delete => 'מחק';
 	@override String get revert => 'החזר';
 	@override String get save => 'שמור';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsHe extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsHe._(TranslationsHe root) : this._root = root, super.internal(root);
+
+	final TranslationsHe _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => 'שלח';
+	@override String get close => 'סגור';
+	@override String get reset => 'אפס';
+	@override String get cancel => 'ביטול';
+	@override String get kContinue => 'המשך';
+	@override String get back => 'חזור';
+	@override String get next => 'הבא';
+	@override String get done => 'סיום';
+	@override String get upload => 'העלה';
+	@override String get choose => 'בחר';
+	@override String get select => 'בחר';
+	@override String get clear => 'נקה';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsHe extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsHe._(TranslationsHe root) : this._root = root, super.internal(root);
+
+	final TranslationsHe _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => 'חובה';
+	@override String get optional => 'אופציונלי';
+	@override String get instructions => 'הוראות:';
+	@override String get status => 'סטטוס';
+	@override String get progress => 'התקדמות';
+	@override String get question => 'שאלה';
+	@override String get answer => 'תשובה';
+	@override String get response => 'תגובה';
+	@override String get loading => 'טוען...';
+	@override String get error => 'שגיאה';
+	@override String get success => 'הצלחה';
+	@override String get warning => 'אזהרה';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsHe {
 			case 'common.control.delete': return 'מחק';
 			case 'common.control.revert': return 'החזר';
 			case 'common.control.save': return 'שמור';
+			case 'common.buttons.submit': return 'שלח';
+			case 'common.buttons.close': return 'סגור';
+			case 'common.buttons.reset': return 'אפס';
+			case 'common.buttons.cancel': return 'ביטול';
+			case 'common.buttons.kContinue': return 'המשך';
+			case 'common.buttons.back': return 'חזור';
+			case 'common.buttons.next': return 'הבא';
+			case 'common.buttons.done': return 'סיום';
+			case 'common.buttons.upload': return 'העלה';
+			case 'common.buttons.choose': return 'בחר';
+			case 'common.buttons.select': return 'בחר';
+			case 'common.buttons.clear': return 'נקה';
+			case 'common.labels.required': return 'חובה';
+			case 'common.labels.optional': return 'אופציונלי';
+			case 'common.labels.instructions': return 'הוראות:';
+			case 'common.labels.status': return 'סטטוס';
+			case 'common.labels.progress': return 'התקדמות';
+			case 'common.labels.question': return 'שאלה';
+			case 'common.labels.answer': return 'תשובה';
+			case 'common.labels.response': return 'תגובה';
+			case 'common.labels.loading': return 'טוען...';
+			case 'common.labels.error': return 'שגיאה';
+			case 'common.labels.success': return 'הצלחה';
+			case 'common.labels.warning': return 'אזהרה';
 			case 'common.response.success': return 'הצלחה';
 			case 'common.response.error': return 'שגיאה';
 			case 'common.response.info': return 'מידע';

@@ -59,6 +59,8 @@ class TranslationsCommonEs extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersEs numbers = TranslationsCommonNumbersEs._(_root);
 	@override late final TranslationsCommonRanksEs ranks = TranslationsCommonRanksEs._(_root);
 	@override late final TranslationsCommonControlEs control = TranslationsCommonControlEs._(_root);
+	@override late final TranslationsCommonButtonsEs buttons = TranslationsCommonButtonsEs._(_root);
+	@override late final TranslationsCommonLabelsEs labels = TranslationsCommonLabelsEs._(_root);
 	@override late final TranslationsCommonResponseEs response = TranslationsCommonResponseEs._(_root);
 	@override late final TranslationsCommonPriorityEs priority = TranslationsCommonPriorityEs._(_root);
 	@override late final TranslationsCommonDateEs date = TranslationsCommonDateEs._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlEs extends TranslationsCommonControlEn {
 	@override String get delete => 'Eliminar';
 	@override String get revert => 'Revertir';
 	@override String get save => 'Guardar';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsEs extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsEs._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => 'Enviar';
+	@override String get close => 'Cerrar';
+	@override String get reset => 'Restablecer';
+	@override String get cancel => 'Cancelar';
+	@override String get kContinue => 'Continuar';
+	@override String get back => 'Atrás';
+	@override String get next => 'Siguiente';
+	@override String get done => 'Hecho';
+	@override String get upload => 'Subir';
+	@override String get choose => 'Elegir';
+	@override String get select => 'Seleccionar';
+	@override String get clear => 'Limpiar';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsEs extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsEs._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => 'Requerido';
+	@override String get optional => 'Opcional';
+	@override String get instructions => 'Instrucciones:';
+	@override String get status => 'Estado';
+	@override String get progress => 'Progreso';
+	@override String get question => 'Pregunta';
+	@override String get answer => 'Respuesta';
+	@override String get response => 'Respuesta';
+	@override String get loading => 'Cargando...';
+	@override String get error => 'Error';
+	@override String get success => 'Éxito';
+	@override String get warning => 'Advertencia';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsEs {
 			case 'common.control.delete': return 'Eliminar';
 			case 'common.control.revert': return 'Revertir';
 			case 'common.control.save': return 'Guardar';
+			case 'common.buttons.submit': return 'Enviar';
+			case 'common.buttons.close': return 'Cerrar';
+			case 'common.buttons.reset': return 'Restablecer';
+			case 'common.buttons.cancel': return 'Cancelar';
+			case 'common.buttons.kContinue': return 'Continuar';
+			case 'common.buttons.back': return 'Atrás';
+			case 'common.buttons.next': return 'Siguiente';
+			case 'common.buttons.done': return 'Hecho';
+			case 'common.buttons.upload': return 'Subir';
+			case 'common.buttons.choose': return 'Elegir';
+			case 'common.buttons.select': return 'Seleccionar';
+			case 'common.buttons.clear': return 'Limpiar';
+			case 'common.labels.required': return 'Requerido';
+			case 'common.labels.optional': return 'Opcional';
+			case 'common.labels.instructions': return 'Instrucciones:';
+			case 'common.labels.status': return 'Estado';
+			case 'common.labels.progress': return 'Progreso';
+			case 'common.labels.question': return 'Pregunta';
+			case 'common.labels.answer': return 'Respuesta';
+			case 'common.labels.response': return 'Respuesta';
+			case 'common.labels.loading': return 'Cargando...';
+			case 'common.labels.error': return 'Error';
+			case 'common.labels.success': return 'Éxito';
+			case 'common.labels.warning': return 'Advertencia';
 			case 'common.response.success': return 'Éxito';
 			case 'common.response.error': return 'Error';
 			case 'common.response.info': return 'Información';

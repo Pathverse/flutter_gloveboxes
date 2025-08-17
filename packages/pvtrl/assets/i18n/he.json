@@ -124,6 +124,34 @@
       "revert": "החזר",
       "save": "שמור"
     },
+    "buttons": {
+      "submit": "שלח",
+      "close": "סגור",
+      "reset": "אפס",
+      "cancel": "ביטול",
+      "continue": "המשך",
+      "back": "חזור",
+      "next": "הבא",
+      "done": "סיום",
+      "upload": "העלה",
+      "choose": "בחר",
+      "select": "בחר",
+      "clear": "נקה"
+    },
+    "labels": {
+      "required": "חובה",
+      "optional": "אופציונלי",
+      "instructions": "הוראות:",
+      "status": "סטטוס",
+      "progress": "התקדמות",
+      "question": "שאלה",
+      "answer": "תשובה",
+      "response": "תגובה",
+      "loading": "טוען...",
+      "error": "שגיאה",
+      "success": "הצלחה",
+      "warning": "אזהרה"
+    },
     "response": {
       "success": "הצלחה",
       "error": "שגיאה",

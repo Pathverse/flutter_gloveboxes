@@ -124,6 +124,34 @@
       "revert": "Revertir",
       "save": "Guardar"
     },
+    "buttons": {
+      "submit": "Enviar",
+      "close": "Cerrar",
+      "reset": "Restablecer",
+      "cancel": "Cancelar",
+      "continue": "Continuar",
+      "back": "Atrás",
+      "next": "Siguiente",
+      "done": "Hecho",
+      "upload": "Subir",
+      "choose": "Elegir",
+      "select": "Seleccionar",
+      "clear": "Limpiar"
+    },
+    "labels": {
+      "required": "Requerido",
+      "optional": "Opcional",
+      "instructions": "Instrucciones:",
+      "status": "Estado",
+      "progress": "Progreso",
+      "question": "Pregunta",
+      "answer": "Respuesta",
+      "response": "Respuesta",
+      "loading": "Cargando...",
+      "error": "Error",
+      "success": "Éxito",
+      "warning": "Advertencia"
+    },
     "response": {
       "success": "Éxito",
       "error": "Error",

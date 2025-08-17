@@ -124,6 +124,34 @@
       "revert": "Terugzetten",
       "save": "Opslaan"
     },
+    "buttons": {
+      "submit": "Verzenden",
+      "close": "Sluiten",
+      "reset": "Resetten",
+      "cancel": "Annuleren",
+      "continue": "Doorgaan",
+      "back": "Terug",
+      "next": "Volgende",
+      "done": "Klaar",
+      "upload": "Uploaden",
+      "choose": "Kiezen",
+      "select": "Selecteren",
+      "clear": "Wissen"
+    },
+    "labels": {
+      "required": "Verplicht",
+      "optional": "Optioneel",
+      "instructions": "Instructies:",
+      "status": "Status",
+      "progress": "Voortgang",
+      "question": "Vraag",
+      "answer": "Antwoord",
+      "response": "Reactie",
+      "loading": "Laden...",
+      "error": "Fout",
+      "success": "Succes",
+      "warning": "Waarschuwing"
+    },
     "response": {
       "success": "Succes",
       "error": "Fout",

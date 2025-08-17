@@ -59,6 +59,8 @@ class TranslationsCommonZhHans extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersZhHans numbers = TranslationsCommonNumbersZhHans._(_root);
 	@override late final TranslationsCommonRanksZhHans ranks = TranslationsCommonRanksZhHans._(_root);
 	@override late final TranslationsCommonControlZhHans control = TranslationsCommonControlZhHans._(_root);
+	@override late final TranslationsCommonButtonsZhHans buttons = TranslationsCommonButtonsZhHans._(_root);
+	@override late final TranslationsCommonLabelsZhHans labels = TranslationsCommonLabelsZhHans._(_root);
 	@override late final TranslationsCommonResponseZhHans response = TranslationsCommonResponseZhHans._(_root);
 	@override late final TranslationsCommonPriorityZhHans priority = TranslationsCommonPriorityZhHans._(_root);
 	@override late final TranslationsCommonDateZhHans date = TranslationsCommonDateZhHans._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlZhHans extends TranslationsCommonControlEn {
 	@override String get delete => '删除';
 	@override String get revert => '恢复';
 	@override String get save => '保存';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsZhHans extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsZhHans._(TranslationsZhHans root) : this._root = root, super.internal(root);
+
+	final TranslationsZhHans _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => '提交';
+	@override String get close => '关闭';
+	@override String get reset => '重置';
+	@override String get cancel => '取消';
+	@override String get kContinue => '继续';
+	@override String get back => '返回';
+	@override String get next => '下一步';
+	@override String get done => '完成';
+	@override String get upload => '上传';
+	@override String get choose => '选择';
+	@override String get select => '选择';
+	@override String get clear => '清除';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsZhHans extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsZhHans._(TranslationsZhHans root) : this._root = root, super.internal(root);
+
+	final TranslationsZhHans _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => '必填';
+	@override String get optional => '可选';
+	@override String get instructions => '说明:';
+	@override String get status => '状态';
+	@override String get progress => '进度';
+	@override String get question => '问题';
+	@override String get answer => '答案';
+	@override String get response => '回复';
+	@override String get loading => '加载中...';
+	@override String get error => '错误';
+	@override String get success => '成功';
+	@override String get warning => '警告';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsZhHans {
 			case 'common.control.delete': return '删除';
 			case 'common.control.revert': return '恢复';
 			case 'common.control.save': return '保存';
+			case 'common.buttons.submit': return '提交';
+			case 'common.buttons.close': return '关闭';
+			case 'common.buttons.reset': return '重置';
+			case 'common.buttons.cancel': return '取消';
+			case 'common.buttons.kContinue': return '继续';
+			case 'common.buttons.back': return '返回';
+			case 'common.buttons.next': return '下一步';
+			case 'common.buttons.done': return '完成';
+			case 'common.buttons.upload': return '上传';
+			case 'common.buttons.choose': return '选择';
+			case 'common.buttons.select': return '选择';
+			case 'common.buttons.clear': return '清除';
+			case 'common.labels.required': return '必填';
+			case 'common.labels.optional': return '可选';
+			case 'common.labels.instructions': return '说明:';
+			case 'common.labels.status': return '状态';
+			case 'common.labels.progress': return '进度';
+			case 'common.labels.question': return '问题';
+			case 'common.labels.answer': return '答案';
+			case 'common.labels.response': return '回复';
+			case 'common.labels.loading': return '加载中...';
+			case 'common.labels.error': return '错误';
+			case 'common.labels.success': return '成功';
+			case 'common.labels.warning': return '警告';
 			case 'common.response.success': return '成功';
 			case 'common.response.error': return '错误';
 			case 'common.response.info': return '信息';

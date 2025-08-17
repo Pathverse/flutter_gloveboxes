@@ -59,6 +59,8 @@ class TranslationsCommonFr extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersFr numbers = TranslationsCommonNumbersFr._(_root);
 	@override late final TranslationsCommonRanksFr ranks = TranslationsCommonRanksFr._(_root);
 	@override late final TranslationsCommonControlFr control = TranslationsCommonControlFr._(_root);
+	@override late final TranslationsCommonButtonsFr buttons = TranslationsCommonButtonsFr._(_root);
+	@override late final TranslationsCommonLabelsFr labels = TranslationsCommonLabelsFr._(_root);
 	@override late final TranslationsCommonResponseFr response = TranslationsCommonResponseFr._(_root);
 	@override late final TranslationsCommonPriorityFr priority = TranslationsCommonPriorityFr._(_root);
 	@override late final TranslationsCommonDateFr date = TranslationsCommonDateFr._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlFr extends TranslationsCommonControlEn {
 	@override String get delete => 'Supprimer';
 	@override String get revert => 'Annuler';
 	@override String get save => 'Sauvegarder';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsFr extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsFr._(TranslationsFr root) : this._root = root, super.internal(root);
+
+	final TranslationsFr _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => 'Soumettre';
+	@override String get close => 'Fermer';
+	@override String get reset => 'Réinitialiser';
+	@override String get cancel => 'Annuler';
+	@override String get kContinue => 'Continuer';
+	@override String get back => 'Retour';
+	@override String get next => 'Suivant';
+	@override String get done => 'Terminé';
+	@override String get upload => 'Télécharger';
+	@override String get choose => 'Choisir';
+	@override String get select => 'Sélectionner';
+	@override String get clear => 'Effacer';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsFr extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsFr._(TranslationsFr root) : this._root = root, super.internal(root);
+
+	final TranslationsFr _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => 'Requis';
+	@override String get optional => 'Optionnel';
+	@override String get instructions => 'Instructions:';
+	@override String get status => 'Statut';
+	@override String get progress => 'Progrès';
+	@override String get question => 'Question';
+	@override String get answer => 'Réponse';
+	@override String get response => 'Réponse';
+	@override String get loading => 'Chargement...';
+	@override String get error => 'Erreur';
+	@override String get success => 'Succès';
+	@override String get warning => 'Avertissement';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsFr {
 			case 'common.control.delete': return 'Supprimer';
 			case 'common.control.revert': return 'Annuler';
 			case 'common.control.save': return 'Sauvegarder';
+			case 'common.buttons.submit': return 'Soumettre';
+			case 'common.buttons.close': return 'Fermer';
+			case 'common.buttons.reset': return 'Réinitialiser';
+			case 'common.buttons.cancel': return 'Annuler';
+			case 'common.buttons.kContinue': return 'Continuer';
+			case 'common.buttons.back': return 'Retour';
+			case 'common.buttons.next': return 'Suivant';
+			case 'common.buttons.done': return 'Terminé';
+			case 'common.buttons.upload': return 'Télécharger';
+			case 'common.buttons.choose': return 'Choisir';
+			case 'common.buttons.select': return 'Sélectionner';
+			case 'common.buttons.clear': return 'Effacer';
+			case 'common.labels.required': return 'Requis';
+			case 'common.labels.optional': return 'Optionnel';
+			case 'common.labels.instructions': return 'Instructions:';
+			case 'common.labels.status': return 'Statut';
+			case 'common.labels.progress': return 'Progrès';
+			case 'common.labels.question': return 'Question';
+			case 'common.labels.answer': return 'Réponse';
+			case 'common.labels.response': return 'Réponse';
+			case 'common.labels.loading': return 'Chargement...';
+			case 'common.labels.error': return 'Erreur';
+			case 'common.labels.success': return 'Succès';
+			case 'common.labels.warning': return 'Avertissement';
 			case 'common.response.success': return 'Succès';
 			case 'common.response.error': return 'Erreur';
 			case 'common.response.info': return 'Information';

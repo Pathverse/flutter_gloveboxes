@@ -124,6 +124,34 @@
       "revert": "Fortryd",
       "save": "Gem"
     },
+    "buttons": {
+      "submit": "Send",
+      "close": "Luk",
+      "reset": "Nulstil",
+      "cancel": "Annuller",
+      "continue": "Fortsæt",
+      "back": "Tilbage",
+      "next": "Næste",
+      "done": "Færdig",
+      "upload": "Upload",
+      "choose": "Vælg",
+      "select": "Vælg",
+      "clear": "Ryd"
+    },
+    "labels": {
+      "required": "Påkrævet",
+      "optional": "Valgfrit",
+      "instructions": "Instruktioner:",
+      "status": "Status",
+      "progress": "Fremskridt",
+      "question": "Spørgsmål",
+      "answer": "Svar",
+      "response": "Respons",
+      "loading": "Indlæser...",
+      "error": "Fejl",
+      "success": "Succes",
+      "warning": "Advarsel"
+    },
     "response": {
       "success": "Succes",
       "error": "Fejl",

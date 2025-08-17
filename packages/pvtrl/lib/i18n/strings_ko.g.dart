@@ -59,6 +59,8 @@ class TranslationsCommonKo extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersKo numbers = TranslationsCommonNumbersKo._(_root);
 	@override late final TranslationsCommonRanksKo ranks = TranslationsCommonRanksKo._(_root);
 	@override late final TranslationsCommonControlKo control = TranslationsCommonControlKo._(_root);
+	@override late final TranslationsCommonButtonsKo buttons = TranslationsCommonButtonsKo._(_root);
+	@override late final TranslationsCommonLabelsKo labels = TranslationsCommonLabelsKo._(_root);
 	@override late final TranslationsCommonResponseKo response = TranslationsCommonResponseKo._(_root);
 	@override late final TranslationsCommonPriorityKo priority = TranslationsCommonPriorityKo._(_root);
 	@override late final TranslationsCommonDateKo date = TranslationsCommonDateKo._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlKo extends TranslationsCommonControlEn {
 	@override String get delete => '삭제';
 	@override String get revert => '되돌리기';
 	@override String get save => '저장';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsKo extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsKo._(TranslationsKo root) : this._root = root, super.internal(root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => '제출';
+	@override String get close => '닫기';
+	@override String get reset => '재설정';
+	@override String get cancel => '취소';
+	@override String get kContinue => '계속';
+	@override String get back => '뒤로';
+	@override String get next => '다음';
+	@override String get done => '완료';
+	@override String get upload => '업로드';
+	@override String get choose => '선택';
+	@override String get select => '선택';
+	@override String get clear => '지우기';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsKo extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsKo._(TranslationsKo root) : this._root = root, super.internal(root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => '필수';
+	@override String get optional => '선택사항';
+	@override String get instructions => '지침:';
+	@override String get status => '상태';
+	@override String get progress => '진행률';
+	@override String get question => '질문';
+	@override String get answer => '답변';
+	@override String get response => '응답';
+	@override String get loading => '로딩 중...';
+	@override String get error => '오류';
+	@override String get success => '성공';
+	@override String get warning => '경고';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsKo {
 			case 'common.control.delete': return '삭제';
 			case 'common.control.revert': return '되돌리기';
 			case 'common.control.save': return '저장';
+			case 'common.buttons.submit': return '제출';
+			case 'common.buttons.close': return '닫기';
+			case 'common.buttons.reset': return '재설정';
+			case 'common.buttons.cancel': return '취소';
+			case 'common.buttons.kContinue': return '계속';
+			case 'common.buttons.back': return '뒤로';
+			case 'common.buttons.next': return '다음';
+			case 'common.buttons.done': return '완료';
+			case 'common.buttons.upload': return '업로드';
+			case 'common.buttons.choose': return '선택';
+			case 'common.buttons.select': return '선택';
+			case 'common.buttons.clear': return '지우기';
+			case 'common.labels.required': return '필수';
+			case 'common.labels.optional': return '선택사항';
+			case 'common.labels.instructions': return '지침:';
+			case 'common.labels.status': return '상태';
+			case 'common.labels.progress': return '진행률';
+			case 'common.labels.question': return '질문';
+			case 'common.labels.answer': return '답변';
+			case 'common.labels.response': return '응답';
+			case 'common.labels.loading': return '로딩 중...';
+			case 'common.labels.error': return '오류';
+			case 'common.labels.success': return '성공';
+			case 'common.labels.warning': return '경고';
 			case 'common.response.success': return '성공';
 			case 'common.response.error': return '오류';
 			case 'common.response.info': return '정보';

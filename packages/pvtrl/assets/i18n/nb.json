@@ -124,6 +124,34 @@
       "revert": "Tilbakestill",
       "save": "Lagre"
     },
+    "buttons": {
+      "submit": "Send inn",
+      "close": "Lukk",
+      "reset": "Tilbakestill",
+      "cancel": "Avbryt",
+      "continue": "Fortsett",
+      "back": "Tilbake",
+      "next": "Neste",
+      "done": "Ferdig",
+      "upload": "Last opp",
+      "choose": "Velg",
+      "select": "Velg",
+      "clear": "Tøm"
+    },
+    "labels": {
+      "required": "Påkrevd",
+      "optional": "Valgfritt",
+      "instructions": "Instruksjoner:",
+      "status": "Status",
+      "progress": "Fremgang",
+      "question": "Spørsmål",
+      "answer": "Svar",
+      "response": "Respons",
+      "loading": "Laster...",
+      "error": "Feil",
+      "success": "Suksess",
+      "warning": "Advarsel"
+    },
     "response": {
       "success": "Suksess",
       "error": "Feil",

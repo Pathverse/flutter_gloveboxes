@@ -124,6 +124,34 @@
       "revert": "Återställ",
       "save": "Spara"
     },
+    "buttons": {
+      "submit": "Skicka",
+      "close": "Stäng",
+      "reset": "Återställ",
+      "cancel": "Avbryt",
+      "continue": "Fortsätt",
+      "back": "Tillbaka",
+      "next": "Nästa",
+      "done": "Klar",
+      "upload": "Ladda upp",
+      "choose": "Välj",
+      "select": "Välj",
+      "clear": "Rensa"
+    },
+    "labels": {
+      "required": "Obligatorisk",
+      "optional": "Valfritt",
+      "instructions": "Instruktioner:",
+      "status": "Status",
+      "progress": "Framsteg",
+      "question": "Fråga",
+      "answer": "Svar",
+      "response": "Respons",
+      "loading": "Laddar...",
+      "error": "Fel",
+      "success": "Framgång",
+      "warning": "Varning"
+    },
     "response": {
       "success": "Framgång",
       "error": "Fel",

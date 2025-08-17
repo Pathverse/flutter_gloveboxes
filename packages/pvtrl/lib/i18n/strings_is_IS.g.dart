@@ -59,6 +59,8 @@ class TranslationsCommonIsIs extends TranslationsCommonEn {
 	@override late final TranslationsCommonNumbersIsIs numbers = TranslationsCommonNumbersIsIs._(_root);
 	@override late final TranslationsCommonRanksIsIs ranks = TranslationsCommonRanksIsIs._(_root);
 	@override late final TranslationsCommonControlIsIs control = TranslationsCommonControlIsIs._(_root);
+	@override late final TranslationsCommonButtonsIsIs buttons = TranslationsCommonButtonsIsIs._(_root);
+	@override late final TranslationsCommonLabelsIsIs labels = TranslationsCommonLabelsIsIs._(_root);
 	@override late final TranslationsCommonResponseIsIs response = TranslationsCommonResponseIsIs._(_root);
 	@override late final TranslationsCommonPriorityIsIs priority = TranslationsCommonPriorityIsIs._(_root);
 	@override late final TranslationsCommonDateIsIs date = TranslationsCommonDateIsIs._(_root);
@@ -258,6 +260,48 @@ class TranslationsCommonControlIsIs extends TranslationsCommonControlEn {
 	@override String get delete => 'Eyða';
 	@override String get revert => 'Afturkalla';
 	@override String get save => 'Vista';
+}
+
+// Path: common.buttons
+class TranslationsCommonButtonsIsIs extends TranslationsCommonButtonsEn {
+	TranslationsCommonButtonsIsIs._(TranslationsIsIs root) : this._root = root, super.internal(root);
+
+	final TranslationsIsIs _root; // ignore: unused_field
+
+	// Translations
+	@override String get submit => 'Senda';
+	@override String get close => 'Loka';
+	@override String get reset => 'Endurstilla';
+	@override String get cancel => 'Hætta við';
+	@override String get kContinue => 'Halda áfram';
+	@override String get back => 'Til baka';
+	@override String get next => 'Næsta';
+	@override String get done => 'Lokið';
+	@override String get upload => 'Hlaða upp';
+	@override String get choose => 'Velja';
+	@override String get select => 'Velja';
+	@override String get clear => 'Hreinsa';
+}
+
+// Path: common.labels
+class TranslationsCommonLabelsIsIs extends TranslationsCommonLabelsEn {
+	TranslationsCommonLabelsIsIs._(TranslationsIsIs root) : this._root = root, super.internal(root);
+
+	final TranslationsIsIs _root; // ignore: unused_field
+
+	// Translations
+	@override String get required => 'Nauðsynlegt';
+	@override String get optional => 'Valfrjálst';
+	@override String get instructions => 'Leiðbeiningar:';
+	@override String get status => 'Staða';
+	@override String get progress => 'Framvindu';
+	@override String get question => 'Spurning';
+	@override String get answer => 'Svar';
+	@override String get response => 'Svörun';
+	@override String get loading => 'Hleður...';
+	@override String get error => 'Villa';
+	@override String get success => 'Árangur';
+	@override String get warning => 'Viðvörun';
 }
 
 // Path: common.response
@@ -810,6 +854,30 @@ extension on TranslationsIsIs {
 			case 'common.control.delete': return 'Eyða';
 			case 'common.control.revert': return 'Afturkalla';
 			case 'common.control.save': return 'Vista';
+			case 'common.buttons.submit': return 'Senda';
+			case 'common.buttons.close': return 'Loka';
+			case 'common.buttons.reset': return 'Endurstilla';
+			case 'common.buttons.cancel': return 'Hætta við';
+			case 'common.buttons.kContinue': return 'Halda áfram';
+			case 'common.buttons.back': return 'Til baka';
+			case 'common.buttons.next': return 'Næsta';
+			case 'common.buttons.done': return 'Lokið';
+			case 'common.buttons.upload': return 'Hlaða upp';
+			case 'common.buttons.choose': return 'Velja';
+			case 'common.buttons.select': return 'Velja';
+			case 'common.buttons.clear': return 'Hreinsa';
+			case 'common.labels.required': return 'Nauðsynlegt';
+			case 'common.labels.optional': return 'Valfrjálst';
+			case 'common.labels.instructions': return 'Leiðbeiningar:';
+			case 'common.labels.status': return 'Staða';
+			case 'common.labels.progress': return 'Framvindu';
+			case 'common.labels.question': return 'Spurning';
+			case 'common.labels.answer': return 'Svar';
+			case 'common.labels.response': return 'Svörun';
+			case 'common.labels.loading': return 'Hleður...';
+			case 'common.labels.error': return 'Villa';
+			case 'common.labels.success': return 'Árangur';
+			case 'common.labels.warning': return 'Viðvörun';
 			case 'common.response.success': return 'Árangur';
 			case 'common.response.error': return 'Villa';
 			case 'common.response.info': return 'Upplýsingar';
