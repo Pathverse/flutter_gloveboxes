@@ -281,6 +281,7 @@ class TranslationsCommonButtonsFr extends TranslationsCommonButtonsEn {
 	@override String get choose => 'Choisir';
 	@override String get select => 'Sélectionner';
 	@override String get clear => 'Effacer';
+	@override String get start => 'Commencer';
 }
 
 // Path: common.labels
@@ -866,6 +867,7 @@ extension on TranslationsFr {
 			case 'common.buttons.choose': return 'Choisir';
 			case 'common.buttons.select': return 'Sélectionner';
 			case 'common.buttons.clear': return 'Effacer';
+			case 'common.buttons.start': return 'Commencer';
 			case 'common.labels.required': return 'Requis';
 			case 'common.labels.optional': return 'Optionnel';
 			case 'common.labels.instructions': return 'Instructions:';

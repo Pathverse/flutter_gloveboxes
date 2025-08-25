@@ -136,7 +136,8 @@
       "upload": "Ladda upp",
       "choose": "Välj",
       "select": "Välj",
-      "clear": "Rensa"
+      "clear": "Rensa",
+      "start": "Starta"
     },
     "labels": {
       "required": "Obligatorisk",

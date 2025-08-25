@@ -136,7 +136,8 @@
       "upload": "Uploaden",
       "choose": "Kiezen",
       "select": "Selecteren",
-      "clear": "Wissen"
+      "clear": "Wissen",
+      "start": "Starten"
     },
     "labels": {
       "required": "Verplicht",

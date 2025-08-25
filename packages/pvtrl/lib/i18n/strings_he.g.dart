@@ -281,6 +281,7 @@ class TranslationsCommonButtonsHe extends TranslationsCommonButtonsEn {
 	@override String get choose => 'בחר';
 	@override String get select => 'בחר';
 	@override String get clear => 'נקה';
+	@override String get start => 'התחל';
 }
 
 // Path: common.labels
@@ -866,6 +867,7 @@ extension on TranslationsHe {
 			case 'common.buttons.choose': return 'בחר';
 			case 'common.buttons.select': return 'בחר';
 			case 'common.buttons.clear': return 'נקה';
+			case 'common.buttons.start': return 'התחל';
 			case 'common.labels.required': return 'חובה';
 			case 'common.labels.optional': return 'אופציונלי';
 			case 'common.labels.instructions': return 'הוראות:';

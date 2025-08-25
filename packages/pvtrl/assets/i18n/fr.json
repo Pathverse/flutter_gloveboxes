@@ -136,7 +136,8 @@
       "upload": "Télécharger",
       "choose": "Choisir",
       "select": "Sélectionner",
-      "clear": "Effacer"
+      "clear": "Effacer",
+      "start": "Commencer"
     },
     "labels": {
       "required": "Requis",

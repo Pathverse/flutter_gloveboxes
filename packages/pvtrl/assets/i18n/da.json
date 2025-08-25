@@ -136,7 +136,8 @@
       "upload": "Upload",
       "choose": "Vælg",
       "select": "Vælg",
-      "clear": "Ryd"
+      "clear": "Ryd",
+      "start": "Starte"
     },
     "labels": {
       "required": "Påkrævet",

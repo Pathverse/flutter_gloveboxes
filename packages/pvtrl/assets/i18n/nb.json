@@ -136,7 +136,8 @@
       "upload": "Last opp",
       "choose": "Velg",
       "select": "Velg",
-      "clear": "Tøm"
+      "clear": "Tøm",
+      "start": "Start"
     },
     "labels": {
       "required": "Påkrevd",

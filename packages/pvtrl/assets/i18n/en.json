@@ -136,7 +136,8 @@
       "upload": "Upload",
       "choose": "Choose",
       "select": "Select",
-      "clear": "Clear"
+      "clear": "Clear",
+      "start": "Start"
     },
     "labels": {
       "required": "Required",

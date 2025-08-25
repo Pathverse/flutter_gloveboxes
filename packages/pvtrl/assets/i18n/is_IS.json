@@ -136,7 +136,8 @@
       "upload": "Hlaða upp",
       "choose": "Velja",
       "select": "Velja",
-      "clear": "Hreinsa"
+      "clear": "Hreinsa",
+      "start": "Byrja"
     },
     "labels": {
       "required": "Nauðsynlegt",

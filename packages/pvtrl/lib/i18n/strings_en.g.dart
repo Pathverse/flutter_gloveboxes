@@ -456,6 +456,9 @@ class TranslationsCommonButtonsEn {
 
 	/// en: 'Clear'
 	String get clear => 'Clear';
+
+	/// en: 'Start'
+	String get start => 'Start';
 }
 
 // Path: common.labels
@@ -1349,6 +1352,7 @@ extension on Translations {
 			case 'common.buttons.choose': return 'Choose';
 			case 'common.buttons.select': return 'Select';
 			case 'common.buttons.clear': return 'Clear';
+			case 'common.buttons.start': return 'Start';
 			case 'common.labels.required': return 'Required';
 			case 'common.labels.optional': return 'Optional';
 			case 'common.labels.instructions': return 'Instructions:';

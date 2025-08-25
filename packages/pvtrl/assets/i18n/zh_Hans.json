@@ -136,7 +136,8 @@
       "upload": "上传",
       "choose": "选择",
       "select": "选择",
-      "clear": "清除"
+      "clear": "清除",
+      "start": "开始"
     },
     "labels": {
       "required": "必填",

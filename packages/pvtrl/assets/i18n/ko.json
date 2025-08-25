@@ -136,7 +136,8 @@
       "upload": "업로드",
       "choose": "선택",
       "select": "선택",
-      "clear": "지우기"
+      "clear": "지우기",
+      "start": "시작"
     },
     "labels": {
       "required": "필수",

@@ -136,7 +136,8 @@
       "upload": "Subir",
       "choose": "Elegir",
       "select": "Seleccionar",
-      "clear": "Limpiar"
+      "clear": "Limpiar",
+      "start": "Iniciar"
     },
     "labels": {
       "required": "Requerido",

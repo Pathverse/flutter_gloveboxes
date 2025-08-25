@@ -281,6 +281,7 @@ class TranslationsCommonButtonsKo extends TranslationsCommonButtonsEn {
 	@override String get choose => '선택';
 	@override String get select => '선택';
 	@override String get clear => '지우기';
+	@override String get start => '시작';
 }
 
 // Path: common.labels
@@ -866,6 +867,7 @@ extension on TranslationsKo {
 			case 'common.buttons.choose': return '선택';
 			case 'common.buttons.select': return '선택';
 			case 'common.buttons.clear': return '지우기';
+			case 'common.buttons.start': return '시작';
 			case 'common.labels.required': return '필수';
 			case 'common.labels.optional': return '선택사항';
 			case 'common.labels.instructions': return '지침:';

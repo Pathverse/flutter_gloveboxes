@@ -136,7 +136,8 @@
       "upload": "上傳",
       "choose": "選擇",
       "select": "選取",
-      "clear": "清除"
+      "clear": "清除",
+      "start": "開始"
     },
     "labels": {
       "required": "必填",

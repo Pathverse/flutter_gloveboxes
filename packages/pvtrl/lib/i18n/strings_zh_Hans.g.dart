@@ -281,6 +281,7 @@ class TranslationsCommonButtonsZhHans extends TranslationsCommonButtonsEn {
 	@override String get choose => '选择';
 	@override String get select => '选择';
 	@override String get clear => '清除';
+	@override String get start => '开始';
 }
 
 // Path: common.labels
@@ -866,6 +867,7 @@ extension on TranslationsZhHans {
 			case 'common.buttons.choose': return '选择';
 			case 'common.buttons.select': return '选择';
 			case 'common.buttons.clear': return '清除';
+			case 'common.buttons.start': return '开始';
 			case 'common.labels.required': return '必填';
 			case 'common.labels.optional': return '可选';
 			case 'common.labels.instructions': return '说明:';

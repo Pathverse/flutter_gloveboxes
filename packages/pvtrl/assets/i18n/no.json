@@ -136,7 +136,8 @@
       "upload": "Last opp",
       "choose": "Vel",
       "select": "Vel",
-      "clear": "Tøm"
+      "clear": "Tøm",
+      "start": "Start"
     },
     "labels": {
       "required": "Påkravd",
