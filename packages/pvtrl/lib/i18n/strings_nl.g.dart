@@ -42,6 +42,7 @@ class TranslationsNl extends Translations {
 	@override late final TranslationsLoginNl login = TranslationsLoginNl._(_root);
 	@override late final TranslationsRegisterNl register = TranslationsRegisterNl._(_root);
 	@override late final TranslationsPasswordResetNl passwordReset = TranslationsPasswordResetNl._(_root);
+	@override late final TranslationsLanguagesNl languages = TranslationsLanguagesNl._(_root);
 }
 
 // Path: common
@@ -108,6 +109,16 @@ class TranslationsPasswordResetNl extends TranslationsPasswordResetEn {
 	@override late final TranslationsPasswordResetFormNl form = TranslationsPasswordResetFormNl._(_root);
 	@override late final TranslationsPasswordResetTooltipNl tooltip = TranslationsPasswordResetTooltipNl._(_root);
 	@override late final TranslationsPasswordResetValidationNl validation = TranslationsPasswordResetValidationNl._(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesNl extends TranslationsLanguagesEn {
+	TranslationsLanguagesNl._(TranslationsNl root) : this._root = root, super.internal(root);
+
+	final TranslationsNl _root; // ignore: unused_field
+
+	// Translations
+	@override late final TranslationsLanguagesCurrentNl current = TranslationsLanguagesCurrentNl._(_root);
 }
 
 // Path: common.message
@@ -587,6 +598,28 @@ class TranslationsPasswordResetValidationNl extends TranslationsPasswordResetVal
 	@override late final TranslationsPasswordResetValidationEmailNl email = TranslationsPasswordResetValidationEmailNl._(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentNl extends TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentNl._(TranslationsNl root) : this._root = root, super.internal(root);
+
+	final TranslationsNl _root; // ignore: unused_field
+
+	// Translations
+	@override String get en => 'Engels';
+	@override String get da => 'Deens';
+	@override String get es => 'Spaans';
+	@override String get fr => 'Frans';
+	@override String get he => 'Hebreeuws';
+	@override String get isIS => 'IJslands';
+	@override String get ko => 'Koreaans';
+	@override String get nb => 'Noors (Bokmål)';
+	@override String get nl => 'Nederlands';
+	@override String get no => 'Noors';
+	@override String get sv => 'Zweeds';
+	@override String get zhHans => 'Chinees (Vereenvoudigd)';
+	@override String get zh => 'Chinees (Traditioneel)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthNl extends TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthNl._(TranslationsNl root) : this._root = root, super.internal(root);
@@ -999,6 +1032,19 @@ extension on TranslationsNl {
 			case 'passwordReset.tooltip.submit': return 'Klik om wachtwoord te resetten';
 			case 'passwordReset.validation.email.required': return 'E-mail is verplicht.';
 			case 'passwordReset.validation.email.invalid': return 'E-mail is niet geldig.';
+			case 'languages.current.en': return 'Engels';
+			case 'languages.current.da': return 'Deens';
+			case 'languages.current.es': return 'Spaans';
+			case 'languages.current.fr': return 'Frans';
+			case 'languages.current.he': return 'Hebreeuws';
+			case 'languages.current.isIS': return 'IJslands';
+			case 'languages.current.ko': return 'Koreaans';
+			case 'languages.current.nb': return 'Noors (Bokmål)';
+			case 'languages.current.nl': return 'Nederlands';
+			case 'languages.current.no': return 'Noors';
+			case 'languages.current.sv': return 'Zweeds';
+			case 'languages.current.zhHans': return 'Chinees (Vereenvoudigd)';
+			case 'languages.current.zh': return 'Chinees (Traditioneel)';
 			default: return null;
 		}
 	}

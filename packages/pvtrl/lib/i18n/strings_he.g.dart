@@ -42,6 +42,7 @@ class TranslationsHe extends Translations {
 	@override late final TranslationsLoginHe login = TranslationsLoginHe._(_root);
 	@override late final TranslationsRegisterHe register = TranslationsRegisterHe._(_root);
 	@override late final TranslationsPasswordResetHe passwordReset = TranslationsPasswordResetHe._(_root);
+	@override late final TranslationsLanguagesHe languages = TranslationsLanguagesHe._(_root);
 }
 
 // Path: common
@@ -108,6 +109,16 @@ class TranslationsPasswordResetHe extends TranslationsPasswordResetEn {
 	@override late final TranslationsPasswordResetFormHe form = TranslationsPasswordResetFormHe._(_root);
 	@override late final TranslationsPasswordResetTooltipHe tooltip = TranslationsPasswordResetTooltipHe._(_root);
 	@override late final TranslationsPasswordResetValidationHe validation = TranslationsPasswordResetValidationHe._(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesHe extends TranslationsLanguagesEn {
+	TranslationsLanguagesHe._(TranslationsHe root) : this._root = root, super.internal(root);
+
+	final TranslationsHe _root; // ignore: unused_field
+
+	// Translations
+	@override late final TranslationsLanguagesCurrentHe current = TranslationsLanguagesCurrentHe._(_root);
 }
 
 // Path: common.message
@@ -587,6 +598,28 @@ class TranslationsPasswordResetValidationHe extends TranslationsPasswordResetVal
 	@override late final TranslationsPasswordResetValidationEmailHe email = TranslationsPasswordResetValidationEmailHe._(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentHe extends TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentHe._(TranslationsHe root) : this._root = root, super.internal(root);
+
+	final TranslationsHe _root; // ignore: unused_field
+
+	// Translations
+	@override String get en => 'אנגלית';
+	@override String get da => 'דנית';
+	@override String get es => 'ספרדית';
+	@override String get fr => 'צרפתית';
+	@override String get he => 'עברית';
+	@override String get isIS => 'איסלנדית';
+	@override String get ko => 'קוריאנית';
+	@override String get nb => 'נורווגית (בוקמול)';
+	@override String get nl => 'הולנדית';
+	@override String get no => 'נורווגית';
+	@override String get sv => 'שוודית';
+	@override String get zhHans => 'סינית (מפושטת)';
+	@override String get zh => 'סינית (מסורתית)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthHe extends TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthHe._(TranslationsHe root) : this._root = root, super.internal(root);
@@ -999,6 +1032,19 @@ extension on TranslationsHe {
 			case 'passwordReset.tooltip.submit': return 'לחץ לאיפוס סיסמה';
 			case 'passwordReset.validation.email.required': return 'דוא"ל הוא חובה.';
 			case 'passwordReset.validation.email.invalid': return 'דוא"ל לא תקין.';
+			case 'languages.current.en': return 'אנגלית';
+			case 'languages.current.da': return 'דנית';
+			case 'languages.current.es': return 'ספרדית';
+			case 'languages.current.fr': return 'צרפתית';
+			case 'languages.current.he': return 'עברית';
+			case 'languages.current.isIS': return 'איסלנדית';
+			case 'languages.current.ko': return 'קוריאנית';
+			case 'languages.current.nb': return 'נורווגית (בוקמול)';
+			case 'languages.current.nl': return 'הולנדית';
+			case 'languages.current.no': return 'נורווגית';
+			case 'languages.current.sv': return 'שוודית';
+			case 'languages.current.zhHans': return 'סינית (מפושטת)';
+			case 'languages.current.zh': return 'סינית (מסורתית)';
 			default: return null;
 		}
 	}

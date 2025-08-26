@@ -42,6 +42,7 @@ class TranslationsKo extends Translations {
 	@override late final TranslationsLoginKo login = TranslationsLoginKo._(_root);
 	@override late final TranslationsRegisterKo register = TranslationsRegisterKo._(_root);
 	@override late final TranslationsPasswordResetKo passwordReset = TranslationsPasswordResetKo._(_root);
+	@override late final TranslationsLanguagesKo languages = TranslationsLanguagesKo._(_root);
 }
 
 // Path: common
@@ -108,6 +109,16 @@ class TranslationsPasswordResetKo extends TranslationsPasswordResetEn {
 	@override late final TranslationsPasswordResetFormKo form = TranslationsPasswordResetFormKo._(_root);
 	@override late final TranslationsPasswordResetTooltipKo tooltip = TranslationsPasswordResetTooltipKo._(_root);
 	@override late final TranslationsPasswordResetValidationKo validation = TranslationsPasswordResetValidationKo._(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesKo extends TranslationsLanguagesEn {
+	TranslationsLanguagesKo._(TranslationsKo root) : this._root = root, super.internal(root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override late final TranslationsLanguagesCurrentKo current = TranslationsLanguagesCurrentKo._(_root);
 }
 
 // Path: common.message
@@ -587,6 +598,28 @@ class TranslationsPasswordResetValidationKo extends TranslationsPasswordResetVal
 	@override late final TranslationsPasswordResetValidationEmailKo email = TranslationsPasswordResetValidationEmailKo._(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentKo extends TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentKo._(TranslationsKo root) : this._root = root, super.internal(root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get en => '영어';
+	@override String get da => '덴마크어';
+	@override String get es => '스페인어';
+	@override String get fr => '프랑스어';
+	@override String get he => '히브리어';
+	@override String get isIS => '아이슬란드어';
+	@override String get ko => '한국어';
+	@override String get nb => '노르웨이어 (보크몰)';
+	@override String get nl => '네덜란드어';
+	@override String get no => '노르웨이어';
+	@override String get sv => '스웨덴어';
+	@override String get zhHans => '중국어 (간체)';
+	@override String get zh => '중국어 (번체)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthKo extends TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthKo._(TranslationsKo root) : this._root = root, super.internal(root);
@@ -999,6 +1032,19 @@ extension on TranslationsKo {
 			case 'passwordReset.tooltip.submit': return '비밀번호를 재설정하려면 클릭하세요';
 			case 'passwordReset.validation.email.required': return '이메일은 필수입니다.';
 			case 'passwordReset.validation.email.invalid': return '이메일이 유효하지 않습니다.';
+			case 'languages.current.en': return '영어';
+			case 'languages.current.da': return '덴마크어';
+			case 'languages.current.es': return '스페인어';
+			case 'languages.current.fr': return '프랑스어';
+			case 'languages.current.he': return '히브리어';
+			case 'languages.current.isIS': return '아이슬란드어';
+			case 'languages.current.ko': return '한국어';
+			case 'languages.current.nb': return '노르웨이어 (보크몰)';
+			case 'languages.current.nl': return '네덜란드어';
+			case 'languages.current.no': return '노르웨이어';
+			case 'languages.current.sv': return '스웨덴어';
+			case 'languages.current.zhHans': return '중국어 (간체)';
+			case 'languages.current.zh': return '중국어 (번체)';
 			default: return null;
 		}
 	}

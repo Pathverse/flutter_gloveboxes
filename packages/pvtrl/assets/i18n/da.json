@@ -334,5 +334,22 @@
         "invalid": "E-mail er ikke gyldig."
       }
     }
+  },
+  "languages" : {
+    "current" : {
+      "en": "Engelsk",
+      "da": "Dansk",
+      "es": "Spansk", 
+      "fr": "Fransk",
+      "he": "Hebraisk",
+      "is_IS": "Islandsk",
+      "ko": "Koreansk",
+      "nb": "Norsk (Bokmål)",
+      "nl": "Hollandsk",
+      "no": "Norsk",
+      "sv": "Svensk",
+      "zh_Hans": "Kinesisk (Forenklet)",
+      "zh": "Kinesisk (Traditionel)"
+    }
   }
 }

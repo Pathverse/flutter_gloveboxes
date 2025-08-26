@@ -334,5 +334,22 @@
         "invalid": "L'e-mail n'est pas valide."
       }
     }
+  },
+  "languages" : {
+    "current" : {
+      "en": "Anglais",
+      "da": "Danois",
+      "es": "Espagnol", 
+      "fr": "Français",
+      "he": "Hébreu",
+      "is_IS": "Islandais",
+      "ko": "Coréen",
+      "nb": "Norvégien (Bokmål)",
+      "nl": "Néerlandais",
+      "no": "Norvégien",
+      "sv": "Suédois",
+      "zh_Hans": "Chinois (Simplifié)",
+      "zh": "Chinois (Traditionnel)"
+    }
   }
 }

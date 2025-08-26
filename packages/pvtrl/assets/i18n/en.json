@@ -334,5 +334,37 @@
         "invalid": "Email is not valid."
       }
     }
+  },
+  "languages" : {
+    "current" : {
+      "en": "English",
+      "da": "Danish",
+      "es": "Spanish", 
+      "fr": "French",
+      "he": "Hebrew",
+      "is_IS": "Icelandic",
+      "ko": "Korean",
+      "nb": "Norwegian (Bokmål)",
+      "nl": "Dutch",
+      "no": "Norwegian",
+      "sv": "Swedish",
+      "zh_Hans": "Chinese (Simplified)",
+      "zh": "Chinese (Traditional)"
+    },
+    "delegate" : {
+      "en": "English",
+      "da": "Dansk",
+      "es": "Español", 
+      "fr": "Français",
+      "he": "עברית",
+      "is_IS": "Íslenska",
+      "ko": "한국어",
+      "nb": "Norsk (Bokmål)",
+      "nl": "Nederlands",
+      "no": "Norsk",
+      "sv": "Svenska",
+      "zh_Hans": "中文 (简体)",
+      "zh": "中文 (繁體)"
+    }
   }
 }

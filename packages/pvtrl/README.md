@@ -25,5 +25,7 @@ English, Spanish, French, Danish, Dutch, Swedish, Norwegian, Korean, Chinese, He
 
 ```yaml
 dependencies:
-  pvtrl: ^1.0.0
-```
+  pvtrl:
+    git:
+      url: https://github.com/Pathverse/flutter_gloveboxes
+      path: packages/pvtrl

@@ -42,6 +42,7 @@ class TranslationsSv extends Translations {
 	@override late final TranslationsLoginSv login = TranslationsLoginSv._(_root);
 	@override late final TranslationsRegisterSv register = TranslationsRegisterSv._(_root);
 	@override late final TranslationsPasswordResetSv passwordReset = TranslationsPasswordResetSv._(_root);
+	@override late final TranslationsLanguagesSv languages = TranslationsLanguagesSv._(_root);
 }
 
 // Path: common
@@ -108,6 +109,16 @@ class TranslationsPasswordResetSv extends TranslationsPasswordResetEn {
 	@override late final TranslationsPasswordResetFormSv form = TranslationsPasswordResetFormSv._(_root);
 	@override late final TranslationsPasswordResetTooltipSv tooltip = TranslationsPasswordResetTooltipSv._(_root);
 	@override late final TranslationsPasswordResetValidationSv validation = TranslationsPasswordResetValidationSv._(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesSv extends TranslationsLanguagesEn {
+	TranslationsLanguagesSv._(TranslationsSv root) : this._root = root, super.internal(root);
+
+	final TranslationsSv _root; // ignore: unused_field
+
+	// Translations
+	@override late final TranslationsLanguagesCurrentSv current = TranslationsLanguagesCurrentSv._(_root);
 }
 
 // Path: common.message
@@ -587,6 +598,28 @@ class TranslationsPasswordResetValidationSv extends TranslationsPasswordResetVal
 	@override late final TranslationsPasswordResetValidationEmailSv email = TranslationsPasswordResetValidationEmailSv._(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentSv extends TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentSv._(TranslationsSv root) : this._root = root, super.internal(root);
+
+	final TranslationsSv _root; // ignore: unused_field
+
+	// Translations
+	@override String get en => 'Engelska';
+	@override String get da => 'Danska';
+	@override String get es => 'Spanska';
+	@override String get fr => 'Franska';
+	@override String get he => 'Hebreiska';
+	@override String get isIS => 'Isländska';
+	@override String get ko => 'Koreanska';
+	@override String get nb => 'Norska (Bokmål)';
+	@override String get nl => 'Nederländska';
+	@override String get no => 'Norska';
+	@override String get sv => 'Svenska';
+	@override String get zhHans => 'Kinesiska (Förenklad)';
+	@override String get zh => 'Kinesiska (Traditionell)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthSv extends TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthSv._(TranslationsSv root) : this._root = root, super.internal(root);
@@ -999,6 +1032,19 @@ extension on TranslationsSv {
 			case 'passwordReset.tooltip.submit': return 'Klicka för att återställa lösenord';
 			case 'passwordReset.validation.email.required': return 'E-post krävs.';
 			case 'passwordReset.validation.email.invalid': return 'E-post är inte giltig.';
+			case 'languages.current.en': return 'Engelska';
+			case 'languages.current.da': return 'Danska';
+			case 'languages.current.es': return 'Spanska';
+			case 'languages.current.fr': return 'Franska';
+			case 'languages.current.he': return 'Hebreiska';
+			case 'languages.current.isIS': return 'Isländska';
+			case 'languages.current.ko': return 'Koreanska';
+			case 'languages.current.nb': return 'Norska (Bokmål)';
+			case 'languages.current.nl': return 'Nederländska';
+			case 'languages.current.no': return 'Norska';
+			case 'languages.current.sv': return 'Svenska';
+			case 'languages.current.zhHans': return 'Kinesiska (Förenklad)';
+			case 'languages.current.zh': return 'Kinesiska (Traditionell)';
 			default: return null;
 		}
 	}
