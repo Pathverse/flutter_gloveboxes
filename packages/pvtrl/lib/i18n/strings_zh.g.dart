@@ -42,6 +42,7 @@ class TranslationsZh extends Translations {
 	@override late final TranslationsLoginZh login = TranslationsLoginZh._(_root);
 	@override late final TranslationsRegisterZh register = TranslationsRegisterZh._(_root);
 	@override late final TranslationsPasswordResetZh passwordReset = TranslationsPasswordResetZh._(_root);
+	@override late final TranslationsLanguagesZh languages = TranslationsLanguagesZh._(_root);
 }
 
 // Path: common
@@ -108,6 +109,16 @@ class TranslationsPasswordResetZh extends TranslationsPasswordResetEn {
 	@override late final TranslationsPasswordResetFormZh form = TranslationsPasswordResetFormZh._(_root);
 	@override late final TranslationsPasswordResetTooltipZh tooltip = TranslationsPasswordResetTooltipZh._(_root);
 	@override late final TranslationsPasswordResetValidationZh validation = TranslationsPasswordResetValidationZh._(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesZh extends TranslationsLanguagesEn {
+	TranslationsLanguagesZh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override late final TranslationsLanguagesCurrentZh current = TranslationsLanguagesCurrentZh._(_root);
 }
 
 // Path: common.message
@@ -587,6 +598,28 @@ class TranslationsPasswordResetValidationZh extends TranslationsPasswordResetVal
 	@override late final TranslationsPasswordResetValidationEmailZh email = TranslationsPasswordResetValidationEmailZh._(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentZh extends TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentZh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get en => '英語';
+	@override String get da => '丹麥語';
+	@override String get es => '西班牙語';
+	@override String get fr => '法語';
+	@override String get he => '希伯來語';
+	@override String get isIS => '冰島語';
+	@override String get ko => '韓語';
+	@override String get nb => '挪威語 (書面語)';
+	@override String get nl => '荷蘭語';
+	@override String get no => '挪威語';
+	@override String get sv => '瑞典語';
+	@override String get zhHans => '中文 (簡體)';
+	@override String get zh => '中文 (繁體)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthZh extends TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthZh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -999,6 +1032,19 @@ extension on TranslationsZh {
 			case 'passwordReset.tooltip.submit': return '點擊重設密碼';
 			case 'passwordReset.validation.email.required': return '電子郵件為必填。';
 			case 'passwordReset.validation.email.invalid': return '電子郵件無效。';
+			case 'languages.current.en': return '英語';
+			case 'languages.current.da': return '丹麥語';
+			case 'languages.current.es': return '西班牙語';
+			case 'languages.current.fr': return '法語';
+			case 'languages.current.he': return '希伯來語';
+			case 'languages.current.isIS': return '冰島語';
+			case 'languages.current.ko': return '韓語';
+			case 'languages.current.nb': return '挪威語 (書面語)';
+			case 'languages.current.nl': return '荷蘭語';
+			case 'languages.current.no': return '挪威語';
+			case 'languages.current.sv': return '瑞典語';
+			case 'languages.current.zhHans': return '中文 (簡體)';
+			case 'languages.current.zh': return '中文 (繁體)';
 			default: return null;
 		}
 	}

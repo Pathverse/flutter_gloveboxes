@@ -334,5 +334,22 @@
         "invalid": "E-post är inte giltig."
       }
     }
+  },
+  "languages" : {
+    "current" : {
+      "en": "Engelska",
+      "da": "Danska",
+      "es": "Spanska", 
+      "fr": "Franska",
+      "he": "Hebreiska",
+      "is_IS": "Isländska",
+      "ko": "Koreanska",
+      "nb": "Norska (Bokmål)",
+      "nl": "Nederländska",
+      "no": "Norska",
+      "sv": "Svenska",
+      "zh_Hans": "Kinesiska (Förenklad)",
+      "zh": "Kinesiska (Traditionell)"
+    }
   }
 }

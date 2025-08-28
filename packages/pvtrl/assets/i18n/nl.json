@@ -334,5 +334,22 @@
         "invalid": "E-mail is niet geldig."
       }
     }
+  },
+  "languages" : {
+    "current" : {
+      "en": "Engels",
+      "da": "Deens",
+      "es": "Spaans", 
+      "fr": "Frans",
+      "he": "Hebreeuws",
+      "is_IS": "IJslands",
+      "ko": "Koreaans",
+      "nb": "Noors (Bokmål)",
+      "nl": "Nederlands",
+      "no": "Noors",
+      "sv": "Zweeds",
+      "zh_Hans": "Chinees (Vereenvoudigd)",
+      "zh": "Chinees (Traditioneel)"
+    }
   }
 }

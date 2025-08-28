@@ -334,5 +334,22 @@
         "invalid": "Netfang er ekki gilt."
       }
     }
+  },
+  "languages" : {
+    "current" : {
+      "en": "Enska",
+      "da": "Danska",
+      "es": "Spænska", 
+      "fr": "Franska",
+      "he": "Hebreska",
+      "is_IS": "Íslenska",
+      "ko": "Kóreska",
+      "nb": "Norska (Bokmál)",
+      "nl": "Hollenska",
+      "no": "Norska",
+      "sv": "Sænska",
+      "zh_Hans": "Kínverska (Einfölduð)",
+      "zh": "Kínverska (Hefðbundin)"
+    }
   }
 }

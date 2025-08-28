@@ -42,6 +42,7 @@ class TranslationsIsIs extends Translations {
 	@override late final TranslationsLoginIsIs login = TranslationsLoginIsIs._(_root);
 	@override late final TranslationsRegisterIsIs register = TranslationsRegisterIsIs._(_root);
 	@override late final TranslationsPasswordResetIsIs passwordReset = TranslationsPasswordResetIsIs._(_root);
+	@override late final TranslationsLanguagesIsIs languages = TranslationsLanguagesIsIs._(_root);
 }
 
 // Path: common
@@ -108,6 +109,16 @@ class TranslationsPasswordResetIsIs extends TranslationsPasswordResetEn {
 	@override late final TranslationsPasswordResetFormIsIs form = TranslationsPasswordResetFormIsIs._(_root);
 	@override late final TranslationsPasswordResetTooltipIsIs tooltip = TranslationsPasswordResetTooltipIsIs._(_root);
 	@override late final TranslationsPasswordResetValidationIsIs validation = TranslationsPasswordResetValidationIsIs._(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesIsIs extends TranslationsLanguagesEn {
+	TranslationsLanguagesIsIs._(TranslationsIsIs root) : this._root = root, super.internal(root);
+
+	final TranslationsIsIs _root; // ignore: unused_field
+
+	// Translations
+	@override late final TranslationsLanguagesCurrentIsIs current = TranslationsLanguagesCurrentIsIs._(_root);
 }
 
 // Path: common.message
@@ -587,6 +598,28 @@ class TranslationsPasswordResetValidationIsIs extends TranslationsPasswordResetV
 	@override late final TranslationsPasswordResetValidationEmailIsIs email = TranslationsPasswordResetValidationEmailIsIs._(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentIsIs extends TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentIsIs._(TranslationsIsIs root) : this._root = root, super.internal(root);
+
+	final TranslationsIsIs _root; // ignore: unused_field
+
+	// Translations
+	@override String get en => 'Enska';
+	@override String get da => 'Danska';
+	@override String get es => 'Spænska';
+	@override String get fr => 'Franska';
+	@override String get he => 'Hebreska';
+	@override String get isIS => 'Íslenska';
+	@override String get ko => 'Kóreska';
+	@override String get nb => 'Norska (Bokmál)';
+	@override String get nl => 'Hollenska';
+	@override String get no => 'Norska';
+	@override String get sv => 'Sænska';
+	@override String get zhHans => 'Kínverska (Einfölduð)';
+	@override String get zh => 'Kínverska (Hefðbundin)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthIsIs extends TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthIsIs._(TranslationsIsIs root) : this._root = root, super.internal(root);
@@ -999,6 +1032,19 @@ extension on TranslationsIsIs {
 			case 'passwordReset.tooltip.submit': return 'Smelltu til að endurstilla lykilorð';
 			case 'passwordReset.validation.email.required': return 'Netfang er nauðsynlegt.';
 			case 'passwordReset.validation.email.invalid': return 'Netfang er ekki gilt.';
+			case 'languages.current.en': return 'Enska';
+			case 'languages.current.da': return 'Danska';
+			case 'languages.current.es': return 'Spænska';
+			case 'languages.current.fr': return 'Franska';
+			case 'languages.current.he': return 'Hebreska';
+			case 'languages.current.isIS': return 'Íslenska';
+			case 'languages.current.ko': return 'Kóreska';
+			case 'languages.current.nb': return 'Norska (Bokmál)';
+			case 'languages.current.nl': return 'Hollenska';
+			case 'languages.current.no': return 'Norska';
+			case 'languages.current.sv': return 'Sænska';
+			case 'languages.current.zhHans': return 'Kínverska (Einfölduð)';
+			case 'languages.current.zh': return 'Kínverska (Hefðbundin)';
 			default: return null;
 		}
 	}

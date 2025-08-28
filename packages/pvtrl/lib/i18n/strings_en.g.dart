@@ -43,6 +43,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	late final TranslationsLoginEn login = TranslationsLoginEn.internal(_root);
 	late final TranslationsRegisterEn register = TranslationsRegisterEn.internal(_root);
 	late final TranslationsPasswordResetEn passwordReset = TranslationsPasswordResetEn.internal(_root);
+	late final TranslationsLanguagesEn languages = TranslationsLanguagesEn.internal(_root);
 }
 
 // Path: common
@@ -109,6 +110,17 @@ class TranslationsPasswordResetEn {
 	late final TranslationsPasswordResetFormEn form = TranslationsPasswordResetFormEn.internal(_root);
 	late final TranslationsPasswordResetTooltipEn tooltip = TranslationsPasswordResetTooltipEn.internal(_root);
 	late final TranslationsPasswordResetValidationEn validation = TranslationsPasswordResetValidationEn.internal(_root);
+}
+
+// Path: languages
+class TranslationsLanguagesEn {
+	TranslationsLanguagesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final TranslationsLanguagesCurrentEn current = TranslationsLanguagesCurrentEn.internal(_root);
+	late final TranslationsLanguagesDelegateEn delegate = TranslationsLanguagesDelegateEn.internal(_root);
 }
 
 // Path: common.message
@@ -976,6 +988,102 @@ class TranslationsPasswordResetValidationEn {
 	late final TranslationsPasswordResetValidationEmailEn email = TranslationsPasswordResetValidationEmailEn.internal(_root);
 }
 
+// Path: languages.current
+class TranslationsLanguagesCurrentEn {
+	TranslationsLanguagesCurrentEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'English'
+	String get en => 'English';
+
+	/// en: 'Danish'
+	String get da => 'Danish';
+
+	/// en: 'Spanish'
+	String get es => 'Spanish';
+
+	/// en: 'French'
+	String get fr => 'French';
+
+	/// en: 'Hebrew'
+	String get he => 'Hebrew';
+
+	/// en: 'Icelandic'
+	String get isIS => 'Icelandic';
+
+	/// en: 'Korean'
+	String get ko => 'Korean';
+
+	/// en: 'Norwegian (Bokmål)'
+	String get nb => 'Norwegian (Bokmål)';
+
+	/// en: 'Dutch'
+	String get nl => 'Dutch';
+
+	/// en: 'Norwegian'
+	String get no => 'Norwegian';
+
+	/// en: 'Swedish'
+	String get sv => 'Swedish';
+
+	/// en: 'Chinese (Simplified)'
+	String get zhHans => 'Chinese (Simplified)';
+
+	/// en: 'Chinese (Traditional)'
+	String get zh => 'Chinese (Traditional)';
+}
+
+// Path: languages.delegate
+class TranslationsLanguagesDelegateEn {
+	TranslationsLanguagesDelegateEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'English'
+	String get en => 'English';
+
+	/// en: 'Dansk'
+	String get da => 'Dansk';
+
+	/// en: 'Español'
+	String get es => 'Español';
+
+	/// en: 'Français'
+	String get fr => 'Français';
+
+	/// en: 'עברית'
+	String get he => 'עברית';
+
+	/// en: 'Íslenska'
+	String get isIS => 'Íslenska';
+
+	/// en: '한국어'
+	String get ko => '한국어';
+
+	/// en: 'Norsk (Bokmål)'
+	String get nb => 'Norsk (Bokmål)';
+
+	/// en: 'Nederlands'
+	String get nl => 'Nederlands';
+
+	/// en: 'Norsk'
+	String get no => 'Norsk';
+
+	/// en: 'Svenska'
+	String get sv => 'Svenska';
+
+	/// en: '中文 (简体)'
+	String get zhHans => '中文 (简体)';
+
+	/// en: '中文 (繁體)'
+	String get zh => '中文 (繁體)';
+}
+
 // Path: common.units.length
 class TranslationsCommonUnitsLengthEn {
 	TranslationsCommonUnitsLengthEn.internal(this._root);
@@ -1484,6 +1592,32 @@ extension on Translations {
 			case 'passwordReset.tooltip.submit': return 'Click to reset password';
 			case 'passwordReset.validation.email.required': return 'Email is required.';
 			case 'passwordReset.validation.email.invalid': return 'Email is not valid.';
+			case 'languages.current.en': return 'English';
+			case 'languages.current.da': return 'Danish';
+			case 'languages.current.es': return 'Spanish';
+			case 'languages.current.fr': return 'French';
+			case 'languages.current.he': return 'Hebrew';
+			case 'languages.current.isIS': return 'Icelandic';
+			case 'languages.current.ko': return 'Korean';
+			case 'languages.current.nb': return 'Norwegian (Bokmål)';
+			case 'languages.current.nl': return 'Dutch';
+			case 'languages.current.no': return 'Norwegian';
+			case 'languages.current.sv': return 'Swedish';
+			case 'languages.current.zhHans': return 'Chinese (Simplified)';
+			case 'languages.current.zh': return 'Chinese (Traditional)';
+			case 'languages.delegate.en': return 'English';
+			case 'languages.delegate.da': return 'Dansk';
+			case 'languages.delegate.es': return 'Español';
+			case 'languages.delegate.fr': return 'Français';
+			case 'languages.delegate.he': return 'עברית';
+			case 'languages.delegate.isIS': return 'Íslenska';
+			case 'languages.delegate.ko': return '한국어';
+			case 'languages.delegate.nb': return 'Norsk (Bokmål)';
+			case 'languages.delegate.nl': return 'Nederlands';
+			case 'languages.delegate.no': return 'Norsk';
+			case 'languages.delegate.sv': return 'Svenska';
+			case 'languages.delegate.zhHans': return '中文 (简体)';
+			case 'languages.delegate.zh': return '中文 (繁體)';
 			default: return null;
 		}
 	}
