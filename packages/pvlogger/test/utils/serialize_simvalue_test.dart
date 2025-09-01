@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pvlog/utils/serialize.dart';
+import 'package:pvlogger/utils/serialize.dart';
 
 void main() {
   group('simpleValue', () {
