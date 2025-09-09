@@ -7,7 +7,7 @@ import 'package:pvcache/src/interface.dart';
 class PVAdapter extends PVBaseAdapter {
   static final Map<String, PVAdapter> _instances = {};
 
-  PVAdapter(super.uid){
+  PVAdapter(super.uid) {
     _instances[uid] = this;
   }
 

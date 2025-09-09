@@ -206,7 +206,7 @@ class PVCFrame {
       }
       if (ctx.storage.hasMetaHook) {
         await ctx.storage.afterMetaOperation(ctx);
-      } 
+      }
     });
 
     return callStack;
