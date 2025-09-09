@@ -1,0 +1,20 @@
+name: pvcache
+description: "A flexible, high-performance caching library that extends other caching frameworks"
+version: 0.0.1
+homepage: "https://github.com/Pathverse/pvcache"
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
