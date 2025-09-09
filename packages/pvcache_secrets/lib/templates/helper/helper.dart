@@ -9,6 +9,11 @@ extension PVCacheAddSecrets on TopLv {
     List<PVAdapter> adapters = const [],
     PVBaseStorage? metaStorage,
   }) {
-    return PVCache(env: env, adapters: adapters, storage: Encrypted(), metaStorage: metaStorage);
+    return PVCache(
+      env: env,
+      adapters: adapters,
+      storage: Encrypted(),
+      metaStorage: metaStorage,
+    );
   }
 }
