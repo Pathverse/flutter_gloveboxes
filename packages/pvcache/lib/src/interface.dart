@@ -94,6 +94,14 @@ abstract class PVBaseStorage {
   /// Initialize the storage with the given cache instance
   Future<void> init(PVBaseCache cache);
 
+  bool get hasMetaHook => false;
+
+  /// Hook called before metadata processing begins
+  Future<void> beforeMetaOperation(PVCtx ctx) async {}
+
+  /// Hook called after metadata processing completes
+  Future<void> afterMetaOperation(PVCtx ctx) async {}
+
   /// Store a value in the storage backend
   Future<void> set(PVCtx ctx);
 

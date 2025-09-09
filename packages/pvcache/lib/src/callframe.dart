@@ -187,7 +187,27 @@ class PVCFrame {
 
     metaOps.sort((a, b) => a.$2.compareTo(b.$2));
 
+    callStack.add((PVCtx ctx) async {
+      // before metadata processing hook
+      if (ctx.metaStorage != null && ctx.metaStorage!.hasMetaHook) {
+        await ctx.metaStorage!.beforeMetaOperation(ctx);
+      }
+      if (ctx.storage.hasMetaHook) {
+        await ctx.storage.beforeMetaOperation(ctx);
+      }
+    });
+
     callStack.addAll(metaOps.map((e) => e.$1));
+
+    callStack.add((PVCtx ctx) async {
+      // after metadata processing hook
+      if (ctx.metaStorage != null && ctx.metaStorage!.hasMetaHook) {
+        await ctx.metaStorage!.afterMetaOperation(ctx);
+      }
+      if (ctx.storage.hasMetaHook) {
+        await ctx.storage.afterMetaOperation(ctx);
+      } 
+    });
 
     return callStack;
   }
