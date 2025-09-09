@@ -1,6 +1,6 @@
 name: pvcache
 description: "A flexible, high-performance caching library that extends other caching frameworks"
-version: 0.0.3
+version: 0.0.4
 homepage: "https://github.com/Pathverse/flutter_gloveboxes/tree/main/packages/pvcache"
 
 environment:
