@@ -6,6 +6,7 @@ Adds secure storage backend support to [pvcache](https://pub.dev/packages/pvcach
 
 - Encrypted storage backend for PVCache
 - Cross-platform secure storage (Keychain/Keystore)
+- TTL/expiry support with metadata storage
 - Flutter web compatible
 
 ## Installation
@@ -18,20 +19,32 @@ dependencies:
 
 ## Usage
 
+### Basic Encrypted Storage
 ```dart
 import 'package:pvcache/pvcache.dart';
 import 'package:pvcache_secrets/pvcache_secrets.dart';
 
-// Setup encrypted cache
 PVCACHE.createEncrypted(env: "secure-cache");
-
-// Use the cache instance
 final cache = PVCache(env: "secure-cache");
 await cache.set('api_key', 'secret-value');
-final value = await cache.get('api_key');
 ```
 
-Run example: `flutter run -d chrome example/example.dart`
+### With TTL Support
+```dart
+import 'package:pvcache/templates/adapters/expiry.dart';
+
+PVCACHE.createLimitedEncryptedWithMeta(
+  env: "secure-expiry-cache", 
+  adapters: [ExpiryAdapter()]
+);
+final cache = PVCache(env: "secure-expiry-cache");
+await cache.set('temp_token', 'value', metadata: {"ttl": 60});
+```
+
+## Examples
+
+- Basic: `flutter run -d chrome example/example.dart`
+- TTL: `flutter run -d chrome example/example_expiry.dart`
 
 ## Links
 
