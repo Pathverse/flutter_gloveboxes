@@ -13,8 +13,7 @@ dependencies:
     sdk: flutter
   
   flutter_secure_storage: ">=9.2.0 <10.0.0"
-  pvcache: ">=0.0.2 <1.0.0"
-   
+  pvcache: ">=0.1.0 <1.0.0"
 
 dev_dependencies:
   flutter_test:
