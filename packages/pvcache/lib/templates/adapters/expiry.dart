@@ -13,17 +13,17 @@ import 'package:pvcache/src/interface.dart';
 /// cache.set('key2', 'value2', metadata: {'expiry': DateTime.now().add(Duration(hours: 1))});
 /// ```
 class ExpiryAdapter extends PVAdapter with ScopedMetadataKeys, PreGet, PostSet {
-  ExpiryAdapter._internal() : super("expiry-adapter");
+  ExpiryAdapter._internal(super.uid);
 
-  factory ExpiryAdapter() {
+  factory ExpiryAdapter({String uid = "expiry-adapter"}) {
     // Check if PVAdapter already exists for this uid
-    final existing = PVAdapter.getInstance("expiry-adapter");
+    final existing = PVAdapter.getInstance(uid);
     if (existing != null && existing is ExpiryAdapter) {
       return existing;
     }
 
     // Create new instance
-    return ExpiryAdapter._internal();
+    return ExpiryAdapter._internal(uid);
   }
 
   @override

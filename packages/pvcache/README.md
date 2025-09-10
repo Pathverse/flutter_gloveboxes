@@ -1,212 +1,175 @@
 # PVCache
 
-A high-performance, extensible caching library for Dart and Flutter applications. PVCache uses pre-compiled call frames and a flexible adapter system to provide fast, customizable caching with minimal runtime overhead.
-
-## Features
-
-- 🚀 **High Performance**: Pre-compiled call frames eliminate runtime compilation overhead
-- 🔧 **Extensible**: Adapter-based architecture for custom functionality
-- ⏰ **TTL Support**: Built-in time-to-live functionality with automatic expiration
-- 🏪 **Flexible Storage**: Support for any storage backend (memory, disk, network, Hive CE, Flutter Secure Storage, etc.)
-- 🔄 **Environment Management**: Singleton pattern with environment-based cache reuse
-- 🛡️ **Error Handling**: Robust validation and exception management
-- 📊 **Metadata Support**: Rich metadata handling for complex caching strategies
+A high-performance, extensible caching library for Dart and Flutter using pre-compiled call frames and adapters.
 
 ## Quick Start
 
-### Basic Usage
-
-```dart
-import 'package:pvcache/pvcache.dart';
-import 'package:pvcache/templates/storage/inmemory.dart';
-
-// Create a basic cache
-final cache = PVCache(
-  env: "my-app-cache",
-  adapters: [],
-  storage: InMemory(),
-);
-
-// Store and retrieve data
-await cache.set("user:123", {"name": "John Doe", "age": 30});
-final user = await cache.get("user:123");
-print(user); // {name: John Doe, age: 30}
-
-// Check existence and delete
-final exists = await cache.exists("user:123"); // true
-await cache.delete("user:123");
-await cache.clear(); // Clear entire cache
-```
-
-### TTL (Time-To-Live) Caching
-
 ```dart
 import 'package:pvcache/pvcache.dart';
 import 'package:pvcache/templates/storage/inmemory.dart';
 import 'package:pvcache/templates/adapters/expiry.dart';
 
-// Create cache with TTL support
+// Basic cache
 final cache = PVCache(
-  env: "ttl-cache",
+  env: "my-cache",
   adapters: [ExpiryAdapter()],
-  storage: InMemory(),
-  metaStorage: InMemory(), // Required for metadata
-);
-
-// Store with TTL (expires in 60 seconds)
-await cache.set("session:abc", "session-data", metadata: {"ttl": 60});
-
-// Store with specific expiry time
-final expireAt = DateTime.now().add(Duration(hours: 2));
-await cache.set("temp:data", "value", metadata: {
-  "expiry": expireAt.toIso8601String()
-});
-
-// Data automatically expires and returns null
-await Future.delayed(Duration(seconds: 61));
-final expired = await cache.get("session:abc"); // null
-```
-
-### Multiple Adapters
-
-```dart
-import 'package:pvcache/templates/adapters/expiry.dart';
-import 'package:pvcache/templates/helpers/test.dart';
-
-// Combine multiple adapters
-final cache = PVCache(
-  env: "multi-adapter-cache",
-  adapters: [
-    ExpiryAdapter(),    // TTL functionality
-    LoggingAdapter(),   // Operation logging
-  ],
   storage: InMemory(),
   metaStorage: InMemory(),
 );
 
-// Operations will be logged and support TTL
-await cache.set("logged-data", "value", metadata: {"ttl": 300});
-// Output: LOG: Starting operation for key: logged-data
+// Store with TTL
+await cache.set("key", "value", metadata: {"ttl": 300});
+final result = await cache.get("key"); // "value"
+
+// Expires automatically
+await Future.delayed(Duration(seconds: 301));
+final expired = await cache.get("key"); // null
 ```
 
 ## Core Concepts
 
-### Cache Environments
+### 1. Extensible Interface
 
-PVCache uses environment-based singleton management. The first call creates the cache instance, subsequent calls with the same environment name return the existing instance:
+The system is built around mixins that let you hook into operation phases:
 
 ```dart
-// First call - creates cache with full configuration
-final cache1 = PVCache(
-  env: "shared-cache",
-  adapters: [ExpiryAdapter()],
-  storage: InMemory(),
-  metaStorage: InMemory(),
-);
+// Storage backends implement PVBaseStorage
+class MyStorage extends PVBaseStorage with MetadataStorage {
+  @override
+  Future<void> get(PVCtx ctx) async {
+    ctx.value = await myDatabase.get(ctx.key!);
+  }
+  
+  @override
+  Future<void> set(PVCtx ctx) async {
+    await myDatabase.set(ctx.key!, ctx.value);
+  }
+  // ... delete, clear, exists
+}
 
-// Subsequent calls - just reference by environment name
-final cache2 = PVCache(env: "shared-cache");
-
-// These are the same instance
-assert(identical(cache1, cache2)); // true
+// Adapters extend functionality through mixins
+class MyAdapter extends PVBaseAdapter with PreGet, PostSet {
+  @override
+  Future<void> preGet(PVCtx ctx) async {
+    // Called before storage.get()
+  }
+  
+  @override
+  Future<void> postSet(PVCtx ctx) async {
+    // Called after storage.set()
+  }
+}
 ```
 
-### Adapters
+**Available Mixins:**
+- **Operation Hooks**: `PreGet`, `PostGet`, `PreSet`, `PostSet`, `PreDelete`, `PostDelete`, etc.
+- **Unified Hooks**: `PreOp` (all pre-operations), `PostOp` (all post-operations) 
+- **Metadata Processing**: `OnMetadata`, `ScopedMetadataKeys`
+- **Error Handling**: `OnError`, `OnFinally`
 
-Adapters extend cache functionality through mixins:
+### 2. Pre-compiled Call Frame Flow
 
-- **ExpiryAdapter**: Automatic expiration based on TTL or specific time
-- **LoggingAdapter**: Debug logging for cache operations
-- Custom adapters can be created using the mixin system
+PVCache builds execution stacks at startup to eliminate runtime overhead:
 
-### Metadata
+```
+Cache Creation:
+1. Analyze adapters → build operation mappings
+2. Sort by priority → create execution order
+3. Compile call frames → pre-built stacks for each operation
 
-Metadata provides additional context for cache operations:
-
-```dart
-// TTL metadata
-await cache.set("key", "value", metadata: {"ttl": 3600}); // 1 hour
-
-// Custom expiry time
-await cache.set("key", "value", metadata: {
-  "expiry": "2025-12-31T23:59:59.000Z"
-});
-
-// Custom metadata for adapter logic
-await cache.set("key", "value", metadata: {
-  "priority": "high",
-  "category": "user-data"
-});
+Runtime Execution:
+Metadata Processing → Pre-Operation Hooks → Storage Operation → Post-Operation Hooks
 ```
 
-## API Reference
+**Call Frame Structure:**
+```dart
+// Built once at startup
+PVCFrame {
+  callstack: [
+    metadataProcessor,
+    preOpAdapter1,   // priority 0 (highest)
+    preOpAdapter2,   // priority 1
+    storageOperation, // main function
+    postOpAdapter1,  // priority 0
+    postOpAdapter2,  // priority 1
+  ],
+  onError: [errorHandlers...],
+  onFinally: [cleanupHandlers...],
+}
+```
 
-### PVCache
+### 3. Adapter System Walkthrough
 
-| Method | Description |
-|--------|-------------|
-| `get(key)` | Retrieve cached value |
-| `set(key, value, {metadata})` | Store value with optional metadata |
-| `delete(key)` | Remove value from cache |
-| `exists(key)` | Check if key exists |
-| `clear()` | Remove all cached values |
-
-### Built-in Adapters
-
-#### ExpiryAdapter
-
-Provides automatic expiration functionality:
+**How ExpiryAdapter Works:**
 
 ```dart
-// TTL (time-to-live) in seconds
-metadata: {"ttl": 3600}
+class ExpiryAdapter extends PVBaseAdapter 
+    with ScopedMetadataKeys, PreGet, PostSet {
+  
+  // 1. Scope: Only process operations with TTL/expiry metadata
+  @override
+  List<String> get metadataKeys => ["ttl", "expiry"];
+  
+  // 2. PreGet: Check expiration before storage retrieval
+  @override
+  Future<void> preGet(PVCtx ctx) async {
+    final expiry = await ctx.metaStorage!.metaGet(ctx, 'expiry');
+    if (expiry != null && DateTime.parse(expiry).isBefore(DateTime.now())) {
+      await ctx.metaStorage!.metaDelete(ctx, 'expiry');
+      ctx.continueFlow = false; // Skip storage.get() - return null
+    }
+  }
+  
+  // 3. PostSet: Store expiration time after successful storage
+  @override
+  Future<void> postSet(PVCtx ctx) async {
+    final expiry = _calculateExpiry(ctx.metadata);
+    await ctx.metaStorage!.metaSet(ctx, 'expiry', expiry.toIso8601String());
+  }
+}
+```
 
-// Specific expiry time
-metadata: {"expiry": "2025-12-31T23:59:59.000Z"}
+**Creating Custom Adapters:**
 
-// Error: Cannot use both
-metadata: {"ttl": 3600, "expiry": "2025-12-31T23:59:59.000Z"} // Throws error
+```dart
+// Validation adapter
+class ValidationAdapter extends PVBaseAdapter with OnMetadata, PreSet {
+  @override
+  Future<void> onMetadata(PVCtx ctx) async {
+    if (ctx.metadata['validate'] == true) {
+      // Process validation rules
+    }
+  }
+  
+  @override
+  Future<void> preSet(PVCtx ctx) async {
+    if (!isValid(ctx.value)) {
+      throw ArgumentError('Invalid data');
+    }
+  }
+}
+
+// Logging adapter  
+class LoggingAdapter extends PVBaseAdapter with PreOp, PostOp {
+  @override
+  Future<void> preOp(PVCtx ctx) async {
+    print('Operation starting: ${ctx.key}');
+  }
+  
+  @override  
+  Future<void> postOp(PVCtx ctx) async {
+    print('Operation completed: ${ctx.key}');
+  }
+}
 ```
 
 ## Installation
 
-Add to your `pubspec.yaml`:
-
 ```yaml
 dependencies:
-  pvcache: ^1.0.0
+  pvcache: ^0.0.4
 ```
-
-## Examples
-
-The `/example` directory contains comprehensive examples:
-
-- `basic_usage.dart` - Fundamental cache operations
-- `adapter_usage.dart` - TTL and adapter functionality  
-- `advanced_patterns.dart` - Real-world usage patterns
-
-Run examples with:
-```bash
-flutter run --target=example/basic_usage.dart -d chrome
-```
-
-## Performance
-
-PVCache is designed for high performance:
-
-- **Pre-compiled call frames** eliminate runtime compilation overhead
-- **Singleton adapters** prevent duplicate instances
-- **Efficient metadata processing** with scoped filtering
-- **Minimal object allocation** during operations
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Ensure all tests pass: `flutter test`
-5. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) file.

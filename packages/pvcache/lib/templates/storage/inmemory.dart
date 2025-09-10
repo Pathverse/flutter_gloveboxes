@@ -4,7 +4,7 @@ import 'package:pvcache/src/interface.dart';
 ///
 /// Stores all cache data in a Map that exists only while the application
 /// is running. Data is lost when the application restarts.
-class InMemory extends PVBaseStorage with MetadataStorage{
+class InMemory extends PVBaseStorage with MetadataStorage {
   final Map<String, dynamic> _storage = {};
 
   /// Direct access to the internal storage map (for testing/debugging)
