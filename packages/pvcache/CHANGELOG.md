@@ -1,4 +1,4 @@
-## 0.0.5
+## 0.1.0
 * standardized MetadataStorage mixin interface across all adapters
 * updated ExpiryAdapter to use new MetadataStorage patterns
 * improved metadata cleanup and storage efficiency
