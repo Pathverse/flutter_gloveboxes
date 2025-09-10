@@ -5,6 +5,8 @@
 /// - How to use built-in adapters like ExpiryAdapter
 /// - How adapters integrate with cache operations
 
+// ignore_for_file: avoid_print
+
 import 'package:pvcache/pvcache.dart';
 import 'package:pvcache/templates/storage/inmemory.dart';
 import 'package:pvcache/templates/adapters/expiry.dart';

@@ -109,18 +109,11 @@ class ExpiryAdapter extends PVAdapter with ScopedMetadataKeys, PreGet, PostSet {
   Future<void> preGet(PVCtx ctx) async {
     if (ctx.key == null || ctx.metaStorage == null) return;
 
-    final expiryKey = _getExpiryKey(ctx.key!);
-    final expiryCtx = PVCtx(
-      key: expiryKey,
-      initalValue: null,
-      metadata: {},
-      storage: ctx.metaStorage!,
-    );
+    // Use MetadataStorage mixin to get expiry time
+    final expiryValue = await ctx.metaStorage!.metaGet(ctx, 'expiry');
 
-    await ctx.metaStorage!.get(expiryCtx);
-
-    if (expiryCtx.value != null) {
-      final expiryTime = DateTime.parse(expiryCtx.value as String);
+    if (expiryValue != null) {
+      final expiryTime = DateTime.parse(expiryValue as String);
 
       if (DateTime.now().isAfter(expiryTime)) {
         // Key has expired - remove both data and expiry metadata
@@ -139,46 +132,29 @@ class ExpiryAdapter extends PVAdapter with ScopedMetadataKeys, PreGet, PostSet {
     final expiryTime = adapterData['expiryTime'] as DateTime?;
 
     if (expiryTime != null) {
-      // Store expiry metadata
-      final expiryKey = _getExpiryKey(ctx.key!);
-      final expiryCtx = PVCtx(
-        key: expiryKey,
-        initalValue: expiryTime.toIso8601String(),
-        metadata: {},
-        storage: ctx.metaStorage!,
+      // Use MetadataStorage mixin to store expiry metadata
+      await ctx.metaStorage!.metaSet(
+        ctx,
+        'expiry',
+        expiryTime.toIso8601String(),
       );
-      expiryCtx.value = expiryTime.toIso8601String();
-
-      await ctx.metaStorage!.set(expiryCtx);
     }
   }
 
   /// Removes an expired key from both main storage and expiry metadata
   Future<void> _removeExpiredKey(PVCtx ctx) async {
-    if (ctx.key == null || ctx.metaStorage == null) return;
+    if (ctx.key == null || ctx.metaStorage == null || ctx.storage == null) {
+      return;
+    }
 
-    // Remove main data
-    final mainCtx = PVCtx(
-      key: ctx.key,
-      initalValue: null,
-      metadata: {},
-      storage: ctx.storage,
-    );
-    await ctx.storage.delete(mainCtx);
+    // Remove main data - use the existing context
+    await ctx.storage!.delete(ctx);
 
-    // Remove expiry metadata
-    final expiryKey = _getExpiryKey(ctx.key!);
-    final expiryCtx = PVCtx(
-      key: expiryKey,
-      initalValue: null,
-      metadata: {},
-      storage: ctx.metaStorage!,
-    );
-    await ctx.metaStorage!.delete(expiryCtx);
+    // Remove expiry metadata using MetadataStorage mixin
+    final minictx = PVCtx.minimal(ctx.key!);
+    minictx.metaStorageCache = ctx.metaStorageCache;
+    await ctx.metaStorage!.metaDelete(minictx, 'expiry');
   }
-
-  /// Generates the metadata key for storing expiry time
-  String _getExpiryKey(String key) => 'expiry:$key';
 
   /// Performs cleanup of all expired keys for a specific cache instance
   Future<int> cleanupExpiredKeys(PVBaseCache cache) async {
@@ -196,27 +172,22 @@ class ExpiryAdapter extends PVAdapter with ScopedMetadataKeys, PreGet, PostSet {
       final expiryKeys = await _getAllExpiryKeys(cache.metaStorage!);
 
       for (final expiryKey in expiryKeys) {
-        final expiryCtx = PVCtx(
-          key: expiryKey,
-          initalValue: null,
-          metadata: {},
-          storage: cache.metaStorage!,
+        // Use minimal context for metadata operations
+        final checkCtx = PVCtx.minimal(expiryKey);
+        final expiryValue = await cache.metaStorage!.metaGet(
+          checkCtx,
+          'expiry',
         );
 
-        await cache.metaStorage!.get(expiryCtx);
-
-        if (expiryCtx.value != null) {
-          final expiryTime = DateTime.parse(expiryCtx.value as String);
+        if (expiryValue != null) {
+          final expiryTime = DateTime.parse(expiryValue as String);
 
           if (now.isAfter(expiryTime)) {
-            // Extract original key from expiry key
-            final originalKey = expiryKey.substring('expiry:'.length);
-
-            // Create context for cleanup
+            // Create context for cleanup - this represents the original key
             final cleanupCtx = PVCtx(
-              key: originalKey,
-              initalValue: null,
-              metadata: {},
+              key: expiryKey,
+              initialValue: null,
+              metadata: const {},
               storage: cache.storage,
               metaStorage: cache.metaStorage,
             );

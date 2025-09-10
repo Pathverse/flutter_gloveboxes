@@ -3,18 +3,35 @@
 /// This defines the common interface that all cache types must implement.
 /// It holds the core components: environment name, adapters for extending
 /// functionality, and storage backends for data persistence.
+///
+/// The cache system uses a pre-compilation approach where operation call stacks
+/// are built at startup to eliminate runtime overhead. Adapters extend functionality
+/// through mixins that hook into different points of the operation flow.
 class PVBaseCache {
   /// The environment name for this cache instance (e.g., 'default', 'dev', 'prod')
+  /// 
+  /// Used for cache instance management and reuse. Multiple calls with the same
+  /// environment name will return the same cache instance (singleton pattern).
   final String env;
 
   /// List of adapters that extend cache functionality (expiry, logging, etc.)
+  /// 
+  /// Adapters are executed in priority order (0=highest priority) and can implement
+  /// various mixins like PreGet, PostSet, OnMetadata for operation hooking.
   final List<PVBaseAdapter> adapters;
 
   /// Main storage backend where cache data is stored
+  /// 
+  /// Must implement PVBaseStorage interface. Can be in-memory, file-based,
+  /// database-backed, or any custom storage implementation.
   final PVBaseStorage storage;
 
   /// Optional separate storage for metadata (can be same as main storage)
-  final PVBaseStorage? metaStorage;
+  /// 
+  /// Required by adapters like ExpiryAdapter that need to persist metadata.
+  /// Must implement MetadataStorage mixin for standardized metadata operations.
+  /// Supports both flattened (key::metakey) and nested (map-based) strategies.
+  final MetadataStorage? metaStorage;
 
   PVBaseCache({
     required this.env,
@@ -25,9 +42,21 @@ class PVBaseCache {
 
   /// Stores a value in the cache with the given key.
   ///
+  /// Operations flow through the pre-compiled call stack:
+  /// 1. Metadata processing (onMetadata) - validates and normalizes metadata
+  /// 2. Pre-operation hooks (preSet) - executed by priority
+  /// 3. Main storage operation 
+  /// 4. Post-operation hooks (postSet) - executed by priority
+  /// 5. Error/finally handlers if needed
+  ///
   /// [key] - The unique identifier for the cached value
   /// [value] - The data to store (can be any type)
-  /// [metadata] - Optional data passed to adapters for processing
+  /// [metadata] - Optional data passed to adapters for processing (e.g., TTL, expiry)
+  ///
+  /// Example:
+  /// ```dart
+  /// await cache.set('user:123', userData, metadata: {'ttl': 300});
+  /// ```
   Future<void> set(
     String key,
     dynamic value, {
@@ -38,6 +67,9 @@ class PVBaseCache {
 
   /// Removes a value from the cache.
   ///
+  /// Executes preDelete hooks, main deletion, then postDelete hooks.
+  /// Adapters can prevent deletion by setting ctx.continueFlow = false.
+  ///
   /// [key] - The identifier of the value to remove
   /// [metadata] - Optional data passed to adapters for processing
   Future<void> delete(String key, {Map<String, dynamic> metadata = const {}}) {
@@ -46,6 +78,9 @@ class PVBaseCache {
 
   /// Removes all values from the cache.
   ///
+  /// Executes preClear hooks, clears main storage, then postClear hooks.
+  /// Note: key is null in the context for clear operations.
+  ///
   /// [metadata] - Optional data passed to adapters for processing
   Future<void> clear({Map<String, dynamic> metadata = const {}}) {
     throw UnimplementedError();
@@ -53,18 +88,41 @@ class PVBaseCache {
 
   /// Retrieves a value from the cache.
   ///
+  /// The most complex operation with comprehensive adapter integration:
+  /// 1. Metadata processing (if metadata provided)
+  /// 2. Pre-get hooks (preGet) - can short-circuit by setting ctx.continueFlow = false
+  /// 3. Main storage retrieval (if not short-circuited)
+  /// 4. Post-get hooks (postGet) - can modify retrieved value
+  /// 5. Error/finally handlers if needed
+  ///
+  /// Pre-get hooks are commonly used for:
+  /// - Expiry checking (ExpiryAdapter)
+  /// - Cache warming
+  /// - Access logging
+  ///
   /// [key] - The identifier of the value to retrieve
   /// [metadata] - Optional data passed to adapters for processing
-  /// Returns the cached value or null if not found
+  /// Returns the cached value or null if not found/expired
+  ///
+  /// Example:
+  /// ```dart
+  /// final userData = await cache.get('user:123');
+  /// ```
   Future<dynamic> get(String key, {Map<String, dynamic> metadata = const {}}) {
     throw UnimplementedError();
   }
 
   /// Checks if a key exists in the cache.
   ///
+  /// Executes preExists hooks, storage exists check, then postExists hooks.
+  /// Adapters can override the result by modifying ctx.value (true/false).
+  ///
   /// [key] - The identifier to check for
   /// [metadata] - Optional data passed to adapters for processing
-  /// Returns true if the key exists, false otherwise
+  /// Returns true if the key exists and is valid, false otherwise
+  ///
+  /// Note: For TTL-enabled caches, this may return false for expired keys
+  /// even if they physically exist in storage.
   Future<bool> exists(String key, {Map<String, dynamic> metadata = const {}}) {
     throw UnimplementedError();
   }
@@ -73,14 +131,36 @@ class PVBaseCache {
 /// Base class for all cache adapters.
 ///
 /// Adapters extend cache functionality by implementing mixins that hook into
-/// different points of the cache operation flow (before/after operations,
-/// metadata processing, error handling).
+/// different points of the cache operation flow. The system uses a singleton
+/// pattern where each unique ID (uid) can only have one adapter instance.
+///
+/// Common adapter patterns:
+/// - **ExpiryAdapter**: TTL/expiry functionality using ScopedMetadataKeys + PreGet + PostSet
+/// - **LoggingAdapter**: Operation logging using PreOp + PostOp
+/// - **ValidationAdapter**: Data validation using OnMetadata + PreSet
+/// - **CacheWarmingAdapter**: Proactive loading using PreGet
+///
+/// Adapter execution follows priority order (0=highest, 1, 2, 3...) within each phase.
 class PVBaseAdapter {
   /// Unique identifier for this adapter instance
+  /// 
+  /// Must be unique across all adapters in a cache instance. The constructor
+  /// automatically registers the adapter in a static registry to prevent duplicates.
+  /// Factory constructors should check getInstance(uid) before creating new instances.
   final String uid;
 
   PVBaseAdapter(this.uid);
 
+  /// Optional initialization method called when adapter is added to a cache.
+  /// 
+  /// Use this for:
+  /// - Validating cache configuration (e.g., ExpiryAdapter requires metaStorage)
+  /// - Setting up adapter-specific resources
+  /// - Registering event listeners
+  /// 
+  /// Made synchronous to allow proper exception handling during cache creation.
+  /// 
+  /// [cache] - The cache instance this adapter is being added to
   void init(PVBaseCache cache) {
     // Optional initialization logic for the adapter
   }
@@ -89,20 +169,55 @@ class PVBaseAdapter {
 /// Abstract interface for cache storage backends.
 ///
 /// Implementations define how cache data is actually stored and retrieved
-/// (in-memory, file system, database, etc.).
+/// (in-memory, file system, database, etc.). Storage backends receive PVCtx
+/// objects containing the operation data and can modify ctx.value to return results.
+///
+/// All storage operations work with PVCtx objects that contain:
+/// - key: The cache key being operated on
+/// - value: The current value being processed
+/// - metadata: Additional operation data
+/// - storage/metaStorage: Storage backend references
+/// 
+/// For metadata-aware storage, implement the MetadataStorage mixin which provides
+/// standardized metadata operations (metaGet, metaSet, metaDelete) with support
+/// for both flattened and nested storage strategies.
 abstract class PVBaseStorage {
-  /// Initialize the storage with the given cache instance
+  /// Initialize the storage with the given cache instance.
+  /// 
+  /// Called once when the storage is first used with a cache.
+  /// Use for setup tasks like creating directories, connecting to databases, etc.
+  /// 
+  /// [cache] - The cache instance using this storage
   Future<void> init(PVBaseCache cache);
 
+  /// Whether this storage has metadata operation hooks.
+  /// 
+  /// Set to true if your storage needs to perform special operations
+  /// before/after metadata processing (e.g., transaction management).
   bool get hasMetaHook => false;
 
-  /// Hook called before metadata processing begins
+  /// Hook called before metadata processing begins.
+  /// 
+  /// Only called if hasMetaHook returns true. Use for setup like
+  /// starting transactions or acquiring locks.
+  /// 
+  /// [ctx] - The operation context
   Future<void> beforeMetaOperation(PVCtx ctx) async {}
 
-  /// Hook called after metadata processing completes
+  /// Hook called after metadata processing completes.
+  /// 
+  /// Only called if hasMetaHook returns true. Use for cleanup like
+  /// committing transactions or releasing locks.
+  /// 
+  /// [ctx] - The operation context
   Future<void> afterMetaOperation(PVCtx ctx) async {}
 
-  /// Store a value in the storage backend
+  /// Store a value in the storage backend.
+  /// 
+  /// The value to store is in ctx.value. Implementations should persist
+  /// ctx.value using ctx.key as the identifier.
+  /// 
+  /// [ctx] - Contains key, value, and operation metadata
   Future<void> set(PVCtx ctx);
 
   /// Remove a value from the storage backend
@@ -127,16 +242,16 @@ class PVCtx {
   final String? key;
 
   /// The initial value passed to the operation
-  final dynamic initalValue;
+  late final dynamic initialValue;
 
   /// Metadata passed to the operation for adapter processing
   final Map<String, dynamic> metadata;
 
   /// Main storage backend reference
-  final PVBaseStorage storage;
+  final PVBaseStorage? storage;
 
   /// Optional metadata storage backend reference
-  final PVBaseStorage? metaStorage;
+  final MetadataStorage? metaStorage;
 
   // Runtime state that changes during operation execution
 
@@ -158,37 +273,55 @@ class PVCtx {
   bool errorHandled = false;
 
   /// Additional data adapters can store for communication
-  final Map<String, dynamic> extra = {};
+  late final Map<String, dynamic> extra;
 
   /// Per-adapter private data storage to prevent adapter conflicts
-  final Map<String, dynamic> _perAdapterData = {};
+  late final Map<String, dynamic> _perAdapterData;
+
+  /// Cache for metastorage values to avoid redundant fetches
+  late final Map<String, dynamic> metaStorageCache;
 
   PVCtx({
     this.key,
-    required this.initalValue,
+    required this.initialValue,
     required this.metadata,
     required this.storage,
     this.metaStorage,
-  }) : value = initalValue;
+  }) : value = initialValue;
 
   /// Creates a context from a cache instance and operation parameters.
   ///
   /// [cache] - The cache instance performing the operation
   /// [key] - The cache key (null for clear operations)
-  /// [initalValue] - Initial value for the operation
+  /// [initialValue] - Initial value for the operation
   /// [metadata] - Additional data for adapter processing
   factory PVCtx.fromCache(
     PVBaseCache cache,
     String? key, {
-    dynamic initalValue,
+    dynamic initialValue,
     Map<String, dynamic> metadata = const {},
   }) {
-    return PVCtx(
+    final ctx = PVCtx(
       key: key,
-      initalValue: initalValue,
+      initialValue: initialValue,
       metadata: metadata,
       storage: cache.storage,
       metaStorage: cache.metaStorage,
+    );
+    // init extra and per-adapter data maps
+    ctx.extra = <String, dynamic>{};
+    ctx._perAdapterData = <String, dynamic>{};
+    ctx.metaStorageCache = <String, dynamic>{};
+    return ctx;
+  }
+
+  factory PVCtx.minimal(String key, {dynamic value}) {
+    return PVCtx(
+      key: key,
+      initialValue: value,
+      metadata: const {},
+      storage: null,
+      metaStorage: null,
     );
   }
 
@@ -199,5 +332,100 @@ class PVCtx {
   Map<String, dynamic> getAdapterData(PVBaseAdapter adapter) {
     return _perAdapterData.putIfAbsent(adapter.uid, () => <String, dynamic>{})
         as Map<String, dynamic>;
+  }
+}
+
+mixin MetadataStorage on PVBaseStorage {
+  bool get storageStrategyNested => true;
+
+  String Function(String, String) get flattenKeyMethod {
+    return (String key, String metaKey) => '$key::$metaKey';
+  }
+
+  Future<dynamic> metaGet(
+    PVCtx pctx,
+    String metaKey, {
+    bool force = false,
+  }) async {
+    if (!force && pctx.metaStorageCache.containsKey(metaKey)) {
+      return pctx.metaStorageCache[metaKey];
+    }
+
+    if (!storageStrategyNested) {
+      final ctx = PVCtx.minimal(flattenKeyMethod(pctx.key!, metaKey));
+      await get(ctx);
+      if (ctx.value == null) {
+        return null;
+      }
+      pctx.metaStorageCache[metaKey] = ctx.value;
+      return ctx.value;
+    } else {
+      final PVCtx ctx = PVCtx.minimal(pctx.key!);
+      await get(ctx);
+      if (ctx.value == null) {
+        return null;
+      }
+      if (ctx.value is! Map<String, dynamic>) {
+        throw Exception('Expected metadata to be a Map<String, dynamic>');
+      }
+      pctx.metaStorageCache[ctx.key!] = (ctx.value as Map<String, dynamic>);
+      return (ctx.value as Map<String, dynamic>)[metaKey];
+    }
+  }
+
+  Future<void> metaSet(PVCtx pctx, String metaKey, dynamic metaValue) async {
+    if (!storageStrategyNested) {
+      final ctx = PVCtx.minimal(
+        flattenKeyMethod(pctx.key!, metaKey),
+        value: metaValue,
+      );
+      await set(ctx);
+      pctx.metaStorageCache[metaKey] = metaValue;
+    } else {
+      final PVCtx ctx = PVCtx.minimal(pctx.key!);
+      await get(ctx);
+      Map<String, dynamic> metaMap;
+      if (ctx.value == null) {
+        metaMap = <String, dynamic>{};
+      } else {
+        if (ctx.value is! Map<String, dynamic>) {
+          throw Exception('Expected metadata to be a Map<String, dynamic>');
+        }
+        metaMap = ctx.value as Map<String, dynamic>;
+      }
+      metaMap[metaKey] = metaValue;
+      ctx.value = metaMap;
+      await set(ctx);
+      pctx.metaStorageCache[metaKey] = metaValue;
+    }
+  }
+
+  Future<void> metaDelete(PVCtx pctx, String metaKey) async {
+    if (!storageStrategyNested) {
+      final ctx = PVCtx.minimal(flattenKeyMethod(pctx.key!, metaKey));
+      await delete(ctx);
+      pctx.metaStorageCache.remove(metaKey);
+    } else {
+      final PVCtx ctx = PVCtx.minimal(pctx.key!);
+      await get(ctx);
+      if (ctx.value == null) {
+        return;
+      }
+      if (ctx.value is! Map<String, dynamic>) {
+        throw Exception('Expected metadata to be a Map<String, dynamic>');
+      }
+      final metaMap = ctx.value as Map<String, dynamic>;
+      if (metaMap.containsKey(metaKey)) {
+        metaMap.remove(metaKey);
+        if (metaMap.isEmpty) {
+          await delete(ctx);
+          pctx.metaStorageCache.clear();
+        } else {
+          ctx.value = metaMap;
+          await set(ctx);
+          pctx.metaStorageCache.remove(metaKey);
+        }
+      }
+    }
   }
 }

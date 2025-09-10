@@ -67,7 +67,7 @@ class PVCache extends PVBaseCache {
     String env = 'default',
     List<PVBaseAdapter>? adapters,
     PVBaseStorage? storage,
-    PVBaseStorage? metaStorage,
+    MetadataStorage? metaStorage,
   }) {
     if (_instances.containsKey(env)) {
       if (adapters != null || storage != null || metaStorage != null) {
@@ -109,7 +109,7 @@ class PVCache extends PVBaseCache {
     final ctx = PVCtx.fromCache(
       this,
       key,
-      initalValue: value,
+      initialValue: value,
       metadata: metadata,
     );
     await _setFrame.call(ctx);

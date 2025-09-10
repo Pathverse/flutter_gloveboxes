@@ -192,8 +192,8 @@ class PVCFrame {
       if (ctx.metaStorage != null && ctx.metaStorage!.hasMetaHook) {
         await ctx.metaStorage!.beforeMetaOperation(ctx);
       }
-      if (ctx.storage.hasMetaHook) {
-        await ctx.storage.beforeMetaOperation(ctx);
+      if (ctx.storage!.hasMetaHook) {
+        await ctx.storage!.beforeMetaOperation(ctx);
       }
     });
 
@@ -204,8 +204,8 @@ class PVCFrame {
       if (ctx.metaStorage != null && ctx.metaStorage!.hasMetaHook) {
         await ctx.metaStorage!.afterMetaOperation(ctx);
       }
-      if (ctx.storage.hasMetaHook) {
-        await ctx.storage.afterMetaOperation(ctx);
+      if (ctx.storage!.hasMetaHook) {
+        await ctx.storage!.afterMetaOperation(ctx);
       }
     });
 
