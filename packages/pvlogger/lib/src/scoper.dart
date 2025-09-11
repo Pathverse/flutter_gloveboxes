@@ -17,7 +17,7 @@ class PVLogScoper {
         raw: message,
         timestamp: DateTime.now(),
         metadata: forbidPVLoggerPrefixInMetadata(metadata ?? {}),
-        trigger: getTop(decrementLvs: 3),
+        trigger: getTop(decrementLvs: 4),
       );
     });
   }
@@ -30,7 +30,7 @@ class PVLogScoper {
         raw: message,
         timestamp: DateTime.now(),
         metadata: forbidPVLoggerPrefixInMetadata(metadata ?? {}),
-        trigger: getTop(decrementLvs: 3),
+        trigger: getTop(decrementLvs: 4),
       );
     });
   }
@@ -51,7 +51,7 @@ class PVLogScoper {
         raw: [message, error, stackTrace],
         timestamp: DateTime.now(),
         metadata: metadata!,
-        trigger: getTop(decrementLvs: 3),
+        trigger: getTop(decrementLvs: 4),
       );
     });
   }
@@ -72,7 +72,7 @@ class PVLogScoper {
         raw: [message, error, stackTrace],
         timestamp: DateTime.now(),
         metadata: metadata!,
-        trigger: getTop(decrementLvs: 3),
+        trigger: getTop(decrementLvs: 4),
       );
     });
   }
