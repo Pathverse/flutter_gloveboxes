@@ -2,6 +2,7 @@ name: pvcache_secrets
 description: "extension on pvcache that integrates flutter_secure_storage for secret storage"
 version: 0.1.0
 homepage: https://github.com/Pathverse/flutter_gloveboxes
+repository: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:
   sdk: ^3.9.0

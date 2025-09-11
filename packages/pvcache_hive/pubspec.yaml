@@ -1,6 +1,6 @@
 name: pvcache_hive
-description: "A new Flutter package project."
-version: 0.0.1
+description: "Hive database integration for pvcache, providing persistent local storage with multiple storage patterns and image caching support."
+version: 0.1.0
 homepage: https://github.com/Pathverse/pvcache_hive
 
 environment:
@@ -17,6 +17,5 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  http: ^1.5.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
