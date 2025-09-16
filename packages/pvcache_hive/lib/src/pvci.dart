@@ -2,6 +2,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'hboxcore.dart' as hboxcore;
 
+class PVCoDecryptionException implements Exception {
+  final String message;
+  PVCoDecryptionException(this.message);
+
+  @override
+  String toString() => message;
+}
+
 class PVCoore {
   static final Map<int, Map Function(dynamic)> _serializerRegistry = {};
   static final Map<int, dynamic Function(Map)> _deserializerRegistry = {};
@@ -166,7 +174,12 @@ class PVCo {
     if (typeCode == 0) {
       final hiveCipher = hboxcore.getHiveCipher();
       if (hiveCipher != null) {
-        final decrypted = hiveCipher.decryptString(json['data'] as String);
+        late final String decrypted;
+        try {
+           decrypted = hiveCipher.decryptString(json['data'] as String);
+        } catch (e) {
+          throw PVCoDecryptionException('Failed to decrypt data with HiveCipher');
+        }
         return PVCo(jsonDecode(decrypted), tCode: 0);
       } 
       return PVCo(jsonDecode(json['data'] as String), tCode: 0);

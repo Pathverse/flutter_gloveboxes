@@ -7,6 +7,7 @@ import 'package:pvcache/pvcache.dart';
 // ignore: implementation_imports
 import 'package:pvcache/src/top.dart';
 import 'package:pvcache_hive/src/pvci.dart';
+import 'package:pvcache_hive/src/pvci_decrypt_adapter.dart';
 import 'package:pvcache_hive/templates/storage/std.dart';
 
 extension PVCacheForImage on PVCache {
@@ -81,17 +82,19 @@ extension PVCacheForImage on PVCache {
   }
 }
 
-
 extension PVCACHEForHive on TopLv {
   PVCache createStdHive({
     String env = "default",
     String? metaboxName,
     List<PVAdapter>? adapters,
+    bool handleDecryptionError = true,
   }) {
+
     adapters ??= [];
-    final (ms, ss) = createPair(
-      env,
-    );
+    final (ms, ss) = createPair(env);
+    if (handleDecryptionError) {
+      adapters.add(DECRYPT_ERROR_ADAPTER);
+    }
     return PVCache(env: env, adapters: adapters, metaStorage: ms, storage: ss);
   }
 }
