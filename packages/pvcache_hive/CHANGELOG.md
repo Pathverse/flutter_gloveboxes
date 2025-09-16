@@ -1,3 +1,6 @@
+## 0.2.1
+* added decryption error handling
+
 ## 0.2.0
 * ! fixed casting and conversion issues
 * ! recreated and improved interfaces
