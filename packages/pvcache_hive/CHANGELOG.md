@@ -1,3 +1,7 @@
+## 0.2.0
+* ! fixed casting and conversion issues
+* ! recreated and improved interfaces
+
 ## 0.1.0
 * Initial release of pvcache_hive
 * Hive database integration for pvcache
