@@ -3,21 +3,117 @@
 ## Technology Stack
 
 ### Core Dependencies
-- **Flutter SDK**: ^3.9.0 (minimum requirement)
-- **hive_ce**: >=2.11.0 <3.0.0 (Community Edition of Hive)
-- **pvcache**: >=0.0.4 <1.0.0 (Parent caching framework)
+- **Dart SDK**: ^3.5.0
+- **Flutter**: ^3.24.0
+- **hive_ce**: ^4.0.0-dev.8 (Community edition of Hive)
+- **pvcache**: Core caching framework (local dependency)
 
-### Development Dependencies
-- **flutter_test**: SDK testing framework
-- **flutter_lints**: ^5.0.0 (Code quality and linting)
-- **http**: ^1.5.0 (For example implementations)
+### Platform Support
+- **Flutter Web**: Primary development target with IndexedDB backend
+- **Flutter Desktop**: Windows, macOS, Linux support
+- **Flutter Mobile**: Android and iOS support
 
-## Development Environment
+### Development Tools
+- **VS Code**: Primary IDE with Dart/Flutter extensions
+- **Flutter DevTools**: Debugging and profiling
+- **Dart Analysis**: Static code analysis with strict linting
 
-### Setup Requirements
-- Flutter SDK 3.9.0 or higher
-- Dart SDK compatible with Flutter 3.9.0
-- IDE with Flutter/Dart support (VS Code, Android Studio, etc.)
+## Technical Constraints
+
+### Hive-Specific Limitations
+- **32-byte Encryption Keys**: HiveAesCipher requires exactly 256-bit keys
+- **Web Platform**: IndexedDB has strict type enforcement for CollectionBox
+- **Box Configuration**: Must register perBoxConfigs before opening boxes
+- **Global State**: HiveCipher and box configurations are global singletons
+
+### Flutter Web Constraints
+- **Buffer Sizes**: AES encryption requires larger buffers (32 bytes vs 16)
+- **Type Safety**: CollectionBox<T> typing strictly enforced in IndexedDB
+- **Debug Output**: Console logging essential for troubleshooting
+
+### PVCache Integration
+- **Adapter System**: Must implement PVBaseStorage interface
+- **Context Pattern**: All operations use PVCtx for parameter passing
+- **Metadata Support**: MetadataStorage mixin for TTL and expiry
+
+## Development Setup
+
+### Project Structure
+```
+pvcache_hive/
+├── lib/
+│   ├── src/
+│   │   ├── hboxcore.dart       # Core Hive management
+│   │   └── pvci.dart           # PVCo serialization
+│   ├── templates/
+│   │   ├── storage/            # Storage implementations
+│   │   └── helper/             # Extension methods
+│   └── pvcache_hive.dart       # Main export file
+├── example/                    # Usage examples
+├── memory-bank/               # Documentation
+└── pubspec.yaml              # Dependencies
+```
+
+### Build Configuration
+- **Analysis Options**: Strict linting with custom rules
+- **Export Strategy**: Selective exports from main library file
+- **Example Apps**: Multiple example apps for different use cases
+
+### Encryption Setup
+```dart
+// Required before any Hive operations
+final encryptionKey = Uint8List.fromList([
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+  17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
+]);
+hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
+```
+
+## Tool Usage Patterns
+
+### Debug Configuration
+- **Console Logging**: Comprehensive logging for box configuration issues
+- **Type Tracking**: Log object types at each serialization step
+- **Configuration Tracing**: Track perBoxConfig registration and lookup
+
+### Development Workflow
+1. **Set Encryption**: Configure HiveAesCipher before any operations
+2. **Register Configs**: Ensure proper box configuration registration
+3. **Debug Logging**: Use temporary logging to trace issues
+4. **Type Validation**: Verify CollectionBox<PVCo> vs CollectionBox<Map>
+5. **Clean Up**: Remove debug prints in production
+
+### Testing Strategy
+- **Unit Tests**: Focus on encryption and serialization
+- **Integration Tests**: End-to-end storage operations
+- **Platform Tests**: Verify behavior across web, desktop, mobile
+- **Configuration Tests**: Test various box configuration scenarios
+
+### Performance Considerations
+- **Lazy Loading**: Boxes opened on-demand
+- **Buffer Management**: Pre-allocate encryption buffers
+- **Type Safety**: Compile-time type checking prevents runtime errors
+- **Caching**: Box instances cached to avoid repeated opening
+
+## Critical Implementation Details
+
+### Box Configuration Flow
+1. **HBoxIntent Creation**: Defines box names and configurations
+2. **Config Registration**: perBoxConfigs stored in global map
+3. **Box Opening**: Configuration presence determines box type
+4. **Type Enforcement**: Web platform strictly enforces typing
+
+### Encryption Integration
+- **Transparent**: PVCo objects automatically encrypt JSON when cipher present
+- **String Utilities**: HiveCipherExt provides direct string encryption
+- **Buffer Safety**: 32-byte buffers prevent range errors on web
+- **UTF-8 Support**: Proper encoding for international characters
+
+### Error Handling Patterns
+- **Configuration Errors**: Clear messages for box config mismatches
+- **Type Errors**: Detailed information about expected vs actual types
+- **Encryption Errors**: Buffer size and key validation
+- **Debug Support**: Comprehensive logging for issue resolution
 
 ### Build Configuration
 - **analysis_options.yaml**: Linting rules and analysis configuration

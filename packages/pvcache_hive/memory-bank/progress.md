@@ -9,13 +9,24 @@
   - `LiteHive`: PVCo-serialized storage
   - `StdBox<T>`: Advanced storage with metadata support
 - **Type Safety**: Generic implementations maintain compile-time type checking
-- **Serialization**: Custom JSON encoder/decoder for image data
+- **Serialization**: Custom JSON encoder/decoder with encryption support
+
+### Encryption System ✅
+- **HiveAesCipher Integration**: Properly configured 32-byte encryption keys
+- **String Encryption**: `HiveCipherExt` with `encryptString()` and `decryptString()` methods
+- **Buffer Management**: Fixed AES encryption buffer size issues (32-byte buffers)
+- **UTF-8 Support**: Proper encoding/decoding for internationalization
 
 ### Storage Implementations ✅
 - **SimpleHive**: Basic key-value storage with Hive
 - **LiteHive**: Lightweight wrapper with automatic PVCo serialization
 - **StdBox**: Advanced storage with metadata support and custom type handling
 - **StdMetaBox**: Metadata storage companion to StdBox
+
+### Box Configuration System ✅
+- **HBoxIntent**: Proper box intent creation with perBoxConfigs
+- **Configuration Registration**: Fixed nullable config handling
+- **Type-Safe Boxes**: CollectionBox<PVCo> for main boxes
 
 ### Helper Extensions ✅
 - **PVCacheAddHive**: Extension for creating standard Hive caches
@@ -24,30 +35,74 @@
 
 ### Examples ✅
 - **example.dart**: Basic user data caching with TTL
-- **example2.dart**: Miscellaneous data types and custom TTL
+- **example2.dart**: Miscellaneous data types with encryption and custom TTL
 - **example3.dart**: Network image caching demonstration
 
 ## What's Left to Build
 
+### Critical Fixes 🚨
+- **Meta Box Configuration**: Meta boxes (ctx_meta, data_meta) still opening as CollectionBox<Map>
+  - Need separate configs for meta boxes OR shared config registration
+  - Currently main boxes work but meta boxes fail type checks
+
+### Code Cleanup 🧹
+- **Debug Logging**: Remove temporary debug prints once issues resolved
+- **Error Handling**: Improve error messages for configuration mismatches
+- **Type Validation**: Add runtime type checking for box operations
+
 ### Documentation 📝
-- **README.md**: Currently has TODO placeholders, needs proper package description
-- **API Documentation**: Could benefit from more comprehensive dartdoc comments
-- **Usage Guide**: Step-by-step integration guide for developers
+- **Encryption Guide**: Document encryption setup and key management
+- **Configuration Patterns**: Document proper box configuration patterns
+- **Troubleshooting**: Common issues and debugging strategies
+- **API Documentation**: Complete dartdoc comments for new encryption methods
 
 ### Testing 🧪
-- **Unit Tests**: Core functionality needs comprehensive test coverage
-- **Integration Tests**: Storage operations should be tested end-to-end
-- **Performance Tests**: Large dataset handling and memory usage
-
-### Error Handling 🛡️
-- **Edge Cases**: More comprehensive handling of unusual scenarios
-- **Recovery**: Better error recovery mechanisms
-- **Logging**: More detailed logging for debugging
+- **Encryption Tests**: Unit tests for string encryption/decryption
+- **Box Configuration Tests**: Test various config scenarios
+- **Meta Box Tests**: Ensure meta boxes work correctly
+- **Integration Tests**: End-to-end storage with encryption
 
 ### Features 🚀
-- **Batch Operations**: Support for bulk data operations
-- **Migration**: Data migration utilities for schema changes
+- **Key Rotation**: Support for encryption key rotation
 - **Compression**: Optional data compression for large objects
+- **Batch Operations**: Support for bulk data operations with encryption
+- **Migration**: Data migration utilities for encrypted data
+
+## Current Status
+
+### Working ✅
+- Main box storage (ctx, data, lessons, logging) with PVCo objects
+- Encryption system with proper key setup
+- String encryption/decryption utilities
+- Box configuration registration for main boxes
+
+### Broken ❌
+- Meta box storage (ctx_meta, data_meta) - opens as Map instead of PVCo
+- Type mismatches when storing PVCo in Map-configured boxes
+
+### Debugging ⚙️
+- Comprehensive logging in place to track configuration issues
+- Clear error messages identifying Map vs PVCo type conflicts
+- Debug output shows exact configuration flow
+
+## Evolution of Project Decisions
+
+### Initial Architecture (Pre-September 2025)
+- Simple storage templates
+- Basic Hive integration
+- No encryption support
+
+### Current Architecture (September 2025)
+- **Encryption-First**: Built-in encryption support throughout
+- **Type-Safe Configuration**: Strict CollectionBox typing
+- **Debug-Driven Development**: Comprehensive logging for issue resolution
+- **Configuration-Centric**: Box configuration drives storage behavior
+
+### Lessons Learned
+1. **Box Configuration is Critical**: Improper config registration causes type mismatches
+2. **Platform Differences**: Web requires larger encryption buffers
+3. **Meta Box Complexity**: Meta boxes need careful configuration handling
+4. **Debug Logging Essential**: Complex storage issues require detailed logging
 - **Statistics**: Cache hit/miss statistics and monitoring
 
 ## Current Status

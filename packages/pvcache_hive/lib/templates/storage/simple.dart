@@ -3,12 +3,15 @@ import 'package:hive_ce/hive.dart';
 
 class SimpleHive<T> extends PVBaseStorage {
   late final Box<T> box;
+  final String boxName;
   final Future<Box<T>> Function() _initBox;
 
-  SimpleHive()
+  SimpleHive(
+    {this.boxName = 'pvcache_hive',}
+  )
     : _initBox = (() async {
         // await Hive.initFlutter();
-        return await Hive.openBox<T>('pvcache_hive');
+        return await Hive.openBox<T>(boxName);
       }) {
     _initBox().then((value) => box = value);
   }

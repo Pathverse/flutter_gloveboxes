@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pvcache/pvcache.dart';
-import 'package:pvcache_hive/templates/helper/basic.dart';
+import 'package:pvcache_hive/pvcache_hive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,11 +84,11 @@ class _CacheDemoState extends State<CacheDemo> {
       final userData2 = await userCache.get('user_002');
       _log('================');
       if (userData != null) {
-        final user = userData as Map<String, dynamic>;
+        final user = userData as Map;
         _log('✅ Got user: ${user['name']} (${user['email']})');
       }
       if (userData2 != null) {
-        final user = userData2 as Map<String, dynamic>;
+        final user = userData2 as Map;
         _log('✅ Got user: ${user['name']} (${user['email']})');
       }
     } catch (e) {

@@ -1,53 +1,101 @@
 # Active Context: pvcache_hive
 
 ## Current Work Focus
-**Memory Bank Initialization** - Setting up comprehensive documentation for the pvcache_hive package to enable effective development and maintenance.
+**Encryption & Serialization Bug Fixes** - Resolving critical issues with Hive encryption configuration and PVCo serialization in CollectionBox storage.
 
 ## Recent Changes
-- Memory bank directory created
-- Core documentation files initialized
-- Package structure analyzed and documented
+
+### Major Bug Fixes (September 2025)
+1. **Encryption Implementation**
+   - Added `HiveCipherExt` extension with `encryptString()` and `decryptString()` methods
+   - Fixed buffer size issues in AES encryption (increased from 16 to 32 bytes)
+   - Added proper UTF-8 encoding/decoding for string encryption
+   - Fixed encryption key initialization in example2.dart (32-byte key requirement)
+
+2. **Box Configuration Critical Fix**
+   - **MAJOR**: Fixed `[?boxConfig]` syntax causing null elements in perBoxConfigs list
+   - Updated to `boxConfig != null ? [boxConfig!] : []` pattern
+   - Fixed type mismatch errors between `PVCo` and `Map<dynamic, dynamic>`
+   - Added debug logging to trace box configuration issues
+
+3. **Serialization Flow Corrections**
+   - Fixed StdBox storage to work with CollectionBox<PVCo> instead of CollectionBox<Map>
+   - Proper toJson()/fromJson() automatic handling by Hive
+   - Meta boxes still need configuration (identified issue with meta box registration)
+
+### Code Quality Improvements
+- Added comprehensive debug logging for box creation and configuration
+- Improved error messages for troubleshooting
+- Better buffer management for encryption operations
 
 ## Next Steps
-1. Complete memory bank documentation
-2. Review and update README.md with proper package description
-3. Ensure all examples are working and well-documented
-4. Consider any missing features or improvements
+1. **CRITICAL**: Fix meta box configuration issue (ctx_meta, data_meta boxes opening as Map instead of PVCo)
+2. Remove debug prints once issues are resolved
+3. Add comprehensive encryption documentation
+4. Create unit tests for encryption functionality
+5. Document the box configuration patterns
 
 ## Active Decisions and Considerations
 
-### Documentation Strategy
-- Comprehensive memory bank for future development sessions
-- Clear separation of concerns in documentation files
-- Focus on practical usage patterns and examples
+### Encryption Strategy
+- **Buffer Sizing**: Use generous 32-byte buffers for AES encryption to avoid range errors
+- **String Handling**: UTF-8 encoding for proper internationalization support
+- **Key Management**: 32-byte keys required for HiveAesCipher (256-bit encryption)
 
-### Package Structure
-- Well-organized template system for different storage needs
-- Clean separation between core functionality and convenience helpers
-- Extensible design for future enhancements
+### Box Configuration Pattern
+- **Critical Pattern**: Meta boxes need separate configs or shared config registration
+- **Debug Strategy**: Temporary logging to identify configuration flow issues
+- **Type Safety**: Ensure CollectionBox<PVCo> vs CollectionBox<Map> consistency
+
+### Serialization Architecture
+- **Automatic Handling**: Let Hive handle toJson()/fromJson() calls automatically
+- **Type Consistency**: PVCo objects throughout the storage chain
+- **Error Recovery**: Better handling of serialization mismatches
 
 ## Important Patterns and Preferences
 
-### Code Organization
-- **Template-based approach**: Different storage implementations for different use cases
-- **Extension methods**: Convenient factory methods for common scenarios
-- **Generic types**: Maintain type safety throughout the system
-- **Separation of concerns**: Core logic separate from convenience helpers
+### Encryption Patterns
+```dart
+// Proper encryption key creation
+final encryptionKey = Uint8List.fromList([1,2,3...32]);
+hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
 
-### Naming Conventions
-- **Hive-specific**: `HBoxIntent`, `HPerBoxConfig` for Hive-specific concepts
-- **PVCache integration**: `PVCo`, `PVCi` for pvcache integration
-- **Clear prefixes**: `StdBox`, `SimpleHive`, `LiteHive` for different implementations
+// String encryption/decryption
+final encrypted = cipher.encryptString("plain text");
+final decrypted = cipher.decryptString(encrypted);
+```
 
-### Error Handling
-- **Validation-first**: Check parameters before operations
-- **Clear exceptions**: Descriptive error messages for debugging
-- **Graceful degradation**: Handle missing data appropriately
+### Box Configuration Patterns
+```dart
+// CORRECT: Handle nullable boxConfig properly
+perBoxConfigs: boxConfig != null ? [boxConfig!] : []
+
+// WRONG: Creates list with null element
+perBoxConfigs: [?boxConfig]
+```
+
+### Debug Patterns
+- **Box Creation**: Log which boxes are opened as Map vs PVCo
+- **Config Registration**: Log when perBoxConfigs are registered
+- **Type Flow**: Track PVCo object flow through storage chain
 
 ## Learnings and Project Insights
 
-### Architecture Strengths
-1. **Flexible storage options**: Multiple templates cater to different needs
+### Critical Architecture Issues Discovered
+1. **Box Type Mismatch**: Most storage issues stem from CollectionBox<Map> vs CollectionBox<PVCo> confusion
+2. **Meta Box Problem**: Meta boxes inherit intent but don't get separate configs registered
+3. **Encryption Buffer**: AES encryption needs generous buffer sizes for web platform
+4. **Configuration Timing**: Box configs must be registered before box opening
+
+### Debugging Strategies That Work
+- **Comprehensive Logging**: Print box names, types, and config presence
+- **Type Tracking**: Log object types at each serialization step
+- **Configuration Tracing**: Track perBoxConfig registration and lookup
+
+### Platform-Specific Considerations
+- **Web Platform**: Requires larger encryption buffers than native platforms
+- **IndexedDB**: CollectionBox typing is strictly enforced in web environment
+- **Debug Output**: Console logging is essential for web debugging
 2. **Type safety**: Generic implementations maintain compile-time checking
 3. **Integration-friendly**: Clean integration with existing pvcache system
 4. **Performance-oriented**: Leverages Hive's efficient storage

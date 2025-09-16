@@ -1,10 +1,52 @@
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:pvcache/pvcache.dart';
-import 'package:pvcache_hive/templates/helper/basic.dart';
+import 'package:pvcache_hive/pvcache_hive.dart';
+import 'package:pvcache_hive/src/hboxcore.dart' as hboxcore;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Create a 32-byte encryption key for HiveAesCipher
+  final encryptionKey = Uint8List.fromList([
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+  ]);
+
+  hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
+
   runApp(const MyApp());
 }
 
@@ -122,7 +164,7 @@ class _MiscCacheDemoState extends State<MiscCacheDemo> {
       }
 
       final ttlInfo = metadata != null ? ' (TTL: ${metadata['ttl']}s)' : '';
-      _log('✅ Set "$key" = $data${ttlInfo}');
+      _log('✅ Set "$key" = $data$ttlInfo');
       _log('   Type: ${data.runtimeType}');
     } catch (e) {
       _log('❌ Error setting data: $e');
@@ -230,6 +272,7 @@ class _MiscCacheDemoState extends State<MiscCacheDemo> {
       _log('🎉 All test data stored successfully!');
     } catch (e) {
       _log('❌ Error testing random data: $e');
+      rethrow;
     } finally {
       await _setLoading(false);
     }

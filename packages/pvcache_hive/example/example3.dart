@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pvcache/pvcache.dart';
 import 'package:pvcache/templates/adapters/expiry.dart';
-import 'package:pvcache_hive/templates/helper/image.dart';
+import 'package:pvcache_hive/pvcache_hive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,6 @@ class NetworkImageDemo extends StatefulWidget {
 
 class _NetworkImageDemoState extends State<NetworkImageDemo> {
   late PVCache imageCache;
-  late ImageHiveHelper imageHelper;
   Image? _networkImage;
   String _results = 'Ready to test network image caching...';
   bool _isLoading = false;
@@ -43,12 +42,11 @@ class _NetworkImageDemoState extends State<NetworkImageDemo> {
   }
 
   void _initializeCache() {
-    imageCache = PVCACHE.createImageHive(
+    imageCache = PVCACHE.createStdHive(
       env: "image_cache",
       metaboxName: "image_meta",
       adapters: [ExpiryAdapter()],
     );
-    imageHelper = ImageHiveHelper(imageCache);
     _log('✅ Image cache initialized successfully!');
   }
 
@@ -71,7 +69,7 @@ class _NetworkImageDemoState extends State<NetworkImageDemo> {
           'https://fastly.picsum.photos/id/0/5000/3333.jpg?hmac=_j6ghY5fCfSD6tvtcV74zXivkJSPIfR9B8w34XeQmvU';
       _log('🌐 Loading network image: $imageUrl');
 
-      final image = await imageHelper.network(imageUrl);
+      final image = await imageCache.getNetworkImage(imageUrl);
       setState(() {
         _networkImage = image;
       });
@@ -79,6 +77,7 @@ class _NetworkImageDemoState extends State<NetworkImageDemo> {
       _log('✅ Network image loaded and cached successfully!');
     } catch (e) {
       _log('❌ Error loading network image: $e');
+      rethrow; 
     } finally {
       await _setLoading(false);
     }

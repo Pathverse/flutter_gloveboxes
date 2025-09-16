@@ -1,15 +1,15 @@
 import 'package:hive_ce/hive.dart';
 import 'package:pvcache/pvcache.dart';
 import 'package:pvcache_hive/src/hboxcore.dart' as hboxcore;
-import 'package:pvcache_hive/src/pvco.dart';
+import 'package:pvcache_hive/src/pvci.dart';
 
-class StdBox<T extends PVCi> extends PVBaseStorage with MetadataStorage {
+class StdBox<T extends PVCo> extends PVBaseStorage with MetadataStorage {
   final T Function(dynamic) tconstructor;
-  final T Function(Map<String, dynamic>) fromJsonConstructor;
+  final T Function(Map) fromJsonConstructor;
 
   StdBox({
     T Function(dynamic)? tconstructor,
-    T Function(Map<String, dynamic>)? fromJsonConstructor,
+    T Function(Map)? fromJsonConstructor,
   }) : tconstructor = tconstructor ?? ((data) => PVCo(data) as T),
        fromJsonConstructor =
            fromJsonConstructor ?? ((json) => PVCo.fromJson(json) as T);
@@ -48,9 +48,12 @@ class StdBox<T extends PVCi> extends PVBaseStorage with MetadataStorage {
   Future<void> get(PVCtx ctx) async {
     final box = await getBox();
     final value = await box.get(ctx.key!);
-    if (value != null) {
-      T obj = fromJsonConstructor(value as Map<String, dynamic>);
-      ctx.value = obj.real;
+    if (value == null) {
+      ctx.value = null;
+    }
+
+    if (value is T) {
+      ctx.value = value.data;
     }
   }
 
@@ -64,7 +67,8 @@ class StdBox<T extends PVCi> extends PVBaseStorage with MetadataStorage {
       value = ctx.value;
     }
 
-    await box.put(ctx.key!, value.toJson());
+    // Store the PVCo object directly - Hive will automatically call toJson()
+    await box.put(ctx.key!, value);
   }
 
   @override
@@ -87,11 +91,10 @@ class StdStorageBox<T extends PVCo> extends StdBox<T> {
     super.tconstructor,
     super.fromJsonConstructor,
   }) : metaBoxName = metaBoxName ?? '${boxName}_meta' {
-    _intent = hboxcore.HBoxIntent(
+    _intent = hboxcore.HBoxIntent(boxName, {
       boxName,
-      {boxName, metaBoxName ?? '${boxName}_meta'},
-      perBoxConfigs: [?boxConfig],
-    );
+      metaBoxName ?? '${boxName}_meta',
+    }, perBoxConfigs: boxConfig != null ? [boxConfig!] : []);
   }
 
   @override
@@ -120,24 +123,25 @@ class StdMetaBox<T extends PVCo> extends StdBox<T> {
 
   @override
   get fromJsonConstructor =>
-      _storageBoxRef.fromJsonConstructor as T Function(Map<String, dynamic>);
+      _storageBoxRef.fromJsonConstructor as T Function(Map);
 
   get storageBox => _storageBoxRef;
 }
 
-(StdMetaBox<T>, StdStorageBox<T>) createPair<T extends PVCo>(
+(StdMetaBox, StdStorageBox) createPair(
   String boxName, {
-  String? metaBoxName,
   hboxcore.HPerBoxConfig? boxConfig,
-  T Function(dynamic)? tconstructor,
-  T Function(Map<String, dynamic>)? fromJsonConstructor,
 }) {
-  final storageBox = StdStorageBox<T>(
+  boxConfig ??= hboxcore.HPerBoxConfig<PVCo>(
+    boxName: boxName,
+    fromJson: (json) => PVCo.fromJson(json),
+    preload: true,
+  );
+
+  final storageBox = StdStorageBox(
     boxName,
-    metaBoxName: metaBoxName,
+    metaBoxName: '${boxName}_meta',
     boxConfig: boxConfig,
-    tconstructor: tconstructor,
-    fromJsonConstructor: fromJsonConstructor,
   );
   return (storageBox.metaBox, storageBox);
 }
