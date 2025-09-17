@@ -69,7 +69,13 @@ class PVLogRegistry {
   }) {
     final List<PVLogAdapter> formatters = [];
     if (!allowFormatterChain) {
-      formatters.add(adapters.firstWhere((adapter) => adapter is Formatter));
+      final formatter = adapters.cast<PVLogAdapter?>().firstWhere(
+        (adapter) => adapter is Formatter,
+        orElse: () => null,
+      );
+      if (formatter != null) {
+        formatters.add(formatter);
+      }
     } else {
       formatters.addAll(adapters.whereType<Formatter>());
     }
