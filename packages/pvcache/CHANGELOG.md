@@ -1,3 +1,6 @@
+## 0.1.1
+* added `ifNotCached` function to cacher class
+
 ## 0.1.0
 * standardized MetadataStorage mixin interface across all adapters
 * updated ExpiryAdapter to use new MetadataStorage patterns
