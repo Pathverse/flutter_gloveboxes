@@ -156,4 +156,18 @@ class PVCache extends PVBaseCache {
     await _existsFrame.call(ctx);
     return ctx.value ?? false;
   }
+
+  Future<dynamic> ifNotCached(
+    String key,
+    Future<dynamic> Function() compute, {
+    Map<String, dynamic> metadata = const {},
+  }) async {
+    if (await exists(key, metadata: metadata)) {
+      return await get(key, metadata: metadata);
+    } else {
+      final result = await compute();
+      await set(key, result, metadata: metadata);
+      return result;
+    }
+  }
 }

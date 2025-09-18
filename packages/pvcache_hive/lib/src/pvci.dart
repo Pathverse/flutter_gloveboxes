@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
+
 import 'hboxcore.dart' as hboxcore;
 
 class PVCoDecryptionException implements Exception {
@@ -92,14 +94,26 @@ class PVCo {
   late final int typeCode;
   final dynamic data;
 
-  factory PVCo(dynamic data, {int tCode = -1, bool allowDefaultAssignment = true}) {
+  factory PVCo(
+    dynamic data, {
+    int tCode = -1,
+    bool allowDefaultAssignment = true,
+  }) {
     if (data is PVCo) {
       return data;
     }
-    return PVCo._internal(data, tCode: tCode, allowDefaultAssignment: allowDefaultAssignment);
+    return PVCo._internal(
+      data,
+      tCode: tCode,
+      allowDefaultAssignment: allowDefaultAssignment,
+    );
   }
 
-  PVCo._internal(this.data, {int tCode = -1, bool allowDefaultAssignment = true}) {
+  PVCo._internal(
+    this.data, {
+    int tCode = -1,
+    bool allowDefaultAssignment = true,
+  }) {
     if (tCode == -1) {
       if (data is ByteData) {
         tCode = 1;
@@ -161,12 +175,23 @@ class PVCo {
   }
 
   Map toJson() {
+    late final result;
     if (typeCode < 10) {
-      return _builtinTypecodeHandle();
+      result = _builtinTypecodeHandle();
+    } else {
+      final (serializer, _) = PVCoore._getSerialDefs(typeCode);
+      result = {'typeCode': typeCode, 'data': serializer(data)};
     }
 
-    final (serializer, _) = PVCoore._getSerialDefs(typeCode);
-    return {'typeCode': typeCode, 'data': serializer(data)};
+    if (kDebugMode) {
+      try {
+        jsonEncode(data);
+        result['__raw'] = data;
+      } catch (e) {
+
+      }
+    }
+    return result;
   }
 
   static PVCo _builtinTypecodeDecode(Map json) {
@@ -176,12 +201,14 @@ class PVCo {
       if (hiveCipher != null) {
         late final String decrypted;
         try {
-           decrypted = hiveCipher.decryptString(json['data'] as String);
+          decrypted = hiveCipher.decryptString(json['data'] as String);
         } catch (e) {
-          throw PVCoDecryptionException('Failed to decrypt data with HiveCipher');
+          throw PVCoDecryptionException(
+            'Failed to decrypt data with HiveCipher',
+          );
         }
         return PVCo(jsonDecode(decrypted), tCode: 0);
-      } 
+      }
       return PVCo(jsonDecode(json['data'] as String), tCode: 0);
     } else if (typeCode == 1) {
       final bytes = base64Decode(json['data'] as String);
