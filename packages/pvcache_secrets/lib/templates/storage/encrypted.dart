@@ -7,12 +7,12 @@ const secureStorage = FlutterSecureStorage();
 class Encrypted extends PVBaseStorage {
   @override
   Future<void> clear(PVCtx ctx) async {
-    return secureStorage.deleteAll();
+    return await secureStorage.deleteAll();
   }
 
   @override
   Future<void> delete(PVCtx ctx) async {
-    return secureStorage.delete(key: ctx.key!);
+    return await secureStorage.delete(key: ctx.key!);
   }
 
   @override
@@ -35,6 +35,6 @@ class Encrypted extends PVBaseStorage {
 
   @override
   Future<void> set(PVCtx ctx) async {
-    return secureStorage.write(key: ctx.key!, value: ctx.value);
+    return await secureStorage.write(key: ctx.key!, value: ctx.value);
   }
 }
