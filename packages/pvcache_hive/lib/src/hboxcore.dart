@@ -115,7 +115,6 @@ Future<void> initHBox({String? path}) async {
     "pvcache",
     _registeredBoxNames,
     path: path,
-    key: _hiveCipher,
   );
   _initialized = true;
 }
