@@ -1,3 +1,6 @@
+## 0.2.2
+* fixed a problem that causes hot-reload to fail
+
 ## 0.2.1
 * added decryption error handling
 

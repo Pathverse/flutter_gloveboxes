@@ -3,8 +3,17 @@ import 'dart:typed_data';
 import 'package:hive_ce/hive.dart';
 import 'package:pvcache_hive/src/pvci.dart';
 
-late final BoxCollection _boxCollection;
+BoxCollection? _boxCollectionInstance;
 bool _initialized = false;
+
+/// Get the initialized BoxCollection instance
+BoxCollection get _boxCollection {
+  if (_boxCollectionInstance == null) {
+    throw Exception("HBox not initialized. Call initHBox() first.");
+  }
+  return _boxCollectionInstance!;
+}
+
 final Set<String> _registeredBoxNames = {};
 final Map<String, HBoxIntent> _hboxIntents = {};
 final Map<String, CollectionBox> _openBoxes = {};
@@ -102,7 +111,7 @@ String? decryptString(String encryptedText) {
 
 Future<void> initHBox({String? path}) async {
   if (_initialized) return;
-  _boxCollection = await BoxCollection.open(
+  _boxCollectionInstance = await BoxCollection.open(
     "pvcache",
     _registeredBoxNames,
     path: path,
@@ -130,7 +139,6 @@ Future<CollectionBox<dynamic>> getBox(String boxName, HBoxIntent intent) async {
     final box = await _boxCollection.openBox<PVCo>(
       boxName,
       fromJson: PVCo.fromJson,
-    
     );
     _openBoxes[boxName] = box;
     return box;
