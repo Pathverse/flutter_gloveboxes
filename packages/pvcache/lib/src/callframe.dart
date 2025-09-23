@@ -130,10 +130,10 @@ class PVCFrame {
     // Build complete execution pipeline
     final metadataStack = getMetadataParseStack(payload);
     callstack.addAll(metadataStack);
-    
+
     final (opCallstack, opMainFuncIndex) = getOpCallStack(payload);
     callstack.addAll(opCallstack);
-    
+
     // Adjust main function index to account for metadata stack
     final mainFuncIndex = metadataStack.length + opMainFuncIndex;
 

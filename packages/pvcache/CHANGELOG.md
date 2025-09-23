@@ -1,3 +1,6 @@
+## 0.1.2
+* fixed critical bug in OnError handler logic preventing execution
+
 ## 0.1.1
 * added `ifNotCached` function to cacher class
 
