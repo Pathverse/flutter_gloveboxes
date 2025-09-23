@@ -1,18 +1,15 @@
 name: pvcache
-description: "A new Flutter package project."
-version: 0.0.1
-homepage: https://flutter.dev
+description: "A flexible, high-performance caching library that extends other caching frameworks"
+version: 0.1.2
+homepage: "https://github.com/Pathverse/flutter_gloveboxes/"
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-    
-  hive_ce: ">=2.11.0 <3.0.0"
-  flutter_secure_storage: ">=9.2.0 <10.0.0"
 
 dev_dependencies:
   flutter_test:

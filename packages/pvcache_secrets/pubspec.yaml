@@ -1,0 +1,25 @@
+name: pvcache_secrets
+description: "extension on pvcache that integrates flutter_secure_storage for secret storage"
+version: 0.1.0
+homepage: https://github.com/Pathverse/flutter_gloveboxes
+repository: https://github.com/Pathverse/flutter_gloveboxes
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  crypto: ^3.0.6
+  flutter:
+    sdk: flutter
+  
+  flutter_secure_storage: ">=9.2.0 <10.0.0"
+  pvcache: ">=0.1.0 <1.0.0"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
