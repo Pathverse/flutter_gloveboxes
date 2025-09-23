@@ -1,3 +1,6 @@
+## 0.2.3
+* fixed an issue related to hivecipher not compatible with custom object decryption checks
+
 ## 0.2.2
 * fixed a problem that causes hot-reload to fail
 
