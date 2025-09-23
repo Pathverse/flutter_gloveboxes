@@ -91,24 +91,24 @@ class ErrorStorage extends PVBaseStorage with MetadataStorage {
 /// Test adapter with high priority for testing execution order
 class HighPriorityErrorAdapter extends PVAdapter with OnError, PreGet {
   bool errorHandlerCalled = false;
-  
+
   HighPriorityErrorAdapter(super.uid);
-  
+
   @override
   int get onErrorPriority => 0; // High priority
-  
+
   @override
   bool get mainFuncExclusive => false;
-  
+
   @override
   Future<void> onError(PVCtx ctx) async {
     errorHandlerCalled = true;
     ctx.errorHandled = true; // Mark error as handled
   }
-  
+
   @override
   int get preGetPriority => 0;
-  
+
   @override
   Future<void> preGet(PVCtx ctx) async {
     throw Exception('Test error for priority testing');
@@ -118,15 +118,15 @@ class HighPriorityErrorAdapter extends PVAdapter with OnError, PreGet {
 /// Test adapter with low priority for testing execution order
 class LowPriorityErrorAdapter extends PVAdapter with OnError {
   bool errorHandlerCalled = false;
-  
+
   LowPriorityErrorAdapter(super.uid);
-  
+
   @override
   int get onErrorPriority => 10; // Low priority
-  
+
   @override
   bool get mainFuncExclusive => false;
-  
+
   @override
   Future<void> onError(PVCtx ctx) async {
     errorHandlerCalled = true;
@@ -139,7 +139,7 @@ void main() {
     test('OnError should catch adapter exceptions', () async {
       final errorAdapter = TestErrorAdapter('test-error-adapter');
       final storage = InMemory();
-      
+
       final cache = PVCache(
         env: 'test-env-1',
         adapters: [errorAdapter],
@@ -156,68 +156,110 @@ void main() {
       }
 
       // Check if error handler was called
-      expect(errorAdapter.errorHandlerCalled, isTrue, 
-        reason: 'OnError handler should have been called');
-      expect(errorAdapter.caughtException?.toString(), contains('Test error from preGet'),
-        reason: 'Should have caught the preGet exception');
-      expect(result, isNull, reason: 'Result should be null since operation was short-circuited');
-    });
-
-    test('OnError mainFuncExclusive should only catch main function errors', () async {
-      final mainErrorAdapter = TestMainErrorAdapter('test-main-error-adapter');
-      final storage = ErrorStorage();
-      
-      final cache = PVCache(
-        env: 'test-env-2',
-        adapters: [mainErrorAdapter],
-        storage: storage,
+      expect(
+        errorAdapter.errorHandlerCalled,
+        isTrue,
+        reason: 'OnError handler should have been called',
       );
-
-      // This should trigger the main error handler due to storage exception
-      // Since errorHandled is set to true, we should NOT get an exception
-      dynamic result;
-      try {
-        result = await cache.get('test-key');
-      } catch (e) {
-        fail('Exception should have been handled by OnError main: $e');
-      }
-
-      // Check if main error handler was called
-      expect(mainErrorAdapter.errorHandlerCalled, isTrue,
-        reason: 'OnError main handler should have been called for storage errors');
-      expect(mainErrorAdapter.caughtException?.toString(), contains('Storage error in get'),
-        reason: 'Should have caught the storage exception');
-      expect(result, isNull, reason: 'Result should be null since storage threw an error');
-    });
-
-    test('OnError mainFuncExclusive should NOT catch adapter exceptions', () async {
-      final mainErrorAdapter = TestMainErrorAdapter('test-main-error-adapter-2');
-      final errorAdapter = TestErrorAdapter('test-error-adapter-2');
-      final storage = InMemory();
-      
-      final cache = PVCache(
-        env: 'test-env-3',
-        adapters: [mainErrorAdapter, errorAdapter],
-        storage: storage,
+      expect(
+        errorAdapter.caughtException?.toString(),
+        contains('Test error from preGet'),
+        reason: 'Should have caught the preGet exception',
       );
-
-      // This should NOT trigger the main error handler due to adapter exception
-      // But it should trigger the general error handler and not throw
-      dynamic result;
-      try {
-        result = await cache.get('test-key');
-      } catch (e) {
-        fail('Exception should have been handled by general OnError: $e');
-      }
-
-      // Check that main error handler was NOT called for adapter errors
-      expect(mainErrorAdapter.errorHandlerCalled, isFalse,
-        reason: 'OnError main handler should NOT be called for adapter errors');
-      
-      // But the general error handler should have been called
-      expect(errorAdapter.errorHandlerCalled, isTrue,
-        reason: 'General OnError handler should have been called');
-      expect(result, isNull, reason: 'Result should be null since operation was short-circuited');
+      expect(
+        result,
+        isNull,
+        reason: 'Result should be null since operation was short-circuited',
+      );
     });
+
+    test(
+      'OnError mainFuncExclusive should only catch main function errors',
+      () async {
+        final mainErrorAdapter = TestMainErrorAdapter(
+          'test-main-error-adapter',
+        );
+        final storage = ErrorStorage();
+
+        final cache = PVCache(
+          env: 'test-env-2',
+          adapters: [mainErrorAdapter],
+          storage: storage,
+        );
+
+        // This should trigger the main error handler due to storage exception
+        // Since errorHandled is set to true, we should NOT get an exception
+        dynamic result;
+        try {
+          result = await cache.get('test-key');
+        } catch (e) {
+          fail('Exception should have been handled by OnError main: $e');
+        }
+
+        // Check if main error handler was called
+        expect(
+          mainErrorAdapter.errorHandlerCalled,
+          isTrue,
+          reason:
+              'OnError main handler should have been called for storage errors',
+        );
+        expect(
+          mainErrorAdapter.caughtException?.toString(),
+          contains('Storage error in get'),
+          reason: 'Should have caught the storage exception',
+        );
+        expect(
+          result,
+          isNull,
+          reason: 'Result should be null since storage threw an error',
+        );
+      },
+    );
+
+    test(
+      'OnError mainFuncExclusive should NOT catch adapter exceptions',
+      () async {
+        final mainErrorAdapter = TestMainErrorAdapter(
+          'test-main-error-adapter-2',
+        );
+        final errorAdapter = TestErrorAdapter('test-error-adapter-2');
+        final storage = InMemory();
+
+        final cache = PVCache(
+          env: 'test-env-3',
+          adapters: [mainErrorAdapter, errorAdapter],
+          storage: storage,
+        );
+
+        // This should NOT trigger the main error handler due to adapter exception
+        // But it should trigger the general error handler and not throw
+        dynamic result;
+        try {
+          result = await cache.get('test-key');
+        } catch (e) {
+          fail('Exception should have been handled by general OnError: $e');
+        }
+
+        // Check that main error handler was NOT called for adapter errors
+        expect(
+          mainErrorAdapter.errorHandlerCalled,
+          isFalse,
+          reason:
+              'OnError main handler should NOT be called for adapter errors',
+        );
+
+        // But the general error handler should have been called
+        expect(
+          errorAdapter.errorHandlerCalled,
+          isTrue,
+          reason: 'General OnError handler should have been called',
+        );
+        expect(
+          result,
+          isNull,
+          reason: 'Result should be null since operation was short-circuited',
+        );
+      },
+    );
   });
 }
