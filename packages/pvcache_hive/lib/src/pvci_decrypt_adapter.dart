@@ -10,6 +10,11 @@ class DecryptErrorAdapter extends PVAdapter with OnError {
       ctx.value = null;
       ctx.continueFlow = false;
       ctx.errorHandled = true;
+      //NOTE could cause potential issues without checking existance
+      if (ctx.key != null && ctx.value == null) {
+        await ctx.storage!.delete(ctx);
+        await ctx.metaStorage?.delete(ctx);
+      }
     }
   }
 }
