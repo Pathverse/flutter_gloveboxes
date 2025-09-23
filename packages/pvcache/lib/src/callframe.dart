@@ -128,9 +128,14 @@ class PVCFrame {
     final callstack = <Function(PVCtx ctx)>[];
 
     // Build complete execution pipeline
-    callstack.addAll(getMetadataParseStack(payload));
-    final (opCallstack, mainFuncIndex) = getOpCallStack(payload);
+    final metadataStack = getMetadataParseStack(payload);
+    callstack.addAll(metadataStack);
+    
+    final (opCallstack, opMainFuncIndex) = getOpCallStack(payload);
     callstack.addAll(opCallstack);
+    
+    // Adjust main function index to account for metadata stack
+    final mainFuncIndex = metadataStack.length + opMainFuncIndex;
 
     // Extract error and cleanup handlers
     final onError =

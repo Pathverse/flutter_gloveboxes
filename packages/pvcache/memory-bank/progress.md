@@ -32,6 +32,11 @@
 - **Singleton Pattern**: Proper instance registration and retrieval
 - **PVCtx.minimal() Panic**: Fixed uninitialized metaStorageCache causing runtime panics
 - **Storage Efficiency**: Enhanced metaDelete() with empty map cleanup
+- **OnError Handler Bug**: Fixed critical mainFuncIndex calculation issue where OnError handlers were never executed
+  - **Root Cause**: mainFuncIndex was calculated relative to operation callstack, but used against full callstack that includes metadata functions
+  - **Solution**: Adjusted mainFuncIndex calculation to account for metadata stack offset: `mainFuncIndex = metadataStack.length + opMainFuncIndex`
+  - **Design Fix**: Moved OnError/OnFinally processing outside OpFlow check since they're orthogonal to normal operation flow
+  - **Impact**: OnError handlers now properly catch exceptions from both adapters and main storage functions based on mainFuncExclusive setting
 
 ## Implementation Insights
 - **PVCFramePayload caching**: Prevents rebuilding identical adapter→function mappings

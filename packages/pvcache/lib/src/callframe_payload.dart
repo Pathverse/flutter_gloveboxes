@@ -100,85 +100,85 @@ class PVCFramePayload {
         throw Exception('Adapter ${adapter.uid} is not a PVAdapter instance.');
       }
 
-      if (adapter is! OpFlow) {
-        continue;
-      }
-      map['preOp'] = map['preOp'] ?? [];
-      map['postOp'] = map['postOp'] ?? [];
+      // Handle OpFlow-based adapters (pre/post operation hooks)
+      if (adapter is OpFlow) {
+        map['preOp'] = map['preOp'] ?? [];
+        map['postOp'] = map['postOp'] ?? [];
 
-      switch (payload.callingType) {
-        case "set":
-          if (adapter is PreSet) {
-            map['preOp']?.add((
-              (adapter as PreSet).preSet,
-              (adapter as PreSet).preSetPriority,
-            ));
-          }
-          if (adapter is PostSet) {
-            map['postOp']?.add((
-              (adapter as PostSet).postSet,
-              (adapter as PostSet).postSetPriority,
-            ));
-          }
-          break;
-        case "get":
-          if (adapter is PreGet) {
-            map['preOp']?.add((
-              (adapter as PreGet).preGet,
-              (adapter as PreGet).preGetPriority,
-            ));
-          }
-          if (adapter is PostGet) {
-            map['postOp']?.add((
-              (adapter as PostGet).postGet,
-              (adapter as PostGet).postGetPriority,
-            ));
-          }
-          break;
-        case "delete":
-          if (adapter is PreDelete) {
-            map['preOp']?.add((
-              (adapter as PreDelete).preDelete,
-              (adapter as PreDelete).preDeletePriority,
-            ));
-          }
-          if (adapter is PostDelete) {
-            map['postOp']?.add((
-              (adapter as PostDelete).postDelete,
-              (adapter as PostDelete).postDeletePriority,
-            ));
-          }
-          break;
-        case "clear":
-          if (adapter is PreClear) {
-            map['preOp']?.add((
-              (adapter as PreClear).preClear,
-              (adapter as PreClear).preClearPriority,
-            ));
-          }
-          if (adapter is PostClear) {
-            map['postOp']?.add((
-              (adapter as PostClear).postClear,
-              (adapter as PostClear).postClearPriority,
-            ));
-          }
-          break;
-        case "has":
-          if (adapter is PreExists) {
-            map['preOp']?.add((
-              (adapter as PreExists).preExists,
-              (adapter as PreExists).preExistsPriority,
-            ));
-          }
-          if (adapter is PostExists) {
-            map['postOp']?.add((
-              (adapter as PostExists).postExists,
-              (adapter as PostExists).postExistsPriority,
-            ));
-          }
-          break;
-        default:
-          break;
+        switch (payload.callingType) {
+          case "set":
+            if (adapter is PreSet) {
+              map['preOp']?.add((
+                (adapter as PreSet).preSet,
+                (adapter as PreSet).preSetPriority,
+              ));
+            }
+            if (adapter is PostSet) {
+              map['postOp']?.add((
+                (adapter as PostSet).postSet,
+                (adapter as PostSet).postSetPriority,
+              ));
+            }
+            break;
+          case "get":
+            if (adapter is PreGet) {
+              map['preOp']?.add((
+                (adapter as PreGet).preGet,
+                (adapter as PreGet).preGetPriority,
+              ));
+            }
+            if (adapter is PostGet) {
+              map['postOp']?.add((
+                (adapter as PostGet).postGet,
+                (adapter as PostGet).postGetPriority,
+              ));
+            }
+            break;
+          case "delete":
+            if (adapter is PreDelete) {
+              map['preOp']?.add((
+                (adapter as PreDelete).preDelete,
+                (adapter as PreDelete).preDeletePriority,
+              ));
+            }
+            if (adapter is PostDelete) {
+              map['postOp']?.add((
+                (adapter as PostDelete).postDelete,
+                (adapter as PostDelete).postDeletePriority,
+              ));
+            }
+            break;
+          case "clear":
+            if (adapter is PreClear) {
+              map['preOp']?.add((
+                (adapter as PreClear).preClear,
+                (adapter as PreClear).preClearPriority,
+              ));
+            }
+            if (adapter is PostClear) {
+              map['postOp']?.add((
+                (adapter as PostClear).postClear,
+                (adapter as PostClear).postClearPriority,
+              ));
+            }
+            break;
+          case "has":
+            if (adapter is PreExists) {
+              map['preOp']?.add((
+                (adapter as PreExists).preExists,
+                (adapter as PreExists).preExistsPriority,
+              ));
+            }
+            if (adapter is PostExists) {
+              map['postOp']?.add((
+                (adapter as PostExists).postExists,
+                (adapter as PostExists).postExistsPriority,
+              ));
+            }
+            break;
+          default:
+            break;
+        }
       }
 
       // metadata parsing
@@ -247,7 +247,7 @@ class PVCFramePayload {
         ));
       }
 
-      // get exception handling
+      // Handle error and cleanup adapters (processed for all adapters, not just OpFlow)
       if (adapter is OnError && (adapter as OnError).mainFuncExclusive) {
         map['onErrorMain'] = map['onErrorMain'] ?? [];
         map['onErrorMain']?.add((

@@ -9,7 +9,7 @@ class DecryptErrorAdapter extends PVAdapter with OnError {
     if (ctx.exception is PVCoDecryptionException) {
       ctx.value = null;
       ctx.continueFlow = false;
-      print("xxx");
+      ctx.errorHandled = true;
     }
   }
 }
