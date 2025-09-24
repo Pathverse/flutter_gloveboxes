@@ -124,6 +124,10 @@ class PVCache extends PVBaseCache {
 
     final ctx = PVCtx.fromCache(this, key, metadata: metadata);
     await _deleteFrame.call(ctx);
+    if (ctx.metaStorage != null) {
+      // Also delete any associated metadata
+      await ctx.metaStorage!.delete(ctx);
+    }
   }
 
   @override
@@ -132,6 +136,10 @@ class PVCache extends PVBaseCache {
 
     final ctx = PVCtx.fromCache(this, null, metadata: metadata);
     await _clearFrame.call(ctx);
+    if (ctx.metaStorage != null) {
+      // Also clear all metadata
+      await ctx.metaStorage!.clear(ctx);
+    }
   }
 
   @override
