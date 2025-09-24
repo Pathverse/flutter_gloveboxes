@@ -14,12 +14,14 @@ class PVAesEncryptor extends PVCiEncryptor {
     final digest = SHA256Digest();
     final seedBytes = utf8.encode(seed);
     _key = digest.process(Uint8List.fromList(seedBytes));
-    
+
     if (liteMode) {
       // For lite mode, generate a static IV from the seed
       // This reduces security but improves performance significantly
       final ivDigest = SHA256Digest();
-      final ivHash = ivDigest.process(Uint8List.fromList(utf8.encode('${seed}_iv')));
+      final ivHash = ivDigest.process(
+        Uint8List.fromList(utf8.encode('${seed}_iv')),
+      );
       _staticIV = Uint8List.fromList(ivHash.sublist(0, 16));
     }
   }
@@ -68,7 +70,7 @@ class PVAesEncryptor extends PVCiEncryptor {
       // In lite mode, use static IV and all data is encrypted content
       iv = _staticIV;
       encryptedBytes = encryptedData;
-      
+
       // Handle empty string case (empty data returns empty string)
       if (encryptedBytes.isEmpty) {
         return '';
