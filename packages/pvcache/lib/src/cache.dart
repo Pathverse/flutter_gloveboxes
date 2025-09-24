@@ -162,12 +162,18 @@ class PVCache extends PVBaseCache {
     Future<dynamic> Function() compute, {
     Map<String, dynamic> metadata = const {},
   }) async {
-    if (await exists(key, metadata: metadata)) {
-      return await get(key, metadata: metadata);
-    } else {
-      final result = await compute();
-      await set(key, result, metadata: metadata);
-      return result;
+    await _ensureInit();
+    try {
+      final result = await get(key, metadata: metadata);
+      if (result != null) {
+        return result;
+      }
+    } catch (e) {
+      //
     }
+    final result = await compute();
+    await set(key, result, metadata: metadata);
+    return result;
   }
+  
 }
