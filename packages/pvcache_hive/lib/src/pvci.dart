@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
-
-import 'hboxcore.dart' as hboxcore;
+import 'package:pvcache_hive/src/encryptor.dart';
 
 class PVCoDecryptionException implements Exception {
   final String message;
@@ -16,6 +14,15 @@ class PVCoore {
   static final Map<int, Map Function(dynamic)> _serializerRegistry = {};
   static final Map<int, dynamic Function(Map)> _deserializerRegistry = {};
   static final Map<int, bool Function(dynamic)> _typeCheckRegistry = {};
+
+  static PVCiEncryptor? _encryptor;
+  static PVCiEncryptor? get encryptor => _encryptor;
+  static set encryptor(PVCiEncryptor enc) {
+    if (_encryptor != null) {
+      throw Exception("Encryptor already set. Cannot reset.");
+    }
+    _encryptor = enc;
+  }
 
   static void registerTypeChecker(
     int typeCode,
@@ -156,7 +163,7 @@ class PVCo {
 
   Map _builtinTypecodeHandle() {
     if (typeCode == 0) {
-      final hiveCipher = hboxcore.getHiveCipher();
+      final hiveCipher = PVCoore.encryptor;
       if (hiveCipher != null) {
         return {
           'typeCode': 0,
@@ -175,7 +182,7 @@ class PVCo {
   }
 
   Map toJson() {
-    late final result;
+    late final Map result;
     if (typeCode < 10) {
       result = _builtinTypecodeHandle();
     } else {
@@ -188,7 +195,7 @@ class PVCo {
         jsonEncode(data);
         result['__raw'] = data;
       } catch (e) {
-
+        // Ignore serialization errors in debug mode
       }
     }
     return result;
@@ -197,17 +204,37 @@ class PVCo {
   static PVCo _builtinTypecodeDecode(Map json) {
     final typeCode = json['typeCode'] as int? ?? 0;
     if (typeCode == 0) {
-      final hiveCipher = hboxcore.getHiveCipher();
+      final hiveCipher = PVCoore.encryptor;
       if (hiveCipher != null) {
-        late final String decrypted;
         try {
-          decrypted = hiveCipher.decryptString(json['data'] as String);
+          String encryptedData = json['data'] as String;
+          // Decrypt directly (encryptor handles base64 internally)
+          final decrypted = hiveCipher.decryptString(encryptedData);
+          // Parse the decrypted JSON
+          return PVCo(jsonDecode(decrypted), tCode: 0);
         } catch (e) {
-          throw PVCoDecryptionException(
-            'Failed to decrypt data with HiveCipher',
-          );
+          // Enhanced error information for debugging
+          String errorDetails =
+              'Failed to decrypt data with HiveCipher: ${e.toString()}';
+
+          // Add context about the encrypted data for debugging
+          try {
+            String encryptedData = json['data'] as String;
+            errorDetails +=
+                '\nEncrypted data preview: ${encryptedData.length > 50 ? '${encryptedData.substring(0, 50)}...' : encryptedData}';
+            errorDetails += '\nData length: ${encryptedData.length}';
+
+            // Check if this might be legacy data format
+            if (encryptedData.contains('-') || encryptedData.contains('_')) {
+              errorDetails +=
+                  '\nNote: Data appears to use base64url encoding (legacy format)';
+            }
+          } catch (_) {
+            errorDetails += '\nCould not analyze encrypted data format';
+          }
+
+          throw PVCoDecryptionException(errorDetails);
         }
-        return PVCo(jsonDecode(decrypted), tCode: 0);
       }
       return PVCo(jsonDecode(json['data'] as String), tCode: 0);
     } else if (typeCode == 1) {

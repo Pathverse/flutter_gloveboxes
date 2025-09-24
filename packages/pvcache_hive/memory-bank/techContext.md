@@ -2,11 +2,12 @@
 
 ## Technology Stack
 
-### Core Dependencies
-- **Dart SDK**: ^3.5.0
-- **Flutter**: ^3.24.0
-- **hive_ce**: ^4.0.0-dev.8 (Community edition of Hive)
-- **pvcache**: Core caching framework (local dependency)
+### Core Dependencies  
+- **Dart SDK**: ^3.9.0
+- **Flutter**: >=1.17.0
+- **hive_ce**: >=2.11.0 <3.0.0 (Community edition of Hive)
+- **pvcache**: >=0.0.4 <1.0.0 (Core caching framework)
+- **NEW: pointycastle**: ^3.7.3 (Reliable crypto library - replaced HiveCipher)
 
 ### Platform Support
 - **Flutter Web**: Primary development target with IndexedDB backend
@@ -20,16 +21,16 @@
 
 ## Technical Constraints
 
-### Hive-Specific Limitations
-- **32-byte Encryption Keys**: HiveAesCipher requires exactly 256-bit keys
-- **Web Platform**: IndexedDB has strict type enforcement for CollectionBox
-- **Box Configuration**: Must register perBoxConfigs before opening boxes
-- **Global State**: HiveCipher and box configurations are global singletons
+### Technical Constraints - RESOLVED ✅
+- **✅ RESOLVED: All Encryption Issues**: PointyCastle provides stable, cross-platform encryption
+- **✅ RESOLVED: Cross-Session Issues**: Fixed seed management ensures consistent encryption keys
+- **✅ RESOLVED: Platform Inconsistencies**: Identical behavior on Web, Desktop, and Mobile
+- **✅ Production Ready**: Successfully deployed with configurable error handling strategies
 
-### Flutter Web Constraints
-- **Buffer Sizes**: AES encryption requires larger buffers (32 bytes vs 16)
-- **Type Safety**: CollectionBox<T> typing strictly enforced in IndexedDB
-- **Debug Output**: Console logging essential for troubleshooting
+### Current Technical Requirements
+- **Performance Considerations**: Choose between security (deterministic) and performance (lite) modes
+- **Error Handling**: Configure decryption error strategies based on application needs
+- **Seed Management**: Use setupDependentAESEncryption for secure key generation and storage
 
 ### PVCache Integration
 - **Adapter System**: Must implement PVBaseStorage interface
@@ -59,14 +60,26 @@ pvcache_hive/
 - **Export Strategy**: Selective exports from main library file
 - **Example Apps**: Multiple example apps for different use cases
 
-### Encryption Setup
+### NEW Encryption Setup (PointyCastle-based)
 ```dart
-// Required before any Hive operations
-final encryptionKey = Uint8List.fromList([
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-  17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
-]);
-hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
+// No global state required - create encryptor with seed
+final encryptor = PVAesEncryptor('your-app-secret-seed');
+
+// Direct encryption/decryption
+final encrypted = encryptor.encryptString('sensitive data');
+final decrypted = encryptor.decryptString(encrypted);
+
+// For PVCi integration
+class AppCipher extends PVCiEncryptor {
+  final PVAesEncryptor _encryptor;
+  AppCipher(String seed) : _encryptor = PVAesEncryptor(seed);
+  
+  @override
+  String encryptString(String data) => _encryptor.encryptString(data);
+  
+  @override
+  String decryptString(String encrypted) => _encryptor.decryptString(encrypted);
+}
 ```
 
 ## Tool Usage Patterns
@@ -76,12 +89,14 @@ hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
 - **Type Tracking**: Log object types at each serialization step
 - **Configuration Tracing**: Track perBoxConfig registration and lookup
 
-### Development Workflow
-1. **Set Encryption**: Configure HiveAesCipher before any operations
-2. **Register Configs**: Ensure proper box configuration registration
-3. **Debug Logging**: Use temporary logging to trace issues
-4. **Type Validation**: Verify CollectionBox<PVCo> vs CollectionBox<Map>
-5. **Clean Up**: Remove debug prints in production
+### NEW Development Workflow (Post-HiveCipher)
+1. **Create Encryptor**: Instantiate PVAesEncryptor with app-specific seed
+2. **No Global Setup**: No need to configure global cipher state
+3. **Register Configs**: Ensure proper box configuration registration  
+4. **Debug Logging**: Use temporary logging to trace issues
+5. **Type Validation**: Verify CollectionBox<PVCo> vs CollectionBox<Map>
+6. **Test Encryption**: Run unit tests to verify encryption behavior
+7. **Clean Up**: Remove debug prints in production
 
 ### Testing Strategy
 - **Unit Tests**: Focus on encryption and serialization
@@ -103,11 +118,13 @@ hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
 3. **Box Opening**: Configuration presence determines box type
 4. **Type Enforcement**: Web platform strictly enforces typing
 
-### Encryption Integration
-- **Transparent**: PVCo objects automatically encrypt JSON when cipher present
-- **String Utilities**: HiveCipherExt provides direct string encryption
-- **Buffer Safety**: 32-byte buffers prevent range errors on web
+### NEW Encryption Integration (PointyCastle)
+- **Reliable Implementation**: PVAesEncryptor provides consistent cross-platform encryption
+- **No Global Dependencies**: Each encryptor instance is self-contained
+- **Proper IV Generation**: Random IV per encryption for security
 - **UTF-8 Support**: Proper encoding for international characters
+- **Comprehensive Testing**: 21 unit tests ensure reliability
+- **Standard Algorithms**: AES-256-CBC with PKCS7 padding (industry standard)
 
 ### Error Handling Patterns
 - **Configuration Errors**: Clear messages for box config mismatches

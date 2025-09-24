@@ -7,7 +7,9 @@ import 'package:pvcache/pvcache.dart';
 // ignore: implementation_imports
 import 'package:pvcache/src/top.dart';
 import 'package:pvcache_hive/src/pvci.dart';
-import 'package:pvcache_hive/src/pvci_decrypt_adapter.dart';
+import 'package:pvcache_hive/src/encryptor.dart';
+import 'package:pvcache_hive/templates/adapters/decryption_error.dart';
+import 'package:pvcache_hive/templates/ciphers/aes.dart';
 import 'package:pvcache_hive/templates/storage/std.dart';
 
 extension PVCacheForImage on PVCache {
@@ -83,18 +85,60 @@ extension PVCacheForImage on PVCache {
 }
 
 extension PVCACHEForHive on TopLv {
+  void setupPVCiEncrption({
+    bool useDefaultCipher = true,
+    // custom cipher
+    PVCiEncryptor? hiveCipher,
+
+    // decryption error
+  }) {}
+
   PVCache createStdHive({
     String env = "default",
     String? metaboxName,
     List<PVAdapter>? adapters,
-    bool handleDecryptionError = true,
+    int decryptionErrorStrategy = -1,
+    Future<void> Function(PVCtx ctx)? resetCallbackOnStrategy2,
   }) {
-
     adapters ??= [];
-    final (ms, ss) = createPair(env);
-    if (handleDecryptionError) {
-      adapters.add(DECRYPT_ERROR_ADAPTER);
+    if (decryptionErrorStrategy != -1) {
+      adapters.add(
+        DecryptionErrorAdapter(
+          'hive_decryption_error_adapter_$env',
+          decryptionErrorStrategy,
+          resetCallback: resetCallbackOnStrategy2,
+        ),
+      );
     }
+
+    final (ms, ss) = createPair(env);
+
     return PVCache(env: env, adapters: adapters, metaStorage: ms, storage: ss);
+  }
+
+  void setupHiveEncryption({
+    useDefault = true,
+    String? seed,
+    PVCiEncryptor? hiveCipher,
+    bool liteMode = false,
+  }) {
+    if (!useDefault) {
+      // random seed if not provided
+      seed ??= DateTime.now().millisecondsSinceEpoch.toString();
+      PVCoore.encryptor = PVAesEncryptor(seed, liteMode: liteMode);
+    } else if (hiveCipher != null) {
+      PVCoore.encryptor = hiveCipher;
+    }
+  }
+
+  Future<void> setupDependentAESEncryption(
+    PVCache depCache,
+    String depKey,
+    Future<String> Function() callbackIfNotFound, {
+    bool liteMode = false,
+  }) async {
+    final seed = await depCache.ifNotCached(depKey, callbackIfNotFound);
+    print(seed);
+    PVCoore.encryptor = PVAesEncryptor(seed, liteMode: liteMode);
   }
 }

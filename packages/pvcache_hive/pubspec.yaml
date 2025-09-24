@@ -1,6 +1,6 @@
 name: pvcache_hive
 description: "Hive database integration for pvcache, providing persistent local storage with multiple storage patterns and image caching support."
-version: 0.2.3
+version: 0.3.2
 homepage: https://github.com/Pathverse/pvcache_hive
 
 environment:
@@ -11,11 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   hive_ce: ">=2.11.0 <3.0.0"
-  pvcache: ">=0.0.4 <1.0.0"
+  pvcache: ">=0.1.4 <1.0.0"
+  pointycastle: ^3.7.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   http: ^1.5.0
+  test: ^1.26.2
 

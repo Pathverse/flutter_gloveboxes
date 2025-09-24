@@ -273,6 +273,9 @@ class PVCtx {
   /// The cache key being operated on (null for clear operations)
   final String? key;
 
+  /// function intent
+  final String functionIntent;
+
   /// The initial value passed to the operation.
   ///
   /// Preserved throughout the operation for reference. Use ctx.value
@@ -355,6 +358,7 @@ class PVCtx {
   late final Map<String, dynamic> metaStorageCache;
 
   PVCtx({
+    this.functionIntent = '',
     this.key,
     required this.initialValue,
     required this.metadata,
@@ -372,12 +376,14 @@ class PVCtx {
   /// [initialValue] - Initial value for the operation
   /// [metadata] - Additional data for adapter processing
   factory PVCtx.fromCache(
+    String functionIntent,
     PVBaseCache cache,
     String? key, {
     dynamic initialValue,
     Map<String, dynamic> metadata = const {},
   }) {
     final ctx = PVCtx(
+      functionIntent: functionIntent,
       key: key,
       initialValue: initialValue,
       metadata: metadata,
@@ -407,6 +413,7 @@ class PVCtx {
   /// [value] - Optional initial value
   factory PVCtx.minimal(String key, {dynamic value}) {
     return PVCtx(
+      functionIntent: '',
       key: key,
       initialValue: value,
       metadata: const {},

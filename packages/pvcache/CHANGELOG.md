@@ -1,3 +1,7 @@
+## 0.2.0
+* added `functionIntent` to ctx to make it easier for pvadapter context aware operations
+* added `MemoryCache` adapter to provide in-memory caching capabilities
+
 ## 0.1.2
 * fixed critical bug in OnError handler logic preventing execution
 

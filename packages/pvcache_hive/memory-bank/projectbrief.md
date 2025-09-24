@@ -28,4 +28,6 @@ pvcache_hive is a Flutter package that provides Hive database integration for th
 - Must work with Flutter SDK ^3.9.0
 - Depends on hive_ce >=2.11.0 <3.0.0
 - Depends on pvcache >=0.0.4 <1.0.0
+- NEW DEPENDENCY: pointycastle ^3.7.3 (for reliable encryption)
 - Must maintain backward compatibility with pvcache API
+- Version 0.3.0+ includes breaking encryption architecture changes

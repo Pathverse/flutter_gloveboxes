@@ -107,6 +107,7 @@ class PVCache extends PVBaseCache {
     await _ensureInit();
 
     final ctx = PVCtx.fromCache(
+      "set",
       this,
       key,
       initialValue: value,
@@ -122,16 +123,24 @@ class PVCache extends PVBaseCache {
   }) async {
     await _ensureInit();
 
-    final ctx = PVCtx.fromCache(this, key, metadata: metadata);
+    final ctx = PVCtx.fromCache("delete",this, key, metadata: metadata);
     await _deleteFrame.call(ctx);
+    if (ctx.metaStorage != null) {
+      // Also delete any associated metadata
+      await ctx.metaStorage!.delete(ctx);
+    }
   }
 
   @override
   Future<void> clear({Map<String, dynamic> metadata = const {}}) async {
     await _ensureInit();
 
-    final ctx = PVCtx.fromCache(this, null, metadata: metadata);
+    final ctx = PVCtx.fromCache("clear", this, null, metadata: metadata);
     await _clearFrame.call(ctx);
+    if (ctx.metaStorage != null) {
+      // Also clear all metadata
+      await ctx.metaStorage!.clear(ctx);
+    }
   }
 
   @override
@@ -141,7 +150,7 @@ class PVCache extends PVBaseCache {
   }) async {
     await _ensureInit();
 
-    final ctx = PVCtx.fromCache(this, key, metadata: metadata);
+    final ctx = PVCtx.fromCache("get",this, key, metadata: metadata);
     await _getFrame.call(ctx);
     return ctx.value;
   }
@@ -152,7 +161,7 @@ class PVCache extends PVBaseCache {
     Map<String, dynamic> metadata = const {},
   }) async {
     await _ensureInit();
-    final ctx = PVCtx.fromCache(this, key, metadata: metadata);
+    final ctx = PVCtx.fromCache("exists",this, key, metadata: metadata);
     await _existsFrame.call(ctx);
     return ctx.value ?? false;
   }
@@ -162,12 +171,18 @@ class PVCache extends PVBaseCache {
     Future<dynamic> Function() compute, {
     Map<String, dynamic> metadata = const {},
   }) async {
-    if (await exists(key, metadata: metadata)) {
-      return await get(key, metadata: metadata);
-    } else {
-      final result = await compute();
-      await set(key, result, metadata: metadata);
-      return result;
+    await _ensureInit();
+    try {
+      final result = await get(key, metadata: metadata);
+      if (result != null) {
+        return result;
+      }
+    } catch (e) {
+      //
     }
+    final result = await compute();
+    await set(key, result, metadata: metadata);
+    return result;
   }
+  
 }
