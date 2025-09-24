@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
-
-import 'hboxcore.dart' as hboxcore;
+import 'package:pvcache_hive/src/encryptor.dart';
 
 class PVCoDecryptionException implements Exception {
   final String message;
@@ -16,6 +14,15 @@ class PVCoore {
   static final Map<int, Map Function(dynamic)> _serializerRegistry = {};
   static final Map<int, dynamic Function(Map)> _deserializerRegistry = {};
   static final Map<int, bool Function(dynamic)> _typeCheckRegistry = {};
+
+  static PVCiEncryptor? _encryptor;
+  static PVCiEncryptor? get encryptor => _encryptor;
+  static set encryptor(PVCiEncryptor enc) {
+    if (_encryptor != null) {
+      throw Exception("Encryptor already set. Cannot reset.");
+    }
+    _encryptor = enc;
+  }
 
   static void registerTypeChecker(
     int typeCode,
@@ -156,7 +163,7 @@ class PVCo {
 
   Map _builtinTypecodeHandle() {
     if (typeCode == 0) {
-      final hiveCipher = hboxcore.getHiveCipher();
+      final hiveCipher = PVCoore.encryptor;
       if (hiveCipher != null) {
         return {
           'typeCode': 0,
@@ -175,7 +182,7 @@ class PVCo {
   }
 
   Map toJson() {
-    late final result;
+    late final Map result;
     if (typeCode < 10) {
       result = _builtinTypecodeHandle();
     } else {
@@ -187,9 +194,7 @@ class PVCo {
       try {
         jsonEncode(data);
         result['__raw'] = data;
-      } catch (e) {
-
-      }
+      } catch (e) {}
     }
     return result;
   }
@@ -197,7 +202,7 @@ class PVCo {
   static PVCo _builtinTypecodeDecode(Map json) {
     final typeCode = json['typeCode'] as int? ?? 0;
     if (typeCode == 0) {
-      final hiveCipher = hboxcore.getHiveCipher();
+      final hiveCipher = PVCoore.encryptor;
       if (hiveCipher != null) {
         late final String decrypted;
         try {
