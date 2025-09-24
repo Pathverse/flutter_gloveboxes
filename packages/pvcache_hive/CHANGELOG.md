@@ -1,4 +1,4 @@
-## 0.2.3
+## 0.3.1
 * fixed an issue related to hivecipher not compatible with custom object decryption checks
 
 ## 0.2.2
