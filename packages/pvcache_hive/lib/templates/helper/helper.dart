@@ -120,11 +120,12 @@ extension PVCACHEForHive on TopLv {
     useDefault = true,
     String? seed,
     PVCiEncryptor? hiveCipher,
+    bool liteMode = false,
   }) {
     if (!useDefault) {
       // random seed if not provided
       seed ??= DateTime.now().millisecondsSinceEpoch.toString();
-      PVCoore.encryptor = PVAesEncryptor(seed);
+      PVCoore.encryptor = PVAesEncryptor(seed, liteMode: liteMode);
     } else if (hiveCipher != null) {
       PVCoore.encryptor = hiveCipher;
     }
@@ -133,9 +134,11 @@ extension PVCACHEForHive on TopLv {
   Future<void> setupDependentAESEncryption(
     PVCache depCache,
     String depKey,
-    Future<String> Function() callbackIfNotFound,
-  ) async {
+    Future<String> Function() callbackIfNotFound, {
+    bool liteMode = false,
+  }) async {
     final seed = await depCache.ifNotCached(depKey, callbackIfNotFound);
-    PVCoore.encryptor = PVAesEncryptor(seed);
+    print(seed);
+    PVCoore.encryptor = PVAesEncryptor(seed, liteMode: liteMode);
   }
 }

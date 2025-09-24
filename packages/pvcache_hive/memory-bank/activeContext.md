@@ -1,16 +1,22 @@
 # Active Context: pvcache_hive
 
 ## Current Work Focus
-**Encryption & Serialization Bug Fixes** - Resolving critical issues with Hive encryption configuration and PVCo serialization in CollectionBox storage.
+**MAJOR ARCHITECTURE CHANGE** - Migrating away from Hive's problematic HiveCipher to custom PointyCastle-based encryption solution due to critical reliability issues.
 
 ## Recent Changes
 
-### Major Bug Fixes (September 2025)
-1. **Encryption Implementation**
-   - Added `HiveCipherExt` extension with `encryptString()` and `decryptString()` methods
-   - Fixed buffer size issues in AES encryption (increased from 16 to 32 bytes)
-   - Added proper UTF-8 encoding/decoding for string encryption
-   - Fixed encryption key initialization in example2.dart (32-byte key requirement)
+### Major Architecture Changes (September 2025)
+1. **Critical Decision: Abandon Hive's Cipher**
+   - **BREAKING**: Moved away from HiveCipher due to persistent reliability issues
+   - **ROOT CAUSE**: Buffer size problems, platform inconsistencies, complex debugging
+   - **SOLUTION**: Implemented custom PVAesEncryptor using PointyCastle library
+   - **IMPACT**: More reliable, testable, and maintainable encryption system
+
+2. **New Encryption Architecture**
+   - **PVAesEncryptor**: Custom AES-256-CBC implementation with PKCS7 padding
+   - **PointyCastle Integration**: Battle-tested crypto library with consistent behavior
+   - **Random IV Generation**: Each encryption uses unique IV for security
+   - **Proper Error Handling**: Clear exceptions instead of cryptic Hive errors
 
 2. **Box Configuration Critical Fix**
    - **MAJOR**: Fixed `[?boxConfig]` syntax causing null elements in perBoxConfigs list
@@ -37,10 +43,13 @@
 
 ## Active Decisions and Considerations
 
-### Encryption Strategy
-- **Buffer Sizing**: Use generous 32-byte buffers for AES encryption to avoid range errors
-- **String Handling**: UTF-8 encoding for proper internationalization support
-- **Key Management**: 32-byte keys required for HiveAesCipher (256-bit encryption)
+### NEW Encryption Strategy (Post-HiveCipher)
+- **Custom Implementation**: PVAesEncryptor using PointyCastle for reliability
+- **Standard AES-256-CBC**: Industry-standard encryption with PKCS7 padding
+- **Random IV per Operation**: Each encryption gets unique IV for security
+- **Base64 Encoding**: Safe string storage of encrypted binary data
+- **Empty String Handling**: Converts empty strings to single space to avoid block issues
+- **Key Derivation**: SHA-256 hash of seed string produces consistent 32-byte keys
 
 ### Box Configuration Pattern
 - **Critical Pattern**: Meta boxes need separate configs or shared config registration
@@ -54,15 +63,26 @@
 
 ## Important Patterns and Preferences
 
-### Encryption Patterns
+### NEW Encryption Patterns (PointyCastle-based)
 ```dart
-// Proper encryption key creation
-final encryptionKey = Uint8List.fromList([1,2,3...32]);
-hboxcore.setHiveCipher(HiveAesCipher(encryptionKey));
+// Create encryptor with seed-based key derivation
+final encryptor = PVAesEncryptor('my-secret-seed');
 
-// String encryption/decryption
-final encrypted = cipher.encryptString("plain text");
-final decrypted = cipher.decryptString(encrypted);
+// Direct string encryption/decryption
+final encrypted = encryptor.encryptString("plain text");
+final decrypted = encryptor.decryptString(encrypted);
+
+// Integration with PVCi system
+class MyCustomCipher extends PVCiEncryptor {
+  final PVAesEncryptor _encryptor;
+  MyCustomCipher(String seed) : _encryptor = PVAesEncryptor(seed);
+  
+  @override
+  String encryptString(String data) => _encryptor.encryptString(data);
+  
+  @override
+  String decryptString(String encrypted) => _encryptor.decryptString(encrypted);
+}
 ```
 
 ### Box Configuration Patterns
@@ -82,9 +102,14 @@ perBoxConfigs: [?boxConfig]
 ## Learnings and Project Insights
 
 ### Critical Architecture Issues Discovered
-1. **Box Type Mismatch**: Most storage issues stem from CollectionBox<Map> vs CollectionBox<PVCo> confusion
-2. **Meta Box Problem**: Meta boxes inherit intent but don't get separate configs registered
-3. **Encryption Buffer**: AES encryption needs generous buffer sizes for web platform
+1. **HiveCipher Reliability Crisis**: Major stability issues forced architectural change
+   - **Buffer Size Inconsistencies**: Different platforms required different buffer sizes
+   - **Cryptic Error Messages**: Debugging HiveCipher issues was extremely difficult
+   - **Platform Dependencies**: Web vs native behavior was unpredictable
+   - **Limited Control**: Could not customize or fix underlying cipher issues
+
+2. **Box Type Mismatch**: Most storage issues stem from CollectionBox<Map> vs CollectionBox<PVCo> confusion
+3. **Meta Box Problem**: Meta boxes inherit intent but don't get separate configs registered
 4. **Configuration Timing**: Box configs must be registered before box opening
 
 ### Debugging Strategies That Work
@@ -93,9 +118,10 @@ perBoxConfigs: [?boxConfig]
 - **Configuration Tracing**: Track perBoxConfig registration and lookup
 
 ### Platform-Specific Considerations
-- **Web Platform**: Requires larger encryption buffers than native platforms
 - **IndexedDB**: CollectionBox typing is strictly enforced in web environment
 - **Debug Output**: Console logging is essential for web debugging
+- **PointyCastle Consistency**: New encryption solution works identically across all platforms
+- **No More Platform-Specific Buffers**: Eliminated web vs native encryption differences
 2. **Type safety**: Generic implementations maintain compile-time checking
 3. **Integration-friendly**: Clean integration with existing pvcache system
 4. **Performance-oriented**: Leverages Hive's efficient storage

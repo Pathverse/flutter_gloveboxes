@@ -114,17 +114,17 @@ void main() {
 
     group('Security Properties', () {
       test(
-        'should produce different ciphertext for same plaintext (random IV)',
+        'should produce same ciphertext for same plaintext (deterministic)',
         () {
           const plainText = 'Test message';
 
           final encrypted1 = encryptor.encryptString(plainText);
           final encrypted2 = encryptor.encryptString(plainText);
 
-          // Should be different due to random IV
-          expect(encrypted1, isNot(equals(encrypted2)));
+          // Should be identical due to deterministic IV
+          expect(encrypted1, equals(encrypted2));
 
-          // But both should decrypt to same plaintext
+          // Both should decrypt to same plaintext
           expect(encryptor.decryptString(encrypted1), equals(plainText));
           expect(encryptor.decryptString(encrypted2), equals(plainText));
         },

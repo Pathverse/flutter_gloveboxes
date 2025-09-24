@@ -1,12 +1,14 @@
 import 'package:pvcache/pvcache.dart';
+import 'package:pvcache_hive/src/pvci.dart';
 
 class DecryptionErrorAdapter extends PVAdapter with OnError {
+  // 0 clear the entire cache
   // 1 deletes the item on decryption error
   // 2 callback to a function to reset the item
   // 3 do nothing and return null
   DecryptionErrorAdapter(super.uid, this.strategy, {this.resetCallback}) {
-    if (strategy < 1 || strategy > 3) {
-      throw ArgumentError('Invalid strategy $strategy. It must be 1, 2, or 3.');
+    if (strategy < 0 || strategy > 3) {
+      throw ArgumentError('Invalid strategy $strategy. It must be 0, 1, 2, or 3.');
     }
   }
 
@@ -16,13 +18,19 @@ class DecryptionErrorAdapter extends PVAdapter with OnError {
   @override
   Future<void> onError(PVCtx ctx) async {
     // check if this is a decryption error of get
-    if (ctx.key == null || ctx.initialValue != null) {
+    if (ctx.exception !is PVCoDecryptionException) {
       return;
     }
-
     ctx.errorHandled = true;
-
-    if (strategy == 1) {
+    if (strategy == 0) {
+      // clear the entire cache
+      await ctx.storage!.clear(ctx);
+      await ctx.metaStorage?.clear(ctx);
+      ctx.continueFlow = false;
+      ctx.value = null;
+      return;
+    }
+    else if (strategy == 1) {
       // delete the item
       await ctx.storage!.delete(ctx);
       await ctx.metaStorage?.delete(ctx);

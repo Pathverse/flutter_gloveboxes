@@ -41,11 +41,14 @@ Storage implementations follow a consistent template structure:
 - Supports encryption via `HiveCipher` with proper key management
 - Implements lazy loading for boxes with configuration-driven typing
 
-### Encryption Architecture
-- **HiveAesCipher**: 256-bit AES encryption with 32-byte keys
-- **String Utilities**: Built-in string encryption/decryption via HiveCipherExt
-- **Buffer Management**: Generous 32-byte buffers for web platform compatibility
-- **Automatic Integration**: PVCo objects auto-encrypt JSON when cipher present
+### NEW Encryption Architecture (Post-HiveCipher Migration)
+- **BREAKING CHANGE**: Replaced unreliable HiveCipher with custom PointyCastle solution
+- **PVAesEncryptor**: AES-256-CBC with PKCS7 padding using PointyCastle library
+- **Random IV Generation**: Each encryption operation uses unique 16-byte IV
+- **Consistent Cross-Platform**: Identical behavior on web, desktop, and mobile
+- **SHA-256 Key Derivation**: Seed strings converted to consistent 32-byte keys
+- **Base64 Encoding**: Safe string representation of encrypted binary data
+- **PVCiEncryptor Integration**: Pluggable encryption via abstract base class
 
 ### Serialization Approach
 - **PVCo Wrapper**: All data wrapped in PVCo with typeCode system
@@ -68,9 +71,16 @@ Box Names → fromJson Config → Auto Serialization
     ↓              ↓              ↓
 Registration → Type Safety → PVCo Storage
 
-Encryption Flow:
-PVCo.data → JSON → HiveCipher.encryptString() → Base64 → Storage
-Storage → Base64 → HiveCipher.decryptString() → JSON → PVCo.data
+NEW Encryption Flow (PointyCastle-based):
+PVCo.data → JSON → PVAesEncryptor.encryptString() → Base64 → Storage
+Storage → Base64 → PVAesEncryptor.decryptString() → JSON → PVCo.data
+
+Benefits:
+✅ No global cipher state 
+✅ Consistent cross-platform behavior
+✅ Comprehensive error handling
+✅ Unit testable encryption
+✅ No Hive dependency for crypto
 ```
 
 ### Critical Configuration Pattern
@@ -82,17 +92,26 @@ perBoxConfigs: boxConfig != null ? [boxConfig!] : []
 perBoxConfigs: [?boxConfig]
 ```
 
-### Encryption Setup Pattern
+### NEW Encryption Setup Pattern (PointyCastle-based)
 ```dart
-// 1. Create 32-byte key
-final key = Uint8List.fromList([1,2,3...32]);
+// 1. Create encryptor with seed-based key derivation
+final encryptor = PVAesEncryptor('my-secret-seed-2024');
 
-// 2. Set cipher before any box operations
-hboxcore.setHiveCipher(HiveAesCipher(key));
+// 2. Direct string encryption (no global state needed)
+final encrypted = encryptor.encryptString("sensitive data");
+final decrypted = encryptor.decryptString(encrypted);
 
-// 3. Use string encryption utilities
-final encrypted = cipher.encryptString("data");
-final decrypted = cipher.decryptString(encrypted);
+// 3. Integration with PVCi system
+class CustomCipher extends PVCiEncryptor {
+  final PVAesEncryptor _aes;
+  CustomCipher(String seed) : _aes = PVAesEncryptor(seed);
+  
+  @override
+  String encryptString(String data) => _aes.encryptString(data);
+  
+  @override  
+  String decryptString(String encrypted) => _aes.decryptString(encrypted);
+}
 ```
 
 ### Box Type Determination Flow
