@@ -138,7 +138,6 @@ extension PVCACHEForHive on TopLv {
     bool liteMode = false,
   }) async {
     final seed = await depCache.ifNotCached(depKey, callbackIfNotFound);
-    print(seed);
     PVCoore.encryptor = PVAesEncryptor(seed, liteMode: liteMode);
   }
 }

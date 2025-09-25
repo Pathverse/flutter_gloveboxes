@@ -1,3 +1,6 @@
+## 0.3.3
+* fixed critical error of exposing seed in logs
+
 ## 0.3.1
 * fixed an issue related to hivecipher not compatible with custom object decryption checks
 
