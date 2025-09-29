@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "계정 등록",
+      "name": "이름",
+      "email": "이메일",
+      "password": "비밀번호",
+      "confirm_password": "비밀번호 확인",
+      "register": "등록",
+      "already_have_account": "이미 계정이 있으신가요? 로그인",
+      "tos": "등록하시면 서비스 약관 및 개인정보 보호정책에 동의하는 것입니다.",
+      "tos_toggle": "서비스 약관 및 개인정보 보호정책 보기",
+      "tos_agree": "서비스 약관 및 개인정보 보호정책에 동의합니다"
+    },
+    "errors": {
+      "name_required": "이름이 필요합니다",
+      "email_required": "이메일이 필요합니다",
+      "email_invalid": "이메일이 유효하지 않습니다",
+      "password_required": "비밀번호가 필요합니다",
+      "password_min": "비밀번호는 최소 {{number}}자 이상이어야 합니다",
+      "password_max": "비밀번호는 {{number}}자를 초과할 수 없습니다",
+      "password_format_special": "비밀번호에는 최소 {{number}}개의 특수 문자가 포함되어야 합니다",
+      "confirm_password_required": "비밀번호 확인이 필요합니다",
+      "confirm_password_match": "비밀번호가 일치하지 않습니다"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "계정에 로그인",
+      "email": "이메일",
+      "password": "비밀번호",
+      "login": "로그인",
+      "forgot_password": "비밀번호를 잊으셨나요?",
+      "no_account": "계정이 없으신가요? 등록"
+    },
+    "errors": {
+      "email_required": "이메일이 필요합니다",
+      "email_invalid": "이메일이 유효하지 않습니다",
+      "password_required": "비밀번호가 필요합니다"
+    }
+  },
+  "permissions": {
+    "read": "읽기",
+    "write": "쓰기",
+    "execute": "실행",
+    "delete": "삭제",
+    "create": "생성",
+    "update": "업데이트",
+    "manage": "관리",
+    "view": "보기",
+    "edit": "편집",
+    "share": "공유",
+    "download": "다운로드",
+    "upload": "업로드"
+  }
+}

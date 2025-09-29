@@ -1,0 +1,155 @@
+{
+    "numbers": {
+        "tens" : "Tens",
+        "hundreds" : "Hundreds",
+        "thousands" : "Thousands",
+        "millions" : "Millions",
+        "billions" : "Billions",
+        "trillions" : "Trillions",
+        "quadrillions" : "Quadrillions",
+        "quintillions" : "Quintillions",
+        "sextillions" : "Sextillions",
+        "septillions" : "Septillions",
+        "octillions" : "Octillions",
+        "nonillions" : "Nonillions"
+    },
+    "length" : {
+        "nanometer" : "Nanometer",
+        "micrometer" : "Micrometer",
+        "millimeter" : "Millimeter",
+        "centimeter" : "Centimeter",
+        "meter" : "Meter",
+        "kilometer" : "Kilometer"
+    },
+    "length_us" : {
+        "inch" : "Inch",
+        "foot" : "Foot",
+        "yard" : "Yard",
+        "mile" : "Mile"
+    },
+    "length_abbr" : {
+        "nm" : "nm",
+        "um" : "μm",
+        "mm" : "mm",
+        "cm" : "cm",
+        "m" : "m",
+        "km" : "km"
+    },
+    "length_abbr_us" : {
+        "in" : "in",
+        "ft" : "ft",
+        "yd" : "yd",
+        "mi" : "mi"
+    },
+    "length_plural" : {
+        "nanometer" : "Nanometers",
+        "micrometer" : "Micrometers",
+        "millimeter" : "Millimeters",
+        "centimeter" : "Centimeters",
+        "meter" : "Meters",
+        "kilometer" : "Kilometers"
+    },
+    "weight" : {
+        "microgram" : "Microgram",
+        "milligram" : "Milligram",
+        "gram" : "Gram",
+        "kilogram" : "Kilogram",
+        "tonne" : "Tonne"
+    },
+    "weight_us" : {
+        "ounce" : "Ounce",
+        "pound" : "Pound",
+        "stone" : "Stone",
+        "short_ton" : "Short Ton",
+        "long_ton" : "Long Ton"
+    },
+    "weight_abbr" : {
+        "ug" : "μg",
+        "mg" : "mg",
+        "g" : "g",
+        "kg" : "kg",
+        "t" : "t"
+    },
+    "weight_abbr_us" : {
+        "oz" : "oz",
+        "lb" : "lb",
+        "st" : "st",
+        "short_ton" : "short tn",
+        "long_ton" : "long tn"
+    },
+    "weight_plural" : {
+        "microgram" : "Micrograms",
+        "milligram" : "Milligrams",
+        "gram" : "Grams",
+        "kilogram" : "Kilograms",
+        "tonne" : "Tonnes"
+    },
+    "volume" : {
+        "milliliter" : "Milliliter",
+        "liter" : "Liter",
+        "cubic_meter" : "Cubic Meter"
+    },
+    "volume_us" : {
+        "teaspoon" : "Teaspoon",
+        "tablespoon" : "Tablespoon",
+        "fluid_ounce" : "Fluid Ounce",
+        "cup" : "Cup",
+        "pint" : "Pint",
+        "quart" : "Quart",
+        "gallon" : "Gallon"
+    },
+    "volume_abbr" : {
+        "mL" : "mL",
+        "L" : "L",
+        "m3" : "m³"
+    },
+    "volume_abbr_us" : {
+        "tsp" : "tsp",
+        "tbsp" : "tbsp",
+        "fl_oz" : "fl oz",
+        "cup" : "cup",
+        "pt" : "pt",
+        "qt" : "qt",
+        "gal" : "gal"
+    },
+    "speed" : {
+        "kph" : "Kilometers per hour",
+        "mph" : "Miles per hour"
+    },
+    "temperature" : {
+        "celsius" : "Celsius",
+        "fahrenheit" : "Fahrenheit"
+    },
+    "digital" : {
+        "bit" : "Bit",
+        "byte" : "Byte",
+        "kilobyte" : "Kilobyte",
+        "megabyte" : "Megabyte",
+        "gigabyte" : "Gigabyte",
+        "terabyte" : "Terabyte",
+        "petabyte" : "Petabyte",
+        "exabyte" : "Exabyte"
+    },
+    "digital_abbr" : {
+        "b" : "b",
+        "B" : "B",
+        "KB" : "KB",
+        "MB" : "MB",
+        "GB" : "GB",
+        "TB" : "TB",
+        "PB" : "PB",
+        "EB" : "EB"
+    },
+    "network_speed" : {
+        "bps" : "Bits per second",
+        "kbps" : "Kilobits per second",
+        "mbps" : "Megabits per second",
+        "gbps" : "Gigabits per second"
+    },
+    "network_speed_abbr" : {
+        "bps" : "bps",
+        "kbps" : "kbps",
+        "mbps" : "mbps",
+        "gbps" : "gbps"
+    }
+}

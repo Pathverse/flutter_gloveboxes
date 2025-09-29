@@ -1,0 +1,97 @@
+{
+    "numbers": {
+        "tens": "Tiotals",
+        "hundreds": "Hundratal",
+        "thousands": "Tusentals",
+        "millions": "Miljoner",
+        "billions": "Miljarder",
+        "trillions": "Biljoner",
+        "quadrillions": "Biljarder",
+        "quintillions": "Triljoner",
+        "sextillions": "Triljarder",
+        "septillions": "Kvadriljoner",
+        "octillions": "Kvadriljarder",
+        "nonillions": "Kvintiljoner"
+    },
+    "length": {
+        "nanometer": "Nanometer",
+        "micrometer": "Mikrometer",
+        "millimeter": "Millimeter",
+        "centimeter": "Centimeter",
+        "meter": "Meter",
+        "kilometer": "Kilometer"
+    },
+    "length_us": {
+        "inch": "Tum",
+        "foot": "Fot",
+        "yard": "Yard",
+        "mile": "Mil"
+    },
+    "length_plural": {
+        "nanometer": "Nanometer",
+        "micrometer": "Mikrometer",
+        "millimeter": "Millimeter",
+        "centimeter": "Centimeter",
+        "meter": "Meter",
+        "kilometer": "Kilometer"
+    },
+    "weight": {
+        "microgram": "Mikrogram",
+        "milligram": "Milligram",
+        "gram": "Gram",
+        "kilogram": "Kilogram",
+        "tonne": "Ton"
+    },
+    "weight_us": {
+        "ounce": "Uns",
+        "pound": "Pund",
+        "stone": "Sten",
+        "short_ton": "Kort ton",
+        "long_ton": "Lång ton"
+    },
+    "weight_plural": {
+        "microgram": "Mikrogram",
+        "milligram": "Milligram",
+        "gram": "Gram",
+        "kilogram": "Kilogram",
+        "tonne": "Ton"
+    },
+    "volume": {
+        "milliliter": "Milliliter",
+        "liter": "Liter",
+        "cubic_meter": "Kubikmeter"
+    },
+    "volume_us": {
+        "teaspoon": "Tesked",
+        "tablespoon": "Matsked",
+        "fluid_ounce": "Vätskeuns",
+        "cup": "Kopp",
+        "pint": "Pint",
+        "quart": "Kvart",
+        "gallon": "Gallon"
+    },
+    "speed": {
+        "kph": "Kilometer per timme",
+        "mph": "Engelska mil per timme"
+    },
+    "temperature": {
+        "celsius": "Celsius",
+        "fahrenheit": "Fahrenheit"
+    },
+    "digital": {
+        "bit": "Bit",
+        "byte": "Byte",
+        "kilobyte": "Kilobyte",
+        "megabyte": "Megabyte",
+        "gigabyte": "Gigabyte",
+        "terabyte": "Terabyte",
+        "petabyte": "Petabyte",
+        "exabyte": "Exabyte"
+    },
+    "network_speed": {
+        "bps": "Bitar per sekund",
+        "kbps": "Kilobitar per sekund",
+        "mbps": "Megabitar per sekund",
+        "gbps": "Gigabitar per sekund"
+    }
+}

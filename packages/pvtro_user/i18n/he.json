@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "הרשמה לחשבון",
+      "name": "שם",
+      "email": "אימייל",
+      "password": "סיסמה",
+      "confirm_password": "אישור סיסמה",
+      "register": "הרשמה",
+      "already_have_account": "יש לך כבר חשבון? התחברות",
+      "tos": "בהרשמה, אתה מסכים לתנאי השירות ולמדיניות הפרטיות שלנו.",
+      "tos_toggle": "הצג תנאי שירות ומדיניות פרטיות",
+      "tos_agree": "אני מסכים לתנאי השירות ולמדיניות הפרטיות"
+    },
+    "errors": {
+      "name_required": "שם נדרש",
+      "email_required": "אימייל נדרש",
+      "email_invalid": "אימייל לא תקין",
+      "password_required": "סיסמה נדרשת",
+      "password_min": "הסיסמה חייבת להכיל לפחות {{number}} תווים",
+      "password_max": "הסיסמה לא יכולה לחרוג מ-{{number}} תווים",
+      "password_format_special": "הסיסמה חייבת להכיל לפחות {{number}} תו מיוחד",
+      "confirm_password_required": "אישור סיסמה נדרש",
+      "confirm_password_match": "הסיסמאות אינן תואמות"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "התחברות לחשבון שלך",
+      "email": "אימייל",
+      "password": "סיסמה",
+      "login": "התחברות",
+      "forgot_password": "שכחת סיסמה?",
+      "no_account": "אין לך חשבון? הרשמה"
+    },
+    "errors": {
+      "email_required": "אימייל נדרש",
+      "email_invalid": "אימייל לא תקין",
+      "password_required": "סיסמה נדרשת"
+    }
+  },
+  "permissions": {
+    "read": "קריאה",
+    "write": "כתיבה",
+    "execute": "הרצה",
+    "delete": "מחיקה",
+    "create": "יצירה",
+    "update": "עדכון",
+    "manage": "ניהול",
+    "view": "צפייה",
+    "edit": "עריכה",
+    "share": "שיתוף",
+    "download": "הורדה",
+    "upload": "העלאה"
+  }
+}

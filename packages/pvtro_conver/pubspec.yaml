@@ -1,0 +1,25 @@
+name: pvtro_conver
+description: "Pathverse translation package for conversions"
+version: 0.0.1
+homepage: https://github.com/Pathverse/pvtro
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  slang: ^4.8.1
+  
+  slang_flutter: ^4.8.0
+
+dev_dependencies:
+  slang_build_runner: ^4.8.1
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.8.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec

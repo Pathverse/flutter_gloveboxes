@@ -1,0 +1,51 @@
+# Slang Configuration for pathverse_web_app
+# Internationalization settings for the main web app
+
+# Base configuration
+base_locale: en
+fallback_strategy: base_locale
+lazy: true
+
+# Input and output directories
+input_directory: i18n
+output_directory: lib/i18n
+input_file_pattern: .json
+
+# Class and file naming
+translate_var: t
+enum_name: AppLocale
+class_name: Translations
+
+# Generation settings
+translation_class_visibility: public
+generate_flat_map: false
+timestamp: true
+
+# Locale settings
+locales:
+  - en # English (default and fallback)
+  - da # Danish
+  - es # Spanish
+  - fr # French
+  - he # Hebrew
+  - is_IS # Icelandic
+  - ko # Korean
+  - nb # Norwegian Bokmål
+  - nl # Dutch Flemish
+  - no # Norwegian
+  - sv # Swedish
+  - zh_Hans # Chinese Simplified
+  - zh # Chinese Traditional
+
+# Key case convention
+key_case: camel
+
+# String interpolation settings
+string_interpolation: double_braces
+
+# Context and pluralization
+context_enum_name: Context
+interface_name: AppLocaleUtils
+
+# Build settings
+build_runner: true

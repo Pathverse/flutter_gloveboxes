@@ -1,0 +1,97 @@
+{
+    "numbers": {
+        "tens": "十位",
+        "hundreds": "百位",
+        "thousands": "千位",
+        "millions": "百万",
+        "billions": "十亿",
+        "trillions": "万亿",
+        "quadrillions": "千万亿",
+        "quintillions": "百京",
+        "sextillions": "十垓",
+        "septillions": "万垓",
+        "octillions": "千万垓",
+        "nonillions": "百秭"
+    },
+    "length": {
+        "nanometer": "纳米",
+        "micrometer": "微米",
+        "millimeter": "毫米",
+        "centimeter": "厘米",
+        "meter": "米",
+        "kilometer": "千米"
+    },
+    "length_us": {
+        "inch": "英寸",
+        "foot": "英尺",
+        "yard": "码",
+        "mile": "英里"
+    },
+    "length_plural": {
+        "nanometer": "纳米",
+        "micrometer": "微米",
+        "millimeter": "毫米",
+        "centimeter": "厘米",
+        "meter": "米",
+        "kilometer": "千米"
+    },
+    "weight": {
+        "microgram": "微克",
+        "milligram": "毫克",
+        "gram": "克",
+        "kilogram": "千克",
+        "tonne": "吨"
+    },
+    "weight_us": {
+        "ounce": "盎司",
+        "pound": "磅",
+        "stone": "英石",
+        "short_ton": "短吨",
+        "long_ton": "长吨"
+    },
+    "weight_plural": {
+        "microgram": "微克",
+        "milligram": "毫克",
+        "gram": "克",
+        "kilogram": "千克",
+        "tonne": "吨"
+    },
+    "volume": {
+        "milliliter": "毫升",
+        "liter": "升",
+        "cubic_meter": "立方米"
+    },
+    "volume_us": {
+        "teaspoon": "茶匙",
+        "tablespoon": "汤匙",
+        "fluid_ounce": "液体盎司",
+        "cup": "杯",
+        "pint": "品脱",
+        "quart": "夸脱",
+        "gallon": "加仑"
+    },
+    "speed": {
+        "kph": "千米每小时",
+        "mph": "英里每小时"
+    },
+    "temperature": {
+        "celsius": "摄氏度",
+        "fahrenheit": "华氏度"
+    },
+    "digital": {
+        "bit": "位",
+        "byte": "字节",
+        "kilobyte": "千字节",
+        "megabyte": "兆字节",
+        "gigabyte": "吉字节",
+        "terabyte": "太字节",
+        "petabyte": "拍字节",
+        "exabyte": "艾字节"
+    },
+    "network_speed": {
+        "bps": "位每秒",
+        "kbps": "千位每秒",
+        "mbps": "兆位每秒",
+        "gbps": "吉位每秒"
+    }
+}

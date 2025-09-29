@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Account aanmaken",
+      "name": "Naam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "confirm_password": "Bevestig wachtwoord",
+      "register": "Registreren",
+      "already_have_account": "Heb je al een account? Inloggen",
+      "tos": "Door je te registreren ga je akkoord met onze Servicevoorwaarden en Privacybeleid.",
+      "tos_toggle": "Toon Servicevoorwaarden en Privacybeleid",
+      "tos_agree": "Ik ga akkoord met de Servicevoorwaarden en het Privacybeleid"
+    },
+    "errors": {
+      "name_required": "Naam is verplicht",
+      "email_required": "E-mail is verplicht",
+      "email_invalid": "E-mail is ongeldig",
+      "password_required": "Wachtwoord is verplicht",
+      "password_min": "Wachtwoord moet minstens {{number}} karakters bevatten",
+      "password_max": "Wachtwoord mag niet meer dan {{number}} karakters bevatten",
+      "password_format_special": "Wachtwoord moet minstens {{number}} speciaal karakter bevatten",
+      "confirm_password_required": "Bevestig wachtwoord is verplicht",
+      "confirm_password_match": "Wachtwoorden komen niet overeen"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Inloggen op je account",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "login": "Inloggen",
+      "forgot_password": "Wachtwoord vergeten?",
+      "no_account": "Heb je geen account? Registreren"
+    },
+    "errors": {
+      "email_required": "E-mail is verplicht",
+      "email_invalid": "E-mail is ongeldig",
+      "password_required": "Wachtwoord is verplicht"
+    }
+  },
+  "permissions": {
+    "read": "Lezen",
+    "write": "Schrijven",
+    "execute": "Uitvoeren",
+    "delete": "Verwijderen",
+    "create": "Aanmaken",
+    "update": "Bijwerken",
+    "manage": "Beheren",
+    "view": "Bekijken",
+    "edit": "Bewerken",
+    "share": "Delen",
+    "download": "Downloaden",
+    "upload": "Uploaden"
+  }
+}

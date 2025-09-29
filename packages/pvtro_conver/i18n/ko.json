@@ -1,0 +1,97 @@
+{
+    "numbers": {
+        "tens": "십의 자리",
+        "hundreds": "백의 자리",
+        "thousands": "천의 자리",
+        "millions": "백만",
+        "billions": "십억",
+        "trillions": "조",
+        "quadrillions": "천조",
+        "quintillions": "경",
+        "sextillions": "천경",
+        "septillions": "해",
+        "octillions": "천해",
+        "nonillions": "자"
+    },
+    "length": {
+        "nanometer": "나노미터",
+        "micrometer": "마이크로미터",
+        "millimeter": "밀리미터",
+        "centimeter": "센티미터",
+        "meter": "미터",
+        "kilometer": "킬로미터"
+    },
+    "length_us": {
+        "inch": "인치",
+        "foot": "피트",
+        "yard": "야드",
+        "mile": "마일"
+    },
+    "length_plural": {
+        "nanometer": "나노미터",
+        "micrometer": "마이크로미터",
+        "millimeter": "밀리미터",
+        "centimeter": "센티미터",
+        "meter": "미터",
+        "kilometer": "킬로미터"
+    },
+    "weight": {
+        "microgram": "마이크로그램",
+        "milligram": "밀리그램",
+        "gram": "그램",
+        "kilogram": "킬로그램",
+        "tonne": "톤"
+    },
+    "weight_us": {
+        "ounce": "온스",
+        "pound": "파운드",
+        "stone": "스톤",
+        "short_ton": "숏톤",
+        "long_ton": "롱톤"
+    },
+    "weight_plural": {
+        "microgram": "마이크로그램",
+        "milligram": "밀리그램",
+        "gram": "그램",
+        "kilogram": "킬로그램",
+        "tonne": "톤"
+    },
+    "volume": {
+        "milliliter": "밀리리터",
+        "liter": "리터",
+        "cubic_meter": "세제곱미터"
+    },
+    "volume_us": {
+        "teaspoon": "티스푼",
+        "tablespoon": "테이블스푼",
+        "fluid_ounce": "플루이드 온스",
+        "cup": "컵",
+        "pint": "파인트",
+        "quart": "쿼트",
+        "gallon": "갤론"
+    },
+    "speed": {
+        "kph": "시간당 킬로미터",
+        "mph": "시간당 마일"
+    },
+    "temperature": {
+        "celsius": "섭씨",
+        "fahrenheit": "화씨"
+    },
+    "digital": {
+        "bit": "비트",
+        "byte": "바이트",
+        "kilobyte": "킬로바이트",
+        "megabyte": "메가바이트",
+        "gigabyte": "기가바이트",
+        "terabyte": "테라바이트",
+        "petabyte": "페타바이트",
+        "exabyte": "엑사바이트"
+    },
+    "network_speed": {
+        "bps": "초당 비트",
+        "kbps": "초당 킬로비트",
+        "mbps": "초당 메가비트",
+        "gbps": "초당 기가비트"
+    }
+}

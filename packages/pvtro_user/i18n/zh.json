@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "註冊帳戶",
+      "name": "姓名",
+      "email": "電子郵件",
+      "password": "密碼",
+      "confirm_password": "確認密碼",
+      "register": "註冊",
+      "already_have_account": "已有帳戶？登入",
+      "tos": "註冊即表示您同意我們的服務條款和隱私政策。",
+      "tos_toggle": "顯示服務條款和隱私政策",
+      "tos_agree": "我同意服務條款和隱私政策"
+    },
+    "errors": {
+      "name_required": "姓名為必填項目",
+      "email_required": "電子郵件為必填項目",
+      "email_invalid": "電子郵件格式無效",
+      "password_required": "密碼為必填項目",
+      "password_min": "密碼至少需要{{number}}個字元",
+      "password_max": "密碼不得超過{{number}}個字元",
+      "password_format_special": "密碼必須包含至少{{number}}個特殊字元",
+      "confirm_password_required": "確認密碼為必填項目",
+      "confirm_password_match": "密碼不匹配"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "登入您的帳戶",
+      "email": "電子郵件",
+      "password": "密碼",
+      "login": "登入",
+      "forgot_password": "忘記密碼？",
+      "no_account": "沒有帳戶？註冊"
+    },
+    "errors": {
+      "email_required": "電子郵件為必填項目",
+      "email_invalid": "電子郵件格式無效",
+      "password_required": "密碼為必填項目"
+    }
+  },
+  "permissions": {
+    "read": "讀取",
+    "write": "寫入",
+    "execute": "執行",
+    "delete": "刪除",
+    "create": "建立",
+    "update": "更新",
+    "manage": "管理",
+    "view": "查看",
+    "edit": "編輯",
+    "share": "分享",
+    "download": "下載",
+    "upload": "上傳"
+  }
+}

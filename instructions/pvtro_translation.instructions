@@ -1,0 +1,104 @@
+
+## CRITICAL: Follow these instructions EXACTLY. Do NOT make assumptions, add features, or deviate.
+
+### TASK DEFINITION
+Create translation JSON files for a Flutter package using slang internationalization system.
+
+### INPUT FILES
+1. **Reference Configuration**: `slang.yaml` - Contains target languages list
+2. **Base Template**: `i18n/en.json` - Source structure and content to replicate
+
+### STEP 1: EXTRACT TARGET LANGUAGES
+Read `slang.yaml` and locate the `locales:` section. Extract ONLY the language codes listed (exclude `en` as it already exists).
+
+**REQUIRED OUTPUT**: List of language codes exactly as written in slang.yaml
+
+### STEP 2: TRANSLATION PRINCIPLE
+Apply this simple rule for each section in the JSON:
+
+**DELETE SECTION IF**: The section contains universal abbreviations/symbols that are identical across ALL languages
+- Examples: All `*_abbr` sections (`length_abbr`, `weight_abbr`, `volume_abbr`, `digital_abbr`, `network_speed_abbr`, etc.)
+- These contain values like "cm", "kg", "mL", "KB", "bps" that are standardized globally
+- Test: Ask "Would this section's values be different in German, Chinese, Arabic?" If NO → DELETE the entire section
+
+**TRANSLATE SECTION IF**: The section contains full words/phrases that vary between languages  
+- Examples: `length`, `weight`, `volume`, `numbers`, `speed`, `temperature`, etc.
+- These contain values like "Meter" → "Metro"(Spanish), "Centimeter" → "Centimètre"(French)
+- Test: Ask "Would this section's values be different in German, Chinese, Arabic?" If YES → translate all values
+
+**RULE**: When in doubt, translate the section. Universal abbreviations should only exist in the base `en.json` file.
+
+### STEP 3: CREATE TRANSLATION FILES
+For EACH language code from Step 1:
+
+1. Copy `i18n/en.json` to `i18n/{language_code}.json`
+2. Open the new file
+3. **ANALYZE** each section/key to determine if it contains universal or translatable content
+4. **DELETE** entire sections that contain only universal abbreviations/symbols
+5. **TRANSLATE** sections that contain language-specific terms
+6. **KEEP** individual universal values unchanged within otherwise translatable sections
+7. Maintain JSON structure for remaining sections EXACTLY - do not add, remove, or reorganize keys within kept sections
+
+**IDENTIFICATION PATTERNS** (examples, adapt to your specific JSON structure):
+
+**DELETE ENTIRE SECTIONS** containing:
+- Abbreviations (e.g., sections with keys ending in `_abbr`, `_short`, `_symbol`)
+- Technical codes (e.g., ISO codes, HTTP status codes, file extensions)
+- Mathematical symbols and operators
+- Unit symbols (e.g., "km", "kg", "°C", "%")
+
+**TRANSLATE SECTIONS** containing:
+- Full words for units, measurements, or technical terms
+- User-facing labels and descriptions
+- Number scale words (tens, hundreds, thousands, etc.)
+- Time and date terminology
+- Error messages and status descriptions
+
+**MIXED SECTIONS** (translate values selectively):
+- Some keys have universal values (abbreviations), others have translatable values (full terms)
+- Keep universal values unchanged, translate the rest
+
+### STEP 4: VALIDATION RULES
+**MANDATORY CHECKS**:
+- File count: Must equal number of languages from slang.yaml (excluding en)
+- JSON validity: Each file must parse as valid JSON
+- Section consistency: All translation files must have identical section structure
+- Translation consistency: Values within translated sections are appropriately localized
+- Universal content: Universal abbreviations/symbols either deleted (entire sections) or preserved unchanged (individual values)
+
+**STRUCTURE VALIDATION**:
+- `en.json`: Contains all sections (both universal and translatable)
+- Translation files: Contains only sections with translatable content
+- All translation files should have identical section lists
+- Section count will vary based on specific package structure
+
+### FORBIDDEN ACTIONS
+- Do NOT add new keys not present in en.json's translatable sections
+- Do NOT keep sections containing only universal abbreviations/symbols in translation files
+- Do NOT reorganize the JSON structure within kept sections
+- Do NOT translate universal abbreviations, symbols, or technical codes
+- Do NOT assume plural forms - translate only what's explicitly requested
+- Do NOT create additional files beyond the language list
+
+### COMPLETION CRITERIA
+Task is complete when:
+1. All language files exist in i18n/ directory
+2. All files pass JSON validation
+3. Translation files contain only sections with translatable content
+4. Sections with only universal content exist only in en.json
+5. Values within translated sections are appropriately localized
+6. All translation files have identical section structure
+
+### ERROR HANDLING
+If translation for any term is unknown:
+- Keep the English value
+- Add comment: `// TODO: Translate {english_term} to {language_name}`
+- Continue with remaining translations
+
+### DELIVERY FORMAT
+Provide:
+1. List of created files
+2. Summary of decision process: which sections were deleted vs translated and why
+3. Any TODO items for unknown translations
+4. Confirmation that universal content is properly handled
+5. Validation that all translation files have consistent structure

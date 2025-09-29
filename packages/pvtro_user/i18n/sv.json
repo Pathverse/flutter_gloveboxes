@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Registrera konto",
+      "name": "Namn",
+      "email": "E-post",
+      "password": "Lösenord",
+      "confirm_password": "Bekräfta lösenord",
+      "register": "Registrera",
+      "already_have_account": "Har du redan ett konto? Logga in",
+      "tos": "Genom att registrera dig godkänner du våra användarvillkor och integritetspolicy.",
+      "tos_toggle": "Visa användarvillkor och integritetspolicy",
+      "tos_agree": "Jag godkänner användarvillkoren och integritetspolicyn"
+    },
+    "errors": {
+      "name_required": "Namn krävs",
+      "email_required": "E-post krävs",
+      "email_invalid": "E-post är ogiltig",
+      "password_required": "Lösenord krävs",
+      "password_min": "Lösenordet måste vara minst {{number}} tecken",
+      "password_max": "Lösenordet får inte överstiga {{number}} tecken",
+      "password_format_special": "Lösenordet måste innehålla minst {{number}} specialtecken",
+      "confirm_password_required": "Bekräfta lösenord krävs",
+      "confirm_password_match": "Lösenorden stämmer inte överens"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Logga in på ditt konto",
+      "email": "E-post",
+      "password": "Lösenord",
+      "login": "Logga in",
+      "forgot_password": "Glömt lösenord?",
+      "no_account": "Har du inget konto? Registrera"
+    },
+    "errors": {
+      "email_required": "E-post krävs",
+      "email_invalid": "E-post är ogiltig",
+      "password_required": "Lösenord krävs"
+    }
+  },
+  "permissions": {
+    "read": "Läsa",
+    "write": "Skriva",
+    "execute": "Utföra",
+    "delete": "Radera",
+    "create": "Skapa",
+    "update": "Uppdatera",
+    "manage": "Hantera",
+    "view": "Visa",
+    "edit": "Redigera",
+    "share": "Dela",
+    "download": "Ladda ned",
+    "upload": "Ladda upp"
+  }
+}

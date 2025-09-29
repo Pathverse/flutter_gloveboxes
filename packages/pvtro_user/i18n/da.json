@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Opret konto",
+      "name": "Navn",
+      "email": "E-mail",
+      "password": "Adgangskode",
+      "confirm_password": "Bekræft adgangskode",
+      "register": "Registrer",
+      "already_have_account": "Har du allerede en konto? Log ind",
+      "tos": "Ved at registrere dig accepterer du vores servicevilkår og privatlivspolitik.",
+      "tos_toggle": "Vis servicevilkår og privatlivspolitik",
+      "tos_agree": "Jeg accepterer servicevilkårene og privatlivspolitikken"
+    },
+    "errors": {
+      "name_required": "Navn er påkrævet",
+      "email_required": "E-mail er påkrævet",
+      "email_invalid": "E-mail er ugyldig",
+      "password_required": "Adgangskode er påkrævet",
+      "password_min": "Adgangskode skal være mindst {{number}} tegn",
+      "password_max": "Adgangskode må ikke overstige {{number}} tegn",
+      "password_format_special": "Adgangskode skal indeholde mindst {{number}} specialtegn",
+      "confirm_password_required": "Bekræft adgangskode er påkrævet",
+      "confirm_password_match": "Adgangskoder stemmer ikke overens"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Log ind på din konto",
+      "email": "E-mail",
+      "password": "Adgangskode",
+      "login": "Log ind",
+      "forgot_password": "Glemt adgangskode?",
+      "no_account": "Har du ikke en konto? Registrer"
+    },
+    "errors": {
+      "email_required": "E-mail er påkrævet",
+      "email_invalid": "E-mail er ugyldig",
+      "password_required": "Adgangskode er påkrævet"
+    }
+  },
+  "permissions": {
+    "read": "Læse",
+    "write": "Skrive",
+    "execute": "Udføre",
+    "delete": "Slette",
+    "create": "Oprette",
+    "update": "Opdatere",
+    "manage": "Administrere",
+    "view": "Se",
+    "edit": "Redigere",
+    "share": "Dele",
+    "download": "Downloade",
+    "upload": "Uploade"
+  }
+}
