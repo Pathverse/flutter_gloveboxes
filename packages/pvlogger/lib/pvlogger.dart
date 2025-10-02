@@ -1,11 +1,18 @@
-import 'package:pvlogger/src/ctx.dart';
-import 'package:pvlogger/src/scoper.dart';
-export 'package:pvlogger/src/scoper.dart';
-export 'package:pvlogger/src/registry.dart';
-export 'package:pvlogger/src/ctx.dart';
-export 'package:pvlogger/templates.dart';
-export 'package:pvlogger/helper.dart';
+import 'package:pvlogger/src/core/logger.dart';
+import 'package:pvlogger/templates/print.dart';
 
-final logger = PVLogScoper(
-  config: PVLogConfig(namespace: 'default', scopes: []),
-);
+export 'package:pvlogger/src/core/adapter.dart';
+export 'package:pvlogger/src/core/event.dart';
+export 'package:pvlogger/src/core/logger.dart';
+
+
+PVLogger quickLogger(String namespace, {List<String> scopes = const [], bool nicePrint = false}) {
+  final logger = PVLogger(namespace, scopes: scopes);
+  PVLogger.registerAdapter(PVStdFormatter());
+  if (nicePrint) {
+    PVLogger.registerAdapter(PVLogNicerPrinter());
+  } else {
+    PVLogger.registerAdapter(PVLogJustPrinter());
+  }
+  return logger;
+}

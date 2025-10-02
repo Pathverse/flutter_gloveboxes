@@ -1,184 +1,292 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pvlogger/pvlogger.dart';
+import 'package:pvlogger/src/utils/serialize.dart';
+import 'package:pvlogger/src/core/registry.dart';
+import 'package:pvlogger/templates/print.dart';
+
+/// Test adapter that captures log events instead of printing to stdout
+class TestCaptureAdapter extends PVLogAdapter with Action {
+  final List<PVLogEvent> capturedEvents = [];
+  final int level;
+
+  TestCaptureAdapter({this.level = 0});
+
+  @override
+  List<AdapterIntent> get intents => [
+    AdapterIntent.action,
+    AdapterIntent.print,
+  ];
+
+  @override
+  int? get levelFilter => level;
+
+  @override
+  void action(PVLogEvent event) {
+    capturedEvents.add(event);
+  }
+
+  @override
+  Future<void> actionAsync(PVLogEvent event) async {
+    capturedEvents.add(event);
+  }
+
+  void clear() {
+    capturedEvents.clear();
+  }
+
+  /// Get the formatted content from the last captured event
+  String? getLastFormattedContent() {
+    if (capturedEvents.isEmpty) return null;
+    final lastEvent = capturedEvents.last;
+    if (lastEvent.extra.containsKey('pvlogger_formatted')) {
+      final formatted = lastEvent.extra['pvlogger_formatted']!['formatted'];
+      return formatted.toString();
+    }
+    return jsonify(lastEvent.raw);
+  }
+
+  /// Get catch error formatted content from the last captured event
+  Map<String, dynamic>? getLastCatchErrorFormatted() {
+    if (capturedEvents.isEmpty) return null;
+    final lastEvent = capturedEvents.last;
+    return lastEvent.extra['pvlogger_catch_error_formatted'];
+  }
+}
 
 void main() {
   group('PVLogger Tests', () {
-    setUpAll(() {
-      // Setup the print logger before running tests
-      setupPrintLogger();
+    late TestCaptureAdapter testAdapter;
+    late PVStdFormatter formatter;
+
+    setUp(() {
+      testAdapter = TestCaptureAdapter();
+      formatter = PVStdFormatter();
+
+      // Clear any existing adapters from registry
+      PVLoggerRegistry.globalAdapters.clear();
+      PVLoggerRegistry.adapters.clear();
+      PVLoggerRegistry.rootLoggers.clear();
+      PVLoggerRegistry.childLoggers.clear();
     });
 
-    test('Test different severity levels with messages', () {
-      print('\n=== Testing Different Severity Levels ===\n');
-
-      // Test different severity levels (0-9)
-      for (int i = 0; i < 10; i++) {
-        String severityName = getSeverityName(i);
-        logger.logSync(
-          'This is a $severityName message at level $i',
-          metadata: {'lv': i},
-        );
-      }
+    tearDown(() {
+      testAdapter.clear();
     });
 
-    test('Test with custom scopes and namespaces', () {
-      print('\n=== Testing Custom Scopes ===\n');
+    test('quickLogger creates logger with formatters and adapters', () {
+      final logger = quickLogger('test');
 
-      // Create logger with custom namespace and scopes
-      final customLogger = PVLogScoper(
-        config: PVLogConfig(
-          namespace: 'MyApp',
-          scopes: ['Authentication', 'UserService'],
-        ),
-      );
+      expect(logger.namespace, equals('test'));
+      expect(PVLoggerRegistry.globalAdapters.length, greaterThan(0));
+    });
 
-      customLogger.logSync(
-        'User login attempt failed',
-        metadata: {'lv': 4, 'userId': '12345', 'attempt': 3},
-      );
+    test('basic logging captures events', () async {
+      final logger = PVLogger('test');
 
-      customLogger.logSync(
-        'Database connection lost',
-        metadata: {'lv': 6, 'database': 'postgres', 'retryCount': 2},
+      // Register adapters in order: formatter first, then capture adapter
+      PVLogger.registerAdapter(testAdapter);
+      PVLogger.registerAdapter(formatter);
+
+      await logger.log('Hello World');
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      expect(testAdapter.capturedEvents.first.namespace, equals('test'));
+      expect(testAdapter.capturedEvents.first.raw, equals('Hello World'));
+    });
+
+    test('sync logging captures events', () {
+      final logger = PVLogger('test');
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
+
+      logger.logSync('Hello Sync World');
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      expect(testAdapter.capturedEvents.first.namespace, equals('test'));
+      expect(testAdapter.capturedEvents.first.raw, equals('Hello Sync World'));
+      expect(testAdapter.capturedEvents.first.asyncCall, isFalse);
+    });
+
+    test('formatter creates pvlogger_formatted extra data', () async {
+      final logger = PVLogger('test');
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
+
+      await logger.log('Test message');
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      final event = testAdapter.capturedEvents.first;
+      expect(event.extra.containsKey('pvlogger_formatted'), isTrue);
+      expect(event.extra['pvlogger_formatted']!['formatted'], isA<String>());
+    });
+
+    test('catch error logging creates special formatted data', () async {
+      final logger = PVLogger('test');
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
+
+      final testError = Exception('Test error');
+      final testStackTrace = StackTrace.current;
+
+      await logger.catchError(testError, testStackTrace, 'Error occurred');
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      final event = testAdapter.capturedEvents.first;
+
+      // Check that catch error data is present
+      expect(event.extra.containsKey('pvlogger_catch_error'), isTrue);
+      expect(event.extra.containsKey('pvlogger_catch_error_formatted'), isTrue);
+
+      final errorFormatted =
+          event.extra['pvlogger_catch_error_formatted'] as Map<String, dynamic>;
+      expect(errorFormatted.containsKey('error'), isTrue);
+      expect(errorFormatted.containsKey('stackTrace'), isTrue);
+
+      // Verify the error is properly jsonified
+      expect(errorFormatted['error'], contains('Test error'));
+    });
+
+    test('sync catch error logging works correctly', () {
+      final logger = PVLogger('test');
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
+
+      final testError = Exception('Sync test error');
+      final testStackTrace = StackTrace.current;
+
+      logger.catchErrorSync(testError, testStackTrace, 'Sync error occurred');
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      final event = testAdapter.capturedEvents.first;
+      expect(event.asyncCall, isFalse);
+      expect(event.extra.containsKey('pvlogger_catch_error'), isTrue);
+      expect(event.extra.containsKey('pvlogger_catch_error_formatted'), isTrue);
+    });
+
+    test('logger with scopes', () async {
+      final logger = PVLogger('test', scopes: ['auth', 'login']);
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
+
+      await logger.log('Login attempt');
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      final event = testAdapter.capturedEvents.first;
+      expect(event.scopes, contains('auth'));
+      expect(event.scopes, contains('login'));
+    });
+
+    test('child logger creation and hierarchy', () {
+      final rootLogger = PVLogger('app');
+      final childLogger = rootLogger.child('module');
+
+      expect(childLogger.namespace, equals('app.module'));
+      expect(childLogger.parent?.namespace, equals('app'));
+    });
+
+    test('level filtering works correctly', () async {
+      // Create adapter that only accepts level 5 and above
+      final highLevelAdapter = TestCaptureAdapter(level: 5);
+      final logger = PVLogger('test');
+      logger.level = 3; // Below the filter threshold
+
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(highLevelAdapter);
+
+      await logger.log('This should be filtered out');
+
+      // Should be filtered out due to level
+      expect(highLevelAdapter.capturedEvents.length, equals(0));
+
+      // Now set logger to higher level
+      logger.level = 6;
+      await logger.log('This should pass');
+
+      expect(highLevelAdapter.capturedEvents.length, equals(1));
+    });
+
+    test('multiple adapters receive events', () async {
+      final adapter1 = TestCaptureAdapter();
+      final adapter2 = TestCaptureAdapter();
+      final logger = PVLogger('test');
+
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(adapter1);
+      PVLogger.registerAdapter(adapter2);
+
+      await logger.log('Multi adapter test');
+
+      expect(adapter1.capturedEvents.length, equals(1));
+      expect(adapter2.capturedEvents.length, equals(1));
+    });
+
+    test('namespace-specific adapters', () async {
+      final globalAdapter = TestCaptureAdapter();
+      final specificAdapter = TestCaptureAdapter();
+
+      // Register adapters
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(globalAdapter); // Global
+      PVLogger.registerAdapter(
+        specificAdapter,
+        namespaces: ['specific'],
+      ); // Namespace-specific
+
+      final globalLogger = PVLogger('global');
+      final specificLogger = PVLogger('specific');
+
+      await globalLogger.log('Global message');
+      await specificLogger.log('Specific message');
+
+      // Global adapter should receive both (since it's registered globally)
+      expect(globalAdapter.capturedEvents.length, equals(2));
+
+      // Specific adapter should receive both messages since global adapters are always included
+      // but we can check that the specific one received the right message
+      expect(specificAdapter.capturedEvents.length, equals(2));
+      expect(
+        specificAdapter.capturedEvents.any((e) => e.namespace == 'specific'),
+        isTrue,
       );
     });
 
-    test('Test exception handling', () {
-      print('\n=== Testing Exception Handling ===\n');
+    test('extra data is properly preserved', () async {
+      final logger = PVLogger('test');
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
 
-      try {
-        // Simulate an exception
-        throw Exception('Database connection failed');
-      } catch (e, stackTrace) {
-        logger.catchErrorSync(
-          message: 'Error occurred while processing user request',
-          error: e as Exception,
-          stackTrace: stackTrace,
-        );
-      }
+      final extraData = {
+        'user': {'id': 123, 'name': 'John'},
+        'session': {'token': 'abc123'},
+      };
 
-      try {
-        // Simulate another type of error
-        throw ArgumentError('Invalid user ID provided');
-      } catch (e, stackTrace) {
-        logger.catchErrorSync(
-          message: 'Validation error in user input',
-          error: Exception(e.toString()),
-          stackTrace: stackTrace,
-        );
-      }
+      await logger.log('User action', extra: extraData);
+
+      expect(testAdapter.capturedEvents.length, equals(1));
+      final event = testAdapter.capturedEvents.first;
+      expect(event.extra.containsKey('user'), isTrue);
+      expect(event.extra.containsKey('session'), isTrue);
+      expect(event.extra['user']!['id'], equals(123));
     });
 
-    test('Test async logging', () async {
-      print('\n=== Testing Async Logging ===\n');
+    test('jsonify serialization works for complex objects', () async {
+      final logger = PVLogger('test');
+      PVLogger.registerAdapter(formatter);
+      PVLogger.registerAdapter(testAdapter);
 
-      await logger.log(
-        'Async operation started',
-        metadata: {'lv': 1, 'operation': 'data_sync'},
-      );
+      final complexObject = {
+        'numbers': [1, 2, 3],
+        'nested': {'key': 'value'},
+        'mixed': [1, 'string', true],
+      };
 
-      // Simulate some async work
-      await Future.delayed(Duration(milliseconds: 10));
+      await logger.log(complexObject);
 
-      await logger.log(
-        'Async operation completed successfully',
-        metadata: {'lv': 1, 'operation': 'data_sync', 'duration': '10ms'},
-      );
-    });
-
-    test('Test edge cases', () {
-      print('\n=== Testing Edge Cases ===\n');
-
-      // Test with null/empty messages
-      logger.logSync('', metadata: {'lv': 2});
-
-      // Test with complex objects
-      logger.logSync(
-        {
-          'user': {'id': 123, 'name': 'John Doe'},
-          'action': 'login',
-          'timestamp': DateTime.now().toIso8601String(),
-        },
-        metadata: {'lv': 1},
-      );
-
-      // Test with list
-      logger.logSync(['error1', 'error2', 'error3'], metadata: {'lv': 5});
-
-      // Test severity level outside range (should clamp)
-      logger.logSync('Invalid severity level test', metadata: {'lv': 15});
-      logger.logSync('Negative severity level test', metadata: {'lv': -1});
-    });
-
-    test('Test real-world scenarios', () {
-      print('\n=== Testing Real-World Scenarios ===\n');
-
-      // API request logging
-      final apiLogger = PVLogScoper(
-        config: PVLogConfig(
-          namespace: 'API',
-          scopes: ['HTTP', 'UserController'],
-        ),
-      );
-
-      apiLogger.logSync(
-        'GET /api/users - Request started',
-        metadata: {'lv': 1},
-      );
-      apiLogger.logSync('User authentication successful', metadata: {'lv': 1});
-      apiLogger.logSync(
-        'Rate limit warning: 80% of quota used',
-        metadata: {'lv': 4},
-      );
-      apiLogger.logSync(
-        'GET /api/users - Request completed (200ms)',
-        metadata: {'lv': 1},
-      );
-
-      // Database operations
-      final dbLogger = PVLogScoper(
-        config: PVLogConfig(
-          namespace: 'Database',
-          scopes: ['PostgreSQL', 'UserTable'],
-        ),
-      );
-
-      dbLogger.logSync('Connection pool created', metadata: {'lv': 1});
-      dbLogger.logSync(
-        'Slow query detected',
-        metadata: {'lv': 4, 'queryTime': '2.5s'},
-      );
-      dbLogger.logSync('Connection timeout', metadata: {'lv': 5});
-      dbLogger.logSync('Database failover initiated', metadata: {'lv': 6});
+      expect(testAdapter.capturedEvents.length, equals(1));
+      final formatted = testAdapter.getLastFormattedContent();
+      expect(formatted, isNotNull);
+      expect(formatted, contains('numbers'));
+      expect(formatted, contains('nested'));
     });
   });
-}
-
-String getSeverityName(int level) {
-  switch (level) {
-    case 0:
-      return 'trace/debug';
-    case 1:
-      return 'info';
-    case 2:
-      return 'notice';
-    case 3:
-      return 'suggestion';
-    case 4:
-      return 'warning';
-    case 5:
-      return 'error';
-    case 6:
-      return 'critical';
-    case 7:
-      return 'fatal';
-    case 8:
-      return 'emergency';
-    case 9:
-      return 'catastrophic';
-    default:
-      return 'unknown';
-  }
 }

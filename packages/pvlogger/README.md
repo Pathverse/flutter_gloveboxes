@@ -1,39 +1,70 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# PVLogger
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A flexible and extensible logging system for Flutter and Dart applications with adapter-based architecture.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- **Adapter-based architecture**: Customize logging behavior with pluggable adapters
+- **Namespace support**: Organize logs with hierarchical namespaces
+- **Scoped logging**: Add contextual scopes to log entries
+- **Error handling**: Built-in support for exception and stack trace logging
+- **Async/sync logging**: Support for both synchronous and asynchronous logging
+- **Level filtering**: Filter logs by severity levels
+- **Formatted output**: JSON serialization and pretty printing included
 
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+## Quick Start
 
 ```dart
-const like = 'sample';
+import 'package:pvlogger/pvlogger.dart';
+
+// Create a quick logger with nice printing
+final logger = quickLogger('MyApp', nicePrint: true);
+
+// Basic logging
+await logger.log('Hello World');
+
+// Logging with scopes
+logger.logSync('User action', scopes: ['auth', 'login']);
+
+// Error logging
+try {
+  // some code
+} catch (error, stackTrace) {
+  await logger.catchError(error, stackTrace, 'Operation failed');
+}
 ```
 
-## Additional information
+## Custom Adapters
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+// Create custom adapters
+class MyCustomAdapter extends PVLogAdapter with Action {
+  @override
+  void action(PVLogEvent event) {
+    // Custom logging logic
+  }
+  
+  @override
+  Future<void> actionAsync(PVLogEvent event) async {
+    // Async logging logic
+  }
+}
+
+// Register adapters
+PVLogger.registerAdapter(PVStdFormatter());
+PVLogger.registerAdapter(MyCustomAdapter());
+```
+
+## Logger Hierarchy
+
+```dart
+// Create root logger
+final rootLogger = PVLogger('app');
+
+// Create child loggers
+final authLogger = rootLogger.child('auth');
+final dbLogger = rootLogger.child('database');
+
+// Child loggers inherit parent context
+await authLogger.log('Login successful'); // namespace: app.auth
+```
