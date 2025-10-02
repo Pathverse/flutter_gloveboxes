@@ -64,7 +64,7 @@ class PreEventContext {
   /// [extraKeys] - Optional list of extra keys to include. If null or empty,
   /// all extra keys are included.
   ///
-  /// Returns a Map<String, dynamic> containing all the context data.
+  /// Returns a Map\<String, dynamic> containing all the context data.
   Map<String, dynamic> toJson([List<String>? extraKeys]) {
     Map<String, Map<String, dynamic>> filteredExtra = {};
 
@@ -157,7 +157,7 @@ class PVLogEvent {
   /// [extraKeys] - Optional list of extra keys to include. If null or empty,
   /// all extra keys are included.
   ///
-  /// Returns a Map<String, dynamic> containing all the event data.
+  /// Returns a Map\<String, dynamic> containing all the event data.
   Map<String, dynamic> toJson([List<String>? extraKeys]) {
     Map<String, Map<String, dynamic>> filteredExtra = {};
 
