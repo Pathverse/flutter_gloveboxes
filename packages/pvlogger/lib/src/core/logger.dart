@@ -265,6 +265,7 @@ class PVLogger {
   /// - [scopes]: Additional scopes for this specific log event
   /// - [extra]: Extra data to attach to the event
   /// - [allowAsyncSkip]: Whether to skip async adapters (default: true)
+  /// - [level]: Override the logger's default level for this event
   ///
   /// Example:
   /// ```dart
@@ -279,13 +280,14 @@ class PVLogger {
     List<String>? scopes,
     Map<String, Map<String, dynamic>>? extra,
     bool allowAsyncSkip = true,
+    int? level,
   }) {
     final eventContext = PreEventContext(
       raw: message,
       namespace: namespace,
       scopes: this.scopes.followedBy(scopes ?? []).toList(),
       extra: <String, Map<String, dynamic>>{...?extra},
-      level: level,
+      level: level ?? this.level,
       asyncCall: false,
     );
 
@@ -327,13 +329,14 @@ class PVLogger {
     dynamic message, {
     List<String>? scopes,
     Map<String, Map<String, dynamic>>? extra,
+    int? level,
   }) async {
     final eventContext = PreEventContext(
       raw: message,
       namespace: namespace,
       scopes: this.scopes.followedBy(scopes ?? []).toList(),
       extra: <String, Map<String, dynamic>>{...?extra},
-      level: level,
+      level: level ?? this.level,
       asyncCall: true,
     );
 
@@ -363,6 +366,7 @@ class PVLogger {
   /// - [message]: Additional context message
   /// - [scopes]: Additional scopes for this error event
   /// - [extra]: Extra data to attach to the event
+  /// - [level]: Override the logger's default level for this event
   ///
   /// Example:
   /// ```dart
@@ -378,6 +382,7 @@ class PVLogger {
     dynamic message, {
     List<String>? scopes,
     Map<String, Map<String, dynamic>>? extra,
+    int? level,
   }) async {
     final eventContext = PreEventContext(
       raw: [message, error, stackTrace],
@@ -387,7 +392,7 @@ class PVLogger {
         ...?extra,
         'pvlogger_catch_error': {'error': error, 'stackTrace': stackTrace},
       },
-      level: level,
+      level: level ?? this.level,
       asyncCall: true,
     );
 
