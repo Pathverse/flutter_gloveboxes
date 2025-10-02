@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:pvlogger/pvlogger.dart';
 import 'package:pvlogger/src/core/registry.dart';
 import 'package:pvlogger/templates/print.dart';

@@ -1,9 +1,18 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/foundation.dart';
 import 'package:pvlogger/src/core/adapter.dart';
 import 'package:pvlogger/src/core/event.dart';
 import 'package:pvlogger/src/utils/serialize.dart';
+
+/// Simple debug mode detection for pure Dart environment.
+///
+/// In pure Dart, we can't rely on Flutter's kDebugMode, so we use
+/// assert statements which are only active in debug mode.
+bool get kDebugMode {
+  bool debugMode = false;
+  assert(debugMode = true);
+  return debugMode;
+}
 
 /// Standard formatter that prepares log data for printing adapters.
 ///

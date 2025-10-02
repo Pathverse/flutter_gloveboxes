@@ -1,4 +1,4 @@
-/// A flexible and extensible logging system for Flutter and Dart applications.
+/// A flexible and extensible logging system for Dart applications.
 ///
 /// PVLogger provides an adapter-based architecture that allows customization
 /// of logging behavior through pluggable adapters. It supports hierarchical

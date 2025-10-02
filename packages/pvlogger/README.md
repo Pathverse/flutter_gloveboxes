@@ -1,6 +1,8 @@
 # PVLogger
 
-A flexible and extensible logging system for Flutter and Dart applications with adapter-based architecture.
+A flexible and extensible logging system for Dart applications with adapter-based architecture.
+
+**Pure Dart Package** - No Flutter dependencies required! Works in any Dart environment including server-side, CLI applications, and Flutter apps.
 
 ## Features
 
