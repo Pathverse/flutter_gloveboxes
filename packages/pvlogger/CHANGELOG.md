@@ -1,3 +1,7 @@
+## 0.9.2
+* Allowed passing level to `logger` functions
+* pub.dev compliance updates
+
 ## 0.9.1
 
 * Added selective extra keys filtering to `toJson()` methods

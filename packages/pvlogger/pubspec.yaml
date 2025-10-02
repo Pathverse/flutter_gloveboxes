@@ -1,6 +1,6 @@
 name: pvlogger
 description: "A powerful and flexible logging utility for Dart applications"
-version: 0.9.1
+version: 0.9.2
 homepage: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:
