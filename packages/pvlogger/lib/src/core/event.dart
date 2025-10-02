@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:pvlogger/src/utils/stack.dart';
 
 /// Context information for a log event before it's fully constructed.
@@ -54,6 +55,55 @@ class PreEventContext {
     this.level = 0,
     DateTime? timestamp,
   }) : timestamp = timestamp ?? DateTime.now();
+
+  /// Converts the PreEventContext to a JSON-serializable map.
+  ///
+  /// This method creates a map representation of the context that can be
+  /// easily serialized to JSON for debugging, storage, or transmission.
+  ///
+  /// [extraKeys] - Optional list of extra keys to include. If null or empty,
+  /// all extra keys are included.
+  ///
+  /// Returns a Map<String, dynamic> containing all the context data.
+  Map<String, dynamic> toJson([List<String>? extraKeys]) {
+    Map<String, Map<String, dynamic>> filteredExtra = {};
+
+    if (extraKeys == null) {
+      // If null, include all extra keys
+      filteredExtra = extra;
+    } else if (extraKeys.isEmpty) {
+      // If empty list, include no extra keys
+      filteredExtra = {};
+    } else {
+      // If list has items, include only those keys
+      for (final key in extraKeys) {
+        if (extra.containsKey(key)) {
+          filteredExtra[key] = extra[key]!;
+        }
+      }
+    }
+
+    return {
+      'raw': raw,
+      'namespace': namespace,
+      'scopes': scopes,
+      'runtimeArgs': runtimeArgs,
+      'asyncCall': asyncCall,
+      'level': level,
+      'extra': filteredExtra,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+
+  /// Converts the PreEventContext to a JSON string.
+  ///
+  /// [extraKeys] - Optional list of extra keys to include. If null or empty,
+  /// all extra keys are included.
+  ///
+  /// Returns a JSON string representation of the context.
+  String toJsonString([List<String>? extraKeys]) {
+    return jsonEncode(toJson(extraKeys));
+  }
 }
 
 /// Represents a fully constructed log event ready for processing by Action adapters.
@@ -94,6 +144,60 @@ class PVLogEvent {
 
   /// Returns a list of all keys in the extra data map
   List<String> get extraKeys => extra.keys.toList();
+
+  /// Converts the PVLogEvent to a JSON-serializable map.
+  ///
+  /// This method creates a comprehensive map representation of the event
+  /// that can be serialized to JSON for debugging, storage, transmission,
+  /// or integration with external logging systems.
+  ///
+  /// The trigger stack trace information is included as a formatted string
+  /// if available, making it human-readable in JSON output.
+  ///
+  /// [extraKeys] - Optional list of extra keys to include. If null or empty,
+  /// all extra keys are included.
+  ///
+  /// Returns a Map<String, dynamic> containing all the event data.
+  Map<String, dynamic> toJson([List<String>? extraKeys]) {
+    Map<String, Map<String, dynamic>> filteredExtra = {};
+
+    if (extraKeys == null) {
+      // If null, include all extra keys
+      filteredExtra = extra;
+    } else if (extraKeys.isEmpty) {
+      // If empty list, include no extra keys
+      filteredExtra = {};
+    } else {
+      // If list has items, include only those keys
+      for (final key in extraKeys) {
+        if (extra.containsKey(key)) {
+          filteredExtra[key] = extra[key]!;
+        }
+      }
+    }
+
+    return {
+      'namespace': namespace,
+      'raw': raw,
+      'timestamp': timestamp.toIso8601String(),
+      'extra': filteredExtra,
+      'trigger': trigger?.toFormatted(),
+      'scopes': scopes,
+      'runtimeArgs': runtimeArgs,
+      'asyncCall': asyncCall,
+      'level': level,
+    };
+  }
+
+  /// Converts the event to a JSON string.
+  ///
+  /// [extraKeys] - Optional list of extra keys to include. If null or empty,
+  /// all extra keys are included.
+  ///
+  /// Returns a JSON string representation of the event.
+  String toJsonString([List<String>? extraKeys]) {
+    return jsonEncode(toJson(extraKeys));
+  }
 
   /// Creates a new PVLogEvent with the specified parameters.
   ///

@@ -1,3 +1,9 @@
+## 0.9.1
+
+* Added selective extra keys filtering to `toJson()` methods
+* Added `toJsonString()` convenience methods for direct JSON string output
+* Improved test coverage for serialization functionality
+
 ## 0.9.0
 
 * Initial release of PVLogger
