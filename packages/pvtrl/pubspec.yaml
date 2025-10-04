@@ -1,6 +1,6 @@
 name: pvtrl
 description: "pathverse translation lite"
-version: 0.0.3
+version: 1.0.0
 homepage: https://pathverse.com
 repository: https://github.com/pathverse/flutter_gloveboxes
 
@@ -11,15 +11,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  slang: ">=4.8.0 <5.0.0"
-  slang_flutter: ">=4.8.0 <5.0.0"
+  intl: ^0.20.2
+  slang: ^4.9.0
+  slang_flutter: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  build_runner: ">=2.5.0 <3.0.0"
-  slang_build_runner: ">=4.8.0 <5.0.0"
+  build_runner: ^2.4.0
+  slang_build_runner: ^4.9.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
