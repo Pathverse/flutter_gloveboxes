@@ -21,7 +21,7 @@
 
 ## Development Setup
 
-### Package Structure
+### Package Structure (Enhanced)
 ```
 packages/
 ├── pvtro/                    # Runtime package
@@ -29,18 +29,30 @@ packages/
 │   │   ├── cubit.dart       # Generic LocaleCubit<T>
 │   │   ├── provider.dart    # MultiTranslationProvider widget
 │   │   ├── enums.dart       # Common enum utilities
+│   │   ├── helper.dart      # Helper functions
 │   │   └── pvtro.dart       # Main export file
 │   └── test/
 │       └── cubit_test.dart  # Unit tests
 │
-└── pvtro_builder/           # Code generation package  
-    ├── lib/src/builders/
-    │   ├── applocale_scanner.dart      # Package discovery & analysis
-    │   ├── unified_language_generator.dart # Code generation logic
-    │   └── unified_language_builder.dart  # build_runner integration
+└── pvtro_builder/           # Code generation package (Enhanced)
+    ├── lib/
+    │   ├── src/
+    │   │   ├── utils/       # NEW: Utility framework
+    │   │   │   ├── package_config.dart    # Package configuration
+    │   │   │   ├── file_system.dart       # File operations
+    │   │   │   ├── string_utils.dart      # String processing
+    │   │   │   ├── codegen.dart           # Code generation
+    │   │   │   └── slang_analysis.dart    # Slang analysis
+    │   │   ├── utils.dart   # Utility exports
+    │   │   └── builders/    # Refactored builders
+    │   │       ├── applocale_scanner.dart      # Streamlined scanner
+    │   │       ├── unified_language_generator.dart # Enhanced generator
+    │   │       └── unified_language_builder.dart  # Enhanced builder
+    │   ├── builder.dart     # Main export
+    │   └── pvtro_builder.dart # Library export
     ├── bin/
-    │   └── pvtro.dart       # CLI tool (future)
-    └── builder.dart         # Main export
+    │   └── pvtro_builder.dart # CLI tool (IMPLEMENTED)
+    └── pubspec.yaml         # Enhanced with executables
 ```
 
 ### Example Project Structure
@@ -83,20 +95,24 @@ dependencies:
   flutter_bloc: ^8.1.3  # State management
 ```
 
-### Build Dependencies (pvtro_builder)  
+### Build Dependencies (pvtro_builder) - Enhanced
 ```yaml
 dependencies:
-  analyzer: ^6.4.1      # Code analysis
+  analyzer: ^6.2.0      # Code analysis (updated)
   args: ^2.4.2          # CLI parsing
   build: ^2.4.1         # Build system core
   build_runner: ^2.4.7  # Build orchestration
   flutter:
     sdk: flutter
   glob: ^2.1.2          # File discovery
-  path: ^1.9.0          # Path manipulation
+  path: ^1.8.3          # Path manipulation (updated)
   pvtro:
     path: ../pvtro      # Runtime package
   yaml: ^3.1.2          # Config parsing
+
+# NEW: CLI executable configuration
+executables:
+  pvtro_builder: pvtro_builder  # CLI tool executable
 ```
 
 ### Example Project Dependencies
@@ -145,19 +161,24 @@ return createPvtroApp<UnifiedLanguage>(
 );
 ```
 
-### Development Workflow  
+### Development Workflow (Enhanced)
 ```bash
-# Watch mode for active development
+# Traditional build_runner workflow
 dart run build_runner watch
-
-# Clean build (force regeneration)
 dart run build_runner build --delete-conflicting-outputs
-
-# Build specific packages only  
 dart run build_runner build --filter="lib/pvtro.dart"
+
+# NEW: CLI tool workflow
+dart run pvtro_builder --help              # Show usage information
+dart run pvtro_builder --verbose           # Verbose scanning output
+dart run pvtro_builder --output lib/custom_translations.dart  # Custom output
+dart run pvtro_builder --scan-packages     # Scan all dependencies
+
+# Enhanced debugging
+dart run pvtro_builder --verbose --scan-packages  # Detailed package discovery
 ```
 
-### Testing Patterns
+### Testing Patterns (Enhanced)
 ```dart
 // Unit test LocaleCubit with mock locale setters
 testWidgets('changeLocale updates all packages', (tester) async {
@@ -175,6 +196,31 @@ testWidgets('changeLocale updates all packages', (tester) async {
   await cubit.changeLocale(TestEnum.fr);
   
   expect(mockSetters, ['package1:fr', 'package2:fr']);
+});
+
+// NEW: Utility function testing patterns
+test('StringUtils sanitizes enum names correctly', () {
+  expect(StringUtils.sanitizeEnumName('is'), 'isIs');
+  expect(StringUtils.sanitizeEnumName('zh-Hans'), 'zh_Hans');
+  expect(StringUtils.sanitizeEnumName('valid'), 'valid');
+});
+
+test('PackageConfigUtils filters pvtro packages', () {
+  final packages = [
+    PackageInfo(name: 'pvtro', rootPath: '/path'),
+    PackageInfo(name: 'pvtro_builder', rootPath: '/path'),
+    PackageInfo(name: 'user_package', rootPath: '/path'),
+  ];
+  
+  final filtered = PackageConfigUtils.filterPvtroPackages(packages);
+  expect(filtered.length, 1);
+  expect(filtered.first.name, 'user_package');
+});
+
+// CLI tool testing
+test('CLI argument parsing', () {
+  final args = ['--verbose', '--output', 'custom.dart'];
+  // Test CLI argument handling
 });
 ```
 

@@ -80,52 +80,76 @@ MultiTranslationProvider
 └── Standard provider pattern
 ```
 
-### Builder Package (pvtro_builder)
+### Builder Package (pvtro_builder) - Enhanced Architecture
 ```
-AppLocaleScanner
-├── Reads package_config.json
-├── Scans for strings.g.dart files  
-├── Parses AppLocale enums with regex
-└── Extracts language codes
+Utility Framework (NEW)
+├── PackageConfigUtils - Package configuration management
+├── FileSystemUtils - File operations and path handling
+├── StringUtils - String processing and sanitization
+├── CodeGenUtils - Professional code generation helpers
+└── SlangAnalysisUtils - Slang package analysis
 
-UnifiedLanguageGenerator
-├── Creates UnifiedLanguage enum
-├── Generates enum extension methods
-├── Creates package-specific parsers
-└── Generates cubit factory function
+AppLocaleScanner (Refactored)
+├── Orchestrates utility functions
+├── Delegates to PackageConfigUtils.getPackageConfig()
+├── Uses SlangAnalysisUtils.scanPackageForSlang()
+└── Reduced from 280+ lines to 25 lines
 
-UnifiedLanguageBuilder (build_runner integration)
+UnifiedLanguageGenerator (Enhanced)
+├── Uses CodeGenUtils for clean code generation
+├── Leverages StringUtils for identifier sanitization
+├── Professional documentation generation
+└── Type-safe switch statement generation
+
+UnifiedLanguageBuilder (Streamlined)
 ├── Implements Builder interface
-├── Watches pvtro.dart trigger files
-├── Coordinates scanning + generation
-└── Outputs to lib/generated/
+├── Uses utility framework for coordination
+├── Enhanced error reporting and logging
+└── Improved file header generation
+
+CLI Tool (NEW)
+├── pvtro_builder executable
+├── Command-line interface for operations
+├── Help, verbose, and custom output options
+└── Enhanced developer workflow support
 ```
 
-## Critical Implementation Paths
+## Critical Implementation Paths (Enhanced with Utilities)
 
-### Path 1: Package Discovery
-1. **Package Config Analysis**: Read .dart_tool/package_config.json
-2. **Path Resolution**: Handle relative vs absolute paths for local packages  
-3. **File Discovery**: Search standard slang locations (lib/i18n/, lib/l10n/)
-4. **Content Validation**: Verify AppLocale + LocaleSettings exist
+### Path 1: Package Discovery (Utility-Based)
+1. **Package Config Analysis**: PackageConfigUtils.getPackageConfig() handles JSON parsing
+2. **Path Resolution**: Utility handles relative vs absolute paths with adjustment logic
+3. **Package Filtering**: PackageConfigUtils.filterPvtroPackages() removes internal packages
+4. **File Discovery**: FileSystemUtils.findStringsFile() searches standard slang locations
+5. **Content Validation**: SlangAnalysisUtils.hasSlangSupport() verifies package compatibility
 
-### Path 2: Enum Extraction
-1. **File Analysis**: Read strings.g.dart content
-2. **Regex Parsing**: Extract enum declarations with complex patterns
-3. **Value Filtering**: Remove Dart keywords (implements, mixin, etc.)
-4. **Language Validation**: Ensure extracted values are valid language codes
+### Path 2: Enum Extraction (Utility-Based)
+1. **File Analysis**: SlangAnalysisUtils.analyzeStringsFile() handles content reading
+2. **Regex Parsing**: SlangAnalysisUtils.extractLocalesFromEnum() uses robust patterns
+3. **Value Filtering**: StringUtils.isLanguageCode() removes Dart keywords and validates
+4. **Language Validation**: Centralized validation with enhanced keyword filtering
+5. **Data Structuring**: SlangPackage and SlangAnalysis classes for type safety
 
-### Path 3: Code Generation
-1. **Enum Creation**: Generate UnifiedLanguage with all discovered codes
-2. **Extension Methods**: Add .languageCode and .fromLanguageCode() 
-3. **Package Parsers**: Create converter functions for each package
-4. **Cubit Factory**: Generate createUnifiedLocaleCubit() with all setters
+### Path 3: Code Generation (Utility-Based)
+1. **File Headers**: CodeGenUtils.generateFileHeader() creates professional headers
+2. **Enum Creation**: CodeGenUtils.generateEnum() with EnumValue helper classes
+3. **Extension Methods**: CodeGenUtils.generateMethod() for type-safe method generation
+4. **Switch Statements**: CodeGenUtils.generateSwitch() with SwitchCase helper classes
+5. **Import Management**: Organized import generation with proper structure
 
-### Path 4: Build Integration
-1. **Trigger Detection**: Watch for pvtro.dart files
-2. **Asset Management**: Handle build_runner asset system
-3. **Output Generation**: Write to proper locations with imports
-4. **Error Handling**: Provide clear error messages for build failures
+### Path 4: Build Integration (Enhanced)
+1. **Trigger Detection**: Enhanced file watching with better error handling
+2. **Asset Management**: Improved build_runner integration with proper coordination
+3. **Output Generation**: Professional code generation with comprehensive documentation
+4. **Error Handling**: Enhanced diagnostic information and build failure reporting
+5. **CLI Integration**: Command-line tools for advanced developer workflows
+
+### Path 5: CLI Operations (NEW)
+1. **Argument Parsing**: ArgParser integration for command-line interface
+2. **Verbose Logging**: Enhanced diagnostic output for debugging
+3. **Custom Output**: Flexible output path configuration
+4. **Help System**: Comprehensive help and usage information
+5. **Error Recovery**: Graceful handling of CLI operation failures
 
 ## Design Patterns in Use
 

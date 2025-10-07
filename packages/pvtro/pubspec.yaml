@@ -1,7 +1,6 @@
 name: pvtro
 description: "a Flutter package system that solves the complex problem of coordinating translations across multiple slang-enabled packages in a monorepo environment."
 version: 0.0.1
-publish_to: 'none'
 homepage: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:
@@ -18,5 +17,4 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   build_runner: ^2.4.7
-  pvtro_builder:
-    path: ../pvtro_builder
+
