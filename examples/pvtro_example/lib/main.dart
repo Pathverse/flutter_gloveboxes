@@ -22,7 +22,7 @@ class PvtroExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localeCubit = createUnifiedLocaleCubit();
+    final localeCubit = createUnifiedLocaleCubit(UnifiedLanguage.en);
 
     return createPvtroApp<UnifiedLanguage>(
       localeCubit: localeCubit,
@@ -297,21 +297,24 @@ class DemoActionsSection extends StatelessWidget {
       await Future.delayed(const Duration(milliseconds: 800));
     }
 
-    // Use ShadDialog instead of SnackBar
-    showShadDialog(
-      context: context,
-      builder: (context) => ShadDialog(
-        title: const Text('Language Cycling Complete'),
-        description: const Text(
-          'Language cycling complete! All packages stayed synchronized.',
-        ),
-        actions: [
-          ShadButton.outline(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+    // Check if the widget is still mounted before using context
+    if (context.mounted) {
+      // Use ShadDialog instead of SnackBar
+      showShadDialog(
+        context: context,
+        builder: (context) => ShadDialog(
+          title: const Text('Language Cycling Complete'),
+          description: const Text(
+            'Language cycling complete! All packages stayed synchronized.',
           ),
-        ],
-      ),
-    );
+          actions: [
+            ShadButton.outline(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

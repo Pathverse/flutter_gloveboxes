@@ -2,6 +2,7 @@
 ///
 /// A Flutter package that automatically scans for slang translation providers
 /// across all subpackages and merges them into a single provider tree.
+library;
 
 // This file triggers pvtro_builder to generate unified language management
 // The generated files will be created in lib/generated/

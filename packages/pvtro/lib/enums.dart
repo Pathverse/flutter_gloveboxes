@@ -1,4 +1,5 @@
 /// Enums for pvtro translation management
+library;
 
 /// Unified language code enum that represents all supported languages
 /// This enum should contain all language codes that any subpackage supports

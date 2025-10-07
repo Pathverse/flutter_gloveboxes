@@ -9,8 +9,7 @@ import 'package:pvtrl/i18n/strings.g.dart' as pvtrl_i18n;
 import 'package:pvtro_common/i18n/strings.g.dart' as pvtro_common_i18n;
 import 'package:pvtro_conver/i18n/strings.g.dart' as pvtro_conver_i18n;
 
-/// Unified language code enum that represents all supported languages
-/// across all discovered slang packages
+/// Unified language code enum that represents all supported languages across all discovered slang packages
 enum UnifiedLanguage {
   /// Language code: da
   da,
@@ -73,6 +72,7 @@ extension UnifiedLanguageExtension on UnifiedLanguage {
     }
   }
 
+
   /// Parse language code string to UnifiedLanguage
   static UnifiedLanguage? fromLanguageCode(String code) {
     switch (code.toLowerCase()) {
@@ -105,49 +105,48 @@ extension UnifiedLanguageExtension on UnifiedLanguage {
       default:
         return null;
     }
+
   }
 }
 
 
 /// Creates a LocaleCubit with all discovered slang packages connected
-LocaleCubit<UnifiedLanguage> createUnifiedLocaleCubit({
-  UnifiedLanguage defaultLocale = UnifiedLanguage.en,
-}) {
+LocaleCubit<UnifiedLanguage> createUnifiedLocaleCubit(UnifiedLanguage defaultLocale) {
   return LocaleCubit<UnifiedLanguage>(
-    defaultLocale: defaultLocale,
-    enumToLanguageCode: (locale) => locale.languageCode,
-    languageCodeToEnum: (code) => UnifiedLanguageExtension.fromLanguageCode(code),
-    subpackageLocaleSetters: [
-      // pvtro_example package locale setter
-      (languageCode) {
-        final locale = _parsePvtro_exampleLocale(languageCode);
-        if (locale != null) {
-          pvtro_example_i18n.LocaleSettings.setLocale(locale);
-        }
-      },
-      // pvtrl package locale setter
-      (languageCode) {
-        final locale = _parsePvtrlLocale(languageCode);
-        if (locale != null) {
-          pvtrl_i18n.LocaleSettings.setLocale(locale);
-        }
-      },
-      // pvtro_common package locale setter
-      (languageCode) {
-        final locale = _parsePvtro_commonLocale(languageCode);
-        if (locale != null) {
-          pvtro_common_i18n.LocaleSettings.setLocale(locale);
-        }
-      },
-      // pvtro_conver package locale setter
-      (languageCode) {
-        final locale = _parsePvtro_converLocale(languageCode);
-        if (locale != null) {
-          pvtro_conver_i18n.LocaleSettings.setLocale(locale);
-        }
-      },
-    ],
-  );
+      defaultLocale: defaultLocale,
+      enumToLanguageCode: (locale) => locale.languageCode,
+      languageCodeToEnum: (code) => UnifiedLanguageExtension.fromLanguageCode(code),
+      subpackageLocaleSetters: [
+        // pvtro_example package locale setter
+        (languageCode) {
+          final locale = _parsePvtro_exampleLocale(languageCode);
+          if (locale != null) {
+            pvtro_example_i18n.LocaleSettings.setLocale(locale);
+          }
+        },
+        // pvtrl package locale setter
+        (languageCode) {
+          final locale = _parsePvtrlLocale(languageCode);
+          if (locale != null) {
+            pvtrl_i18n.LocaleSettings.setLocale(locale);
+          }
+        },
+        // pvtro_common package locale setter
+        (languageCode) {
+          final locale = _parsePvtro_commonLocale(languageCode);
+          if (locale != null) {
+            pvtro_common_i18n.LocaleSettings.setLocale(locale);
+          }
+        },
+        // pvtro_conver package locale setter
+        (languageCode) {
+          final locale = _parsePvtro_converLocale(languageCode);
+          if (locale != null) {
+            pvtro_conver_i18n.LocaleSettings.setLocale(locale);
+          }
+        },
+      ],
+    );
 }
 
 /// Parse language code to pvtro_example AppLocale
@@ -162,6 +161,7 @@ pvtro_example_i18n.AppLocale? _parsePvtro_exampleLocale(String languageCode) {
     default:
       return null;
   }
+
 }
 
 /// Parse language code to pvtrl AppLocale
@@ -196,6 +196,7 @@ pvtrl_i18n.AppLocale? _parsePvtrlLocale(String languageCode) {
     default:
       return null;
   }
+
 }
 
 /// Parse language code to pvtro_common AppLocale
@@ -230,6 +231,7 @@ pvtro_common_i18n.AppLocale? _parsePvtro_commonLocale(String languageCode) {
     default:
       return null;
   }
+
 }
 
 /// Parse language code to pvtro_conver AppLocale
@@ -264,6 +266,7 @@ pvtro_conver_i18n.AppLocale? _parsePvtro_converLocale(String languageCode) {
     default:
       return null;
   }
+
 }
 
 
