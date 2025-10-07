@@ -1,6 +1,6 @@
 name: pvtro_builder
 description: "A build runner tool for pvtro."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/Pathverse/flutter_gloveboxes
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   build: ^2.4.1
   build_runner: ^2.4.7
-  analyzer: ^6.2.0
+  analyzer: ^7.4.0
   path: ^1.8.3
   glob: ^2.1.2
   yaml: ^3.1.2

@@ -1,3 +1,6 @@
+## 0.0.2
+- added auto provider generation to builder
+
 ## 0.0.1
 
 - Automatic slang package discovery and analysis

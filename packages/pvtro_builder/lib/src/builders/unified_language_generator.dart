@@ -104,7 +104,9 @@ class UnifiedLanguageGenerator {
 
     // Generate imports
     final imports = [
+      'package:flutter/material.dart',
       'package:pvtro/cubit.dart',
+      'package:pvtro/helper.dart',
       'unified_language.dart',
       ...packages.map((p) => p.importPath),
     ];
@@ -184,6 +186,48 @@ $setterCalls
       );
       buffer.writeln();
     }
+
+    return buffer.toString();
+  }
+
+  /// Generate a complete app setup function with all TranslationProviders
+  String generateCompleteAppSetup(List<SlangPackage> packages) {
+    final buffer = StringBuffer();
+
+    // Generate the complete app setup function
+    final translationProviders = packages
+        .map(
+          (package) =>
+              '      createSlangProvider(${package.name}_i18n.TranslationProvider.new),',
+        )
+        .join('\n');
+
+    buffer.write(
+      CodeGenUtils.generateMethod(
+        methodName: 'createUnifiedPvtroApp',
+        returnType: 'Widget',
+        parameters: [
+          Parameter('Widget', 'child'),
+          Parameter(
+            'UnifiedLanguage',
+            'defaultLocale',
+            defaultValue: 'UnifiedLanguage.en',
+          ),
+        ],
+        body:
+            '''return createPvtroApp<UnifiedLanguage>(
+    localeCubit: createUnifiedLocaleCubit(defaultLocale),
+    additionalProviders: [
+      // All discovered slang TranslationProviders
+$translationProviders
+    ],
+    child: child,
+  );''',
+        documentation:
+            'Creates a complete pvtro app setup with unified locale management and all discovered TranslationProviders',
+      ),
+    );
+    buffer.writeln();
 
     return buffer.toString();
   }

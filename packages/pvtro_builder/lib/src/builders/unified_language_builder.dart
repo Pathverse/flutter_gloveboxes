@@ -71,7 +71,9 @@ class UnifiedLanguageBuilder implements Builder {
     );
 
     // Generate all imports first
+    buffer.writeln("import 'package:flutter/material.dart';");
     buffer.writeln("import 'package:pvtro/cubit.dart';");
+    buffer.writeln("import 'package:pvtro/helper.dart';");
     buffer.writeln();
 
     // Add package imports
@@ -107,6 +109,10 @@ class UnifiedLanguageBuilder implements Builder {
       // Fallback: add the whole setup code
       buffer.writeln(setupCode);
     }
+
+    // Generate complete app setup function
+    final completeAppSetup = generator.generateCompleteAppSetup(packages);
+    buffer.writeln(completeAppSetup);
 
     return buffer.toString();
   }
