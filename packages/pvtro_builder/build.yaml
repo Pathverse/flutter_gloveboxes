@@ -1,0 +1,18 @@
+targets:
+  $default:
+    builders:
+      pvtro_builder:pvtro_unified_language_builder:
+        enabled: true
+        generate_for:
+          - lib/pvtro.dart
+        options:
+          scan_packages: true
+
+builders:
+  pvtro_unified_language_builder:
+    import: "package:pvtro_builder/builder.dart"
+    builder_factories: ["pvtroUnifiedLanguageBuilder"]
+    build_extensions: {".dart": [".unified_lang.dart"]}
+    auto_apply: dependents
+    build_to: source
+    applies_builders: []
