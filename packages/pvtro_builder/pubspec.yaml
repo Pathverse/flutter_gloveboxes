@@ -27,4 +27,4 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 executables: 
-  pvtro_builder: pvtro
+  pvtro_builder: pvtro_builder
