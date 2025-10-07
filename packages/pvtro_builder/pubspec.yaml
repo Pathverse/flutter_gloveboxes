@@ -1,5 +1,5 @@
 name: pvtro_builder
-description: "A build runner tool for automatically merging slang translation providers."
+description: "A build runner tool for pvtro."
 version: 0.0.1
 publish_to: 'none'
 homepage: https://github.com/Pathverse/flutter_gloveboxes
