@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:pvtro/cubit.dart';
-import 'package:pvtro_common/i18n/strings.g.dart';
+import 'package:pvtro_example/i18n/strings.g.dart';
+import 'package:pvtro_common/i18n/strings.g.dart' as common;
 import '../pvtro.unified_lang.dart';
 
 class WelcomeSection extends StatelessWidget {
@@ -22,7 +23,7 @@ class WelcomeSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Welcome to Pvtro!',
+                    context.pvtroExample.welcome.title,
                     style: ShadTheme.of(context).textTheme.h2,
                   ),
                 ),
@@ -30,7 +31,7 @@ class WelcomeSection extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'This example demonstrates pvtro\'s ability to coordinate translations across multiple slang packages seamlessly.',
+              context.pvtroExample.welcome.description,
               style: ShadTheme.of(context).textTheme.p.copyWith(
                 color: ShadTheme.of(context).colorScheme.mutedForeground,
               ),
@@ -45,7 +46,7 @@ class WelcomeSection extends StatelessWidget {
                     children: [
                       const Icon(Icons.info_outline, size: 16),
                       const SizedBox(width: 8),
-                      Text(context.pvtroCommon.commonWebFeatures.help),
+                      Text(context.pvtroExample.welcome.getStarted),
                     ],
                   ),
                 ),
@@ -57,7 +58,7 @@ class WelcomeSection extends StatelessWidget {
                     children: [
                       const Icon(Icons.language, size: 16),
                       const SizedBox(width: 8),
-                      Text(context.pvtroCommon.commonWebFeatures.settings),
+                      Text(context.pvtroExample.actions.help),
                     ],
                   ),
                 ),
@@ -73,10 +74,8 @@ class WelcomeSection extends StatelessWidget {
     showShadDialog(
       context: context,
       builder: (context) => ShadDialog(
-        title: Text(context.pvtroCommon.commonWebFeatures.aboutUs),
-        description: const Text(
-          'Pvtro is a Provider-based Translation Orchestrator that automatically coordinates slang translations across multiple packages, eliminating import conflicts and providing unified locale management.',
-        ),
+        title: Text(context.pvtroExample.dialogs.about.title),
+        description: Text(context.pvtroExample.dialogs.about.description),
         actions: [
           ShadButton.outline(
             onPressed: () => Navigator.of(context).pop(),

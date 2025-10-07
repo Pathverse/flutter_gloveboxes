@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:pvtro/helper.dart';
 import 'package:pvtro/cubit.dart';
+import 'package:pvtro_example/i18n/strings.g.dart' as example_strings;
 import 'package:pvtro_common/i18n/strings.g.dart' as common_strings;
 import 'package:pvtro_conver/i18n/strings.g.dart' as conver_strings;
 
@@ -26,7 +27,8 @@ class PvtroExampleApp extends StatelessWidget {
     return createPvtroApp<UnifiedLanguage>(
       localeCubit: localeCubit,
       additionalProviders: [
-        // Add slang TranslationProviders for each package
+        // Add slang TranslationProviders for all 3 packages
+        createSlangProvider(example_strings.TranslationProvider.new),
         createSlangProvider(common_strings.TranslationProvider.new),
         createSlangProvider(conver_strings.TranslationProvider.new),
       ],
@@ -57,7 +59,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pvtro Example'),
+        title: Text(context.pvtroExample.app.title),
         backgroundColor: ShadTheme.of(context).colorScheme.background,
         foregroundColor: ShadTheme.of(context).colorScheme.foreground,
         elevation: 1,

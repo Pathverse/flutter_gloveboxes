@@ -21,6 +21,9 @@ dependencies:
 
   shadcn_ui: ^0.37.1
   flutter_bloc: ^8.1.6
+  slang: ^4.9.0
+  slang_flutter: ^4.9.0
+  pvtrl: any
 
 dev_dependencies:
   flutter_test:
