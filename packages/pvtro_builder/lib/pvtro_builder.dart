@@ -3,7 +3,7 @@
 /// This library provides builders and utilities for generating unified language systems
 /// that coordinate translations across multiple slang packages.
 
-library pvtro_builder;
+library;
 
 // Export core builders
 export 'src/builders/applocale_scanner.dart';
