@@ -6,7 +6,7 @@
 /// Locales: 13
 /// Strings: 520 (40 per locale)
 ///
-/// Built on 2025-09-29 at 19:10 UTC
+/// Built on 2025-10-07 at 20:12 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
@@ -257,13 +257,13 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 /// Method A: Simple
 ///
 /// No rebuild after locale change.
-/// Translation happens during initialization of the widget (call of t).
+/// Translation happens during initialization of the widget (call of pvtroUser).
 /// Configurable via 'translate_var'.
 ///
 /// Usage:
-/// String a = t.someKey.anotherKey;
-/// String b = t['someKey.anotherKey']; // Only for edge cases!
-Translations get t => LocaleSettings.instance.currentTranslations;
+/// String a = pvtroUser.someKey.anotherKey;
+/// String b = pvtroUser['someKey.anotherKey']; // Only for edge cases!
+Translations get pvtroUser => LocaleSettings.instance.currentTranslations;
 
 /// Method B: Advanced
 ///
@@ -277,9 +277,9 @@ Translations get t => LocaleSettings.instance.currentTranslations;
 /// );
 ///
 /// Step 2:
-/// final t = Translations.of(context); // Get t variable.
-/// String a = t.someKey.anotherKey; // Use t variable.
-/// String b = t['someKey.anotherKey']; // Only for edge cases!
+/// final pvtroUser = Translations.of(context); // Get pvtroUser variable.
+/// String a = pvtroUser.someKey.anotherKey; // Use pvtroUser variable.
+/// String b = pvtroUser['someKey.anotherKey']; // Only for edge cases!
 class TranslationProvider extends BaseTranslationProvider<AppLocale, Translations> {
 	TranslationProvider({required super.child}) : super(settings: LocaleSettings.instance);
 
@@ -290,9 +290,9 @@ class TranslationProvider extends BaseTranslationProvider<AppLocale, Translation
 /// Configurable via 'translate_var'.
 ///
 /// Usage (e.g. in a widget's build method):
-/// context.t.someKey.anotherKey
+/// context.pvtroUser.someKey.anotherKey
 extension BuildContextTranslationsExtension on BuildContext {
-	Translations get t => TranslationProvider.of(this).translations;
+	Translations get pvtroUser => TranslationProvider.of(this).translations;
 }
 
 /// Manages all translation instances and the current locale
