@@ -132,6 +132,19 @@ dart run build_runner build
 # lib/pvtro.unified_lang.dart
 ```
 
+### Streamlined App Setup (NEW)
+```dart
+// Single-line setup with helper function
+return createPvtroApp<UnifiedLanguage>(
+  localeCubit: createUnifiedLocaleCubit(),
+  additionalProviders: [
+    createSlangProvider(CommonTranslationProvider.new),
+    createSlangProvider(ConverTranslationProvider.new),
+  ],
+  child: YourApp(),
+);
+```
+
 ### Development Workflow  
 ```bash
 # Watch mode for active development
@@ -178,13 +191,20 @@ Currently tested with 13 language codes across multiple packages:
 
 ### Standard slang Project Integration
 ```yaml
-# slang.yaml in each package
+# slang.yaml in each package (with unique translate_var)
 base_locale: en
 output_directory: lib/i18n
 output_file_name: strings.g.dart
 class_name: Translations
-translate_var: t
+translate_var: pvtroCommon  # Unique per package to avoid conflicts
 enum_name: AppLocale
+```
+
+### Usage Pattern
+```dart
+// Access translations with package-specific variable names
+context.pvtroCommon.buttons.close      // pvtro_common package
+context.pvtroConver.units.temperature  // pvtro_conver package
 ```
 
 ### Build Configuration
