@@ -18,4 +18,3 @@ class MultiTranslationProvider extends StatelessWidget {
     );
   }
 }
-

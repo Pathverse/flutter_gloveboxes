@@ -31,7 +31,12 @@ class LocaleCubit<T extends Enum> extends Cubit<T> {
        _enumToLanguageCode = enumToLanguageCode,
        _languageCodeToEnum = languageCodeToEnum,
        _defaultLocale = defaultLocale,
-       super(defaultLocale);
+       super(defaultLocale) {
+    // Initialize all subpackage locales with the default locale immediately
+    // This ensures that even the initial locale is properly set across all packages
+    final initialLanguageCode = _enumToLanguageCode(defaultLocale);
+    _updateSubpackageLocales(initialLanguageCode);
+  }
 
   /// Change the locale and notify all subpackages
   Future<void> changeLocale(T locale) async {
