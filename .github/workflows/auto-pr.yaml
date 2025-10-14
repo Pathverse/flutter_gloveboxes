@@ -1,0 +1,98 @@
+name: Auto PR to Release
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [trigger-auto-pr]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Log trigger source
+        run: |
+          echo "Workflow triggered by: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            echo "Triggered from repository: ${{ github.event.client_payload.repository }}"
+            echo "Ref: ${{ github.event.client_payload.ref }}"
+            echo "SHA: ${{ github.event.client_payload.sha }}"
+          fi
+
+      - name: Check if release/amplify branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --heads origin release/amplify | grep -q release/amplify; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create release/amplify branch if it doesn't exist
+        if: steps.check-branch.outputs.branch_exists == 'false'
+        run: |
+          git checkout -b release/amplify
+          git push origin release/amplify
+          echo "Created release/amplify branch from main"
+
+      - name: Check for differences between branches
+        id: check-diff
+        if: steps.check-branch.outputs.branch_exists == 'true'
+        run: |
+          git fetch origin release/amplify
+          DIFF_COUNT=$(git rev-list --count origin/release/amplify..origin/main)
+          echo "diff_count=$DIFF_COUNT" >> $GITHUB_OUTPUT
+          echo "Commits ahead: $DIFF_COUNT"
+
+      - name: Check if PR already exists
+        id: check-pr
+        if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_EXISTS=$(gh pr list --base release/amplify --head main --state open --json number --jq length)
+          echo "pr_exists=$PR_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count != '0' && steps.check-pr.outputs.pr_exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base release/amplify \
+            --head main \
+            --title "🚀 Auto-sync: main → release/amplify" \
+            --body "## Automated Pull Request
+
+          This PR automatically syncs changes from \`main\` to \`release/amplify\`.
+
+          ### Changes
+          - Auto-generated from main branch push
+          - Review and merge to deploy to AWS Amplify
+
+          ### Checklist
+          - [ ] Review changes
+          - [ ] Verify version bump
+          - [ ] Ready for deployment
+
+          ---
+          _This PR was automatically created by GitHub Actions_" \
+            --label "automated,deployment"
+
+      - name: No changes to sync
+        if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count == '0'
+        run: |
+          echo "No commits between release/amplify and main. No PR needed."
+
+      - name: PR already exists
+        if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count != '0' && steps.check-pr.outputs.pr_exists != '0'
+        run: |
+          echo "PR already exists from main to release/amplify. Skipping creation."
