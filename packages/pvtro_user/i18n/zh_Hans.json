@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "注册账户",
+      "name": "姓名",
+      "email": "邮箱",
+      "password": "密码",
+      "confirm_password": "确认密码",
+      "register": "注册",
+      "already_have_account": "已有账户？登录",
+      "tos": "注册即表示您同意我们的服务条款和隐私政策。",
+      "tos_toggle": "显示服务条款和隐私政策",
+      "tos_agree": "我同意服务条款和隐私政策"
+    },
+    "errors": {
+      "name_required": "姓名为必填项",
+      "email_required": "邮箱为必填项",
+      "email_invalid": "邮箱格式无效",
+      "password_required": "密码为必填项",
+      "password_min": "密码至少需要{{number}}个字符",
+      "password_max": "密码不得超过{{number}}个字符",
+      "password_format_special": "密码必须包含至少{{number}}个特殊字符",
+      "confirm_password_required": "确认密码为必填项",
+      "confirm_password_match": "密码不匹配"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "登录您的账户",
+      "email": "邮箱",
+      "password": "密码",
+      "login": "登录",
+      "forgot_password": "忘记密码？",
+      "no_account": "没有账户？注册"
+    },
+    "errors": {
+      "email_required": "邮箱为必填项",
+      "email_invalid": "邮箱格式无效",
+      "password_required": "密码为必填项"
+    }
+  },
+  "permissions": {
+    "read": "读取",
+    "write": "写入",
+    "execute": "执行",
+    "delete": "删除",
+    "create": "创建",
+    "update": "更新",
+    "manage": "管理",
+    "view": "查看",
+    "edit": "编辑",
+    "share": "分享",
+    "download": "下载",
+    "upload": "上传"
+  }
+}

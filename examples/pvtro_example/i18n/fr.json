@@ -1,0 +1,90 @@
+{
+  "app": {
+    "title": "Exemple Pvtro",
+    "subtitle": "Démo de Coordination de Traduction Multi-Package"
+  },
+  "welcome": {
+    "title": "Bienvenue à Pvtro !",
+    "description": "Cet exemple démontre la capacité de pvtro à coordiner les traductions entre plusieurs packages slang de manière transparente.",
+    "getStarted": "Commencer"
+  },
+  "conversion": {
+    "title": "Conversions d'Unités",
+    "description": "Convertissez entre différentes unités en utilisant les traductions du package pvtro_conver.",
+    "selectType": "Sélectionner le type d'unité",
+    "enterValue": "Entrez la valeur à convertir",
+    "convert": "Convertir",
+    "result": "Résultat de Conversion"
+  },
+  "stats": {
+    "title": "État du Système Pvtro",
+    "currentLanguage": "Langue Actuelle",
+    "languageCode": "Code de Langue",
+    "packagesCoordinated": "Packages Coordonnés",
+    "totalLanguages": "Total des Langues",
+    "coordinatedPackages": "Packages Coordonnés",
+    "viewAllLanguages": "Voir Toutes les {{count}} Langues"
+  },
+  "demo": {
+    "title": "Actions Démo",
+    "description": "Testez diverses fonctionnalités pvtro et voyez la coordination de traduction en temps réel.",
+    "testLanguageSwitch": "Tester le Changement de Langue",
+    "systemInfo": "Informations Système",
+    "cycleLanguages": "Parcourir les Langues"
+  },
+  "dialogs": {
+    "about": {
+      "title": "À Propos de Pvtro",
+      "description": "Pvtro est un Orchestrateur de Traduction Basé sur Fournisseur qui coordonne automatiquement les traductions slang entre plusieurs packages, éliminant les conflits d'importation et fournissant une gestion unifiée des locales."
+    },
+    "languageInfo": {
+      "title": "Informations de Langue",
+      "currentLanguage": "Langue Actuelle",
+      "languageCode": "Code de Langue",
+      "packagesCoordinated": "Packages Coordonnés"
+    },
+    "languageSwitch": {
+      "title": "Langue Changée",
+      "message": "Changé vers {{language}} - Tous les packages mis à jour !"
+    },
+    "cycleComplete": {
+      "title": "Parcours des Langues Terminé",
+      "message": "Parcours des langues terminé ! Tous les packages sont restés synchronisés."
+    },
+    "systemInfo": {
+      "title": "Informations du Système Pvtro",
+      "runtimePackage": "Package Runtime : pvtro v0.0.1",
+      "builderPackage": "Package Builder : pvtro_builder v0.0.1",
+      "features": {
+        "noImportConflicts": "Zéro conflit d'importation",
+        "autoCoordination": "Coordination automatique des locales",
+        "typeSafe": "Gestion des enums type-safe",
+        "buildRunner": "Intégration build-runner"
+      }
+    },
+    "unitInfo": {
+      "title": "Informations de Conversion d'Unités",
+      "currentType": "Type d'unité actuel : {{type}}",
+      "description": "Ceci démontre les traductions du package pvtro_conver fonctionnant aux côtés des traductions pvtro_common dans la même UI.",
+      "coordination": "Toutes les traductions sont automatiquement coordonnées quand vous changez la langue en utilisant le sélecteur en haut."
+    },
+    "allLanguages": {
+      "title": "Toutes les Langues Supportées",
+      "description": "Pvtro a automatiquement découvert et unifié ces langues :"
+    }
+  },
+  "units": {
+    "length": "Longueur / Distance",
+    "weight": "Poids / Masse",
+    "temperature": "Température"
+  },
+  "packages": {
+    "common": "Traductions communes",
+    "conver": "Conversions d'unités"
+  },
+  "actions": {
+    "ok": "OK",
+    "close": "Fermer",
+    "help": "Aide"
+  }
+}

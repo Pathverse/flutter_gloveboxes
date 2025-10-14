@@ -29,3 +29,12 @@ dependencies:
     git:
       url: https://github.com/Pathverse/flutter_gloveboxes
       path: packages/pvtrl
+```
+
+or 
+
+```yaml
+dependencies:
+  pvtrl: ^1.0.0
+```
+

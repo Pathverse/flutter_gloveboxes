@@ -1,0 +1,97 @@
+{
+    "numbers": {
+        "tens": "十位",
+        "hundreds": "百位",
+        "thousands": "千位",
+        "millions": "百萬",
+        "billions": "十億",
+        "trillions": "萬億",
+        "quadrillions": "千萬億",
+        "quintillions": "百京",
+        "sextillions": "十垓",
+        "septillions": "萬垓",
+        "octillions": "千萬垓",
+        "nonillions": "百秭"
+    },
+    "length": {
+        "nanometer": "奈米",
+        "micrometer": "微米",
+        "millimeter": "毫米",
+        "centimeter": "公分",
+        "meter": "公尺",
+        "kilometer": "公里"
+    },
+    "length_us": {
+        "inch": "英吋",
+        "foot": "英尺",
+        "yard": "碼",
+        "mile": "英里"
+    },
+    "length_plural": {
+        "nanometer": "奈米",
+        "micrometer": "微米",
+        "millimeter": "毫米",
+        "centimeter": "公分",
+        "meter": "公尺",
+        "kilometer": "公里"
+    },
+    "weight": {
+        "microgram": "微克",
+        "milligram": "毫克",
+        "gram": "克",
+        "kilogram": "公斤",
+        "tonne": "公噸"
+    },
+    "weight_us": {
+        "ounce": "盎司",
+        "pound": "磅",
+        "stone": "英石",
+        "short_ton": "短噸",
+        "long_ton": "長噸"
+    },
+    "weight_plural": {
+        "microgram": "微克",
+        "milligram": "毫克",
+        "gram": "克",
+        "kilogram": "公斤",
+        "tonne": "公噸"
+    },
+    "volume": {
+        "milliliter": "毫升",
+        "liter": "公升",
+        "cubic_meter": "立方公尺"
+    },
+    "volume_us": {
+        "teaspoon": "茶匙",
+        "tablespoon": "湯匙",
+        "fluid_ounce": "液體盎司",
+        "cup": "杯",
+        "pint": "品脫",
+        "quart": "夸脫",
+        "gallon": "加侖"
+    },
+    "speed": {
+        "kph": "公里每小時",
+        "mph": "英里每小時"
+    },
+    "temperature": {
+        "celsius": "攝氏度",
+        "fahrenheit": "華氏度"
+    },
+    "digital": {
+        "bit": "位元",
+        "byte": "位元組",
+        "kilobyte": "千位元組",
+        "megabyte": "百萬位元組",
+        "gigabyte": "十億位元組",
+        "terabyte": "兆位元組",
+        "petabyte": "千兆位元組",
+        "exabyte": "百京位元組"
+    },
+    "network_speed": {
+        "bps": "位元每秒",
+        "kbps": "千位元每秒",
+        "mbps": "百萬位元每秒",
+        "gbps": "十億位元每秒"
+    }
+}

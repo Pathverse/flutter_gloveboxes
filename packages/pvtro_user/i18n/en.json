@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Register Account",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirm_password": "Confirm Password",
+      "register": "Register",
+      "already_have_account": "Already have an account? Login",
+      "tos": "By registering, you agree to our Terms of Service and Privacy Policy.",
+      "tos_toggle": "Show Terms of Service and Privacy Policy",
+      "tos_agree": "I agree to the Terms of Service and Privacy Policy"
+    },
+    "errors": {
+      "name_required": "Name is required",
+      "email_required": "Email is required",
+      "email_invalid": "Email is invalid",
+      "password_required": "Password is required",
+      "password_min": "Password must be at least {{number}} characters",
+      "password_max": "Password must not exceed {{number}} characters",
+      "password_format_special": "Password must contain at least {{number}} special character",
+      "confirm_password_required": "Confirm Password is required",
+      "confirm_password_match": "Passwords do not match"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Login to Your Account",
+      "email": "Email",
+      "password": "Password",
+      "login": "Login",
+      "forgot_password": "Forgot Password?",
+      "no_account": "Don't have an account? Register"
+    },
+    "errors": {
+      "email_required": "Email is required",
+      "email_invalid": "Email is invalid",
+      "password_required": "Password is required"
+    }
+  },
+  "permissions": {
+    "read": "Read",
+    "write": "Write",
+    "execute": "Execute",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "manage": "Manage",
+    "view": "View",
+    "edit": "Edit",
+    "share": "Share",
+    "download": "Download",
+    "upload": "Upload"
+  }
+}

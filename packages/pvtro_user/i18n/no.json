@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Registrer konto",
+      "name": "Navn",
+      "email": "E-post",
+      "password": "Passord",
+      "confirm_password": "Bekreft passord",
+      "register": "Registrer",
+      "already_have_account": "Har du allerede en konto? Logg inn",
+      "tos": "Ved å registrere deg godtar du våre tjenestevilkår og personvernregler.",
+      "tos_toggle": "Vis tjenestevilkår og personvernregler",
+      "tos_agree": "Jeg godtar tjenestevilkårene og personvernreglene"
+    },
+    "errors": {
+      "name_required": "Navn er påkrevd",
+      "email_required": "E-post er påkrevd",
+      "email_invalid": "E-post er ugyldig",
+      "password_required": "Passord er påkrevd",
+      "password_min": "Passordet må være minst {{number}} tegn",
+      "password_max": "Passordet må ikke overstige {{number}} tegn",
+      "password_format_special": "Passordet må inneholde minst {{number}} spesialtegn",
+      "confirm_password_required": "Bekreft passord er påkrevd",
+      "confirm_password_match": "Passordene stemmer ikke overens"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Logg inn på kontoen din",
+      "email": "E-post",
+      "password": "Passord",
+      "login": "Logg inn",
+      "forgot_password": "Glemt passord?",
+      "no_account": "Har du ikke en konto? Registrer"
+    },
+    "errors": {
+      "email_required": "E-post er påkrevd",
+      "email_invalid": "E-post er ugyldig",
+      "password_required": "Passord er påkrevd"
+    }
+  },
+  "permissions": {
+    "read": "Les",
+    "write": "Skriv",
+    "execute": "Utfør",
+    "delete": "Slett",
+    "create": "Opprett",
+    "update": "Oppdater",
+    "manage": "Administrer",
+    "view": "Se",
+    "edit": "Rediger",
+    "share": "Del",
+    "download": "Last ned",
+    "upload": "Last opp"
+  }
+}

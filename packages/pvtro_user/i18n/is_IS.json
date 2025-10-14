@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Skrá reikning",
+      "name": "Nafn",
+      "email": "Netfang",
+      "password": "Lykilorð",
+      "confirm_password": "Staðfesta lykilorð",
+      "register": "Skrá",
+      "already_have_account": "Ertu þegar með reikning? Innskráning",
+      "tos": "Með því að skrá þig samþykkir þú þjónustuskilmála okkar og persónuverndarstefnu.",
+      "tos_toggle": "Sýna þjónustuskilmála og persónuverndarstefnu",
+      "tos_agree": "Ég samþykki þjónustuskilmálana og persónuverndarstefnuna"
+    },
+    "errors": {
+      "name_required": "Nafn er nauðsynlegt",
+      "email_required": "Netfang er nauðsynlegt",
+      "email_invalid": "Netfang er ógilt",
+      "password_required": "Lykilorð er nauðsynlegt",
+      "password_min": "Lykilorð verður að vera að minnsta kosti {{number}} stafir",
+      "password_max": "Lykilorð má ekki fara yfir {{number}} stafi",
+      "password_format_special": "Lykilorð verður að innihalda að minnsta kosti {{number}} sérstaf",
+      "confirm_password_required": "Staðfesting lykilorðs er nauðsynleg",
+      "confirm_password_match": "Lykilorð passa ekki saman"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Skrá inn á reikninginn þinn",
+      "email": "Netfang",
+      "password": "Lykilorð",
+      "login": "Skrá inn",
+      "forgot_password": "Gleymt lykilorð?",
+      "no_account": "Átt þú ekki reikning? Skrá"
+    },
+    "errors": {
+      "email_required": "Netfang er nauðsynlegt",
+      "email_invalid": "Netfang er ógilt",
+      "password_required": "Lykilorð er nauðsynlegt"
+    }
+  },
+  "permissions": {
+    "read": "Lesa",
+    "write": "Skrifa",
+    "execute": "Keyra",
+    "delete": "Eyða",
+    "create": "Búa til",
+    "update": "Uppfæra",
+    "manage": "Stjórna",
+    "view": "Skoða",
+    "edit": "Breyta",
+    "share": "Deila",
+    "download": "Sækja",
+    "upload": "Hlaða upp"
+  }
+}

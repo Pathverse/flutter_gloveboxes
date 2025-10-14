@@ -1,0 +1,56 @@
+{
+  "registeration": {
+    "form": {
+      "title": "Registrar cuenta",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirm_password": "Confirmar contraseña",
+      "register": "Registrarse",
+      "already_have_account": "¿Ya tienes una cuenta? Iniciar sesión",
+      "tos": "Al registrarte, aceptas nuestros Términos de Servicio y Política de Privacidad.",
+      "tos_toggle": "Mostrar Términos de Servicio y Política de Privacidad",
+      "tos_agree": "Acepto los Términos de Servicio y la Política de Privacidad"
+    },
+    "errors": {
+      "name_required": "El nombre es requerido",
+      "email_required": "El correo electrónico es requerido",
+      "email_invalid": "El correo electrónico es inválido",
+      "password_required": "La contraseña es requerida",
+      "password_min": "La contraseña debe tener al menos {{number}} caracteres",
+      "password_max": "La contraseña no debe exceder {{number}} caracteres",
+      "password_format_special": "La contraseña debe contener al menos {{number}} carácter especial",
+      "confirm_password_required": "Confirmar contraseña es requerido",
+      "confirm_password_match": "Las contraseñas no coinciden"
+    }
+  },
+  "login": {
+    "form": {
+      "title": "Iniciar sesión en tu cuenta",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "login": "Iniciar sesión",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "no_account": "¿No tienes una cuenta? Registrarse"
+    },
+    "errors": {
+      "email_required": "El correo electrónico es requerido",
+      "email_invalid": "El correo electrónico es inválido",
+      "password_required": "La contraseña es requerida"
+    }
+  },
+  "permissions": {
+    "read": "Leer",
+    "write": "Escribir",
+    "execute": "Ejecutar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "manage": "Administrar",
+    "view": "Ver",
+    "edit": "Editar",
+    "share": "Compartir",
+    "download": "Descargar",
+    "upload": "Subir"
+  }
+}

@@ -1,0 +1,97 @@
+{
+    "numbers": {
+        "tens": "Tugir",
+        "hundreds": "Hundruð",
+        "thousands": "Þúsundir",
+        "millions": "Milljónir",
+        "billions": "Milljarðar",
+        "trillions": "Billjónir",
+        "quadrillions": "Billjarðar",
+        "quintillions": "Trilljónir",
+        "sextillions": "Trilljarðar",
+        "septillions": "Kvadrilljónir",
+        "octillions": "Kvadrilljarðar",
+        "nonillions": "Kvintilljónir"
+    },
+    "length": {
+        "nanometer": "Nanómetri",
+        "micrometer": "Míkrómetri",
+        "millimeter": "Millímetri",
+        "centimeter": "Sentímetri",
+        "meter": "Metri",
+        "kilometer": "Kílómetri"
+    },
+    "length_us": {
+        "inch": "Tomma",
+        "foot": "Fet",
+        "yard": "Yard",
+        "mile": "Míla"
+    },
+    "length_plural": {
+        "nanometer": "Nanómetrar",
+        "micrometer": "Míkrómetrar",
+        "millimeter": "Millímetrar",
+        "centimeter": "Sentímetrar",
+        "meter": "Metrar",
+        "kilometer": "Kílómetrar"
+    },
+    "weight": {
+        "microgram": "Míkrógramm",
+        "milligram": "Milligramm",
+        "gram": "Gramm",
+        "kilogram": "Kílógramm",
+        "tonne": "Tonn"
+    },
+    "weight_us": {
+        "ounce": "Únsa",
+        "pound": "Pund",
+        "stone": "Steinn",
+        "short_ton": "Stutt tonn",
+        "long_ton": "Langt tonn"
+    },
+    "weight_plural": {
+        "microgram": "Míkrógrömm",
+        "milligram": "Milligrömm",
+        "gram": "Grömm",
+        "kilogram": "Kílógrömm",
+        "tonne": "Tonn"
+    },
+    "volume": {
+        "milliliter": "Millílítri",
+        "liter": "Lítri",
+        "cubic_meter": "Rúmmetri"
+    },
+    "volume_us": {
+        "teaspoon": "Teskeiða",
+        "tablespoon": "Matskeiða",
+        "fluid_ounce": "Vökvaúnsa",
+        "cup": "Bolli",
+        "pint": "Pint",
+        "quart": "Kvart",
+        "gallon": "Gallon"
+    },
+    "speed": {
+        "kph": "Kílómetrar á klukkustund",
+        "mph": "Mílur á klukkustund"
+    },
+    "temperature": {
+        "celsius": "Selsjus",
+        "fahrenheit": "Fahrenheit"
+    },
+    "digital": {
+        "bit": "Biti",
+        "byte": "Bæti",
+        "kilobyte": "Kílóbæti",
+        "megabyte": "Megabæti",
+        "gigabyte": "Gígabæti",
+        "terabyte": "Terabæti",
+        "petabyte": "Petabæti",
+        "exabyte": "Exabæti"
+    },
+    "network_speed": {
+        "bps": "Bitar á sekúndu",
+        "kbps": "Kílóbitar á sekúndu",
+        "mbps": "Megabitar á sekúndu",
+        "gbps": "Gígabitar á sekúndu"
+    }
+}

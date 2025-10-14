@@ -1,0 +1,97 @@
+{
+    "numbers": {
+        "tens": "עשרות",
+        "hundreds": "מאות",
+        "thousands": "אלפים",
+        "millions": "מיליונים",
+        "billions": "מיליארדים",
+        "trillions": "טריליונים",
+        "quadrillions": "קוודריליונים",
+        "quintillions": "קווינטיליונים",
+        "sextillions": "סקסטיליונים",
+        "septillions": "ספטיליונים",
+        "octillions": "אוקטיליונים",
+        "nonillions": "נוניליונים"
+    },
+    "length": {
+        "nanometer": "ננומטר",
+        "micrometer": "מיקרומטר",
+        "millimeter": "מילימטר",
+        "centimeter": "סנטימטר",
+        "meter": "מטר",
+        "kilometer": "קילומטר"
+    },
+    "length_us": {
+        "inch": "אינץ'",
+        "foot": "רגל",
+        "yard": "יארד",
+        "mile": "מייל"
+    },
+    "length_plural": {
+        "nanometer": "ננומטרים",
+        "micrometer": "מיקרומטרים",
+        "millimeter": "מילימטרים",
+        "centimeter": "סנטימטרים",
+        "meter": "מטרים",
+        "kilometer": "קילומטרים"
+    },
+    "weight": {
+        "microgram": "מיקרוגרם",
+        "milligram": "מיליגרם",
+        "gram": "גרם",
+        "kilogram": "קילוגרם",
+        "tonne": "טון"
+    },
+    "weight_us": {
+        "ounce": "אונקיה",
+        "pound": "פאונד",
+        "stone": "סטון",
+        "short_ton": "טון קצר",
+        "long_ton": "טון ארוך"
+    },
+    "weight_plural": {
+        "microgram": "מיקרוגרמים",
+        "milligram": "מיליגרמים",
+        "gram": "גרמים",
+        "kilogram": "קילוגרמים",
+        "tonne": "טונים"
+    },
+    "volume": {
+        "milliliter": "מיליליטר",
+        "liter": "ליטר",
+        "cubic_meter": "מטר מעוקב"
+    },
+    "volume_us": {
+        "teaspoon": "כפית",
+        "tablespoon": "כף",
+        "fluid_ounce": "אונקיית נוזלים",
+        "cup": "כוס",
+        "pint": "פינט",
+        "quart": "קוורט",
+        "gallon": "גלון"
+    },
+    "speed": {
+        "kph": "קילומטרים לשעה",
+        "mph": "מיילים לשעה"
+    },
+    "temperature": {
+        "celsius": "צלזיוס",
+        "fahrenheit": "פרנהייט"
+    },
+    "digital": {
+        "bit": "ביט",
+        "byte": "בייט",
+        "kilobyte": "קילובייט",
+        "megabyte": "מגהבייט",
+        "gigabyte": "גיגהבייט",
+        "terabyte": "טרהבייט",
+        "petabyte": "פטהבייט",
+        "exabyte": "אקסהבייט"
+    },
+    "network_speed": {
+        "bps": "ביטים לשנייה",
+        "kbps": "קילוביטים לשנייה",
+        "mbps": "מגהביטים לשנייה",
+        "gbps": "גיגהביטים לשנייה"
+    }
+}
