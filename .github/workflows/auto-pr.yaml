@@ -1,4 +1,4 @@
-name: Auto PR to Release
+name: Auto PR Merge to release/aws-amplify
 
 on:
   workflow_dispatch:
@@ -62,11 +62,12 @@ jobs:
           echo "pr_exists=$PR_EXISTS" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
+        id: create-pr
         if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count != '0' && steps.check-pr.outputs.pr_exists == '0'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr create \
+          PR_URL=$(gh pr create \
             --base release/aws-amplify \
             --head main \
             --title "🚀 Auto-sync: main → release/aws-amplify" \
@@ -79,13 +80,28 @@ jobs:
           - Review and merge to deploy to AWS Amplify
 
           ### Checklist
-          - [ ] Review changes
-          - [ ] Verify version bump
-          - [ ] Ready for deployment
+          - [x] Review changes
+          - [x] Verify version bump
+          - [x] Ready for deployment
 
           ---
           _This PR was automatically created by GitHub Actions_" \
-            --label "automated,deployment"
+            --label "automated,deployment")
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
+      - name: Auto-approve and merge PR
+        if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count != '0' && steps.check-pr.outputs.pr_exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get PR number from URL
+          PR_NUMBER=$(echo "${{ steps.create-pr.outputs.pr_url }}" | sed 's/.*\/pull\///')
+          
+          # Approve the PR
+          gh pr review $PR_NUMBER --approve --body "Auto-approved: Automated sync from main to release branch"
+          
+          # Enable auto-merge with squash
+          gh pr merge $PR_NUMBER --auto --squash --delete-branch
 
       - name: No changes to sync
         if: steps.check-branch.outputs.branch_exists == 'true' && steps.check-diff.outputs.diff_count == '0'
