@@ -70,22 +70,8 @@ jobs:
           PR_URL=$(gh pr create \
             --base release/aws-amplify \
             --head main \
-            --title "🚀 Auto-sync: main → release/aws-amplify" \
-            --body "## Automated Pull Request
-
-          This PR automatically syncs changes from \`main\` to \`release/aws-amplify\`.
-
-          ### Changes
-          - Auto-generated from main branch push
-          - Review and merge to deploy to AWS Amplify
-
-          ### Checklist
-          - [x] Review changes
-          - [x] Verify version bump
-          - [x] Ready for deployment
-
-          ---
-          _This PR was automatically created by GitHub Actions_" \
+            --title "🚀 Auto-sync: flutter_gloveboxes main → release/aws-amplify" \
+            --body "Auto-sync flutter_gloveboxes changes from main to release/aws-amplify for deployment." \
             --label "automated,deployment")
           echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
