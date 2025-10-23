@@ -83,9 +83,6 @@ jobs:
           # Get PR number from URL
           PR_NUMBER=$(echo "${{ steps.create-pr.outputs.pr_url }}" | sed 's/.*\/pull\///')
           
-          # Approve the PR
-          gh pr review $PR_NUMBER --approve --body "Auto-approved: Automated sync from main to release branch"
-          
           # Enable auto-merge with squash
           gh pr merge $PR_NUMBER --auto --squash --delete-branch
 
