@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:build/build.dart';
 
 import '../utils.dart';
-import 'applocale_scanner.dart';
-import 'unified_language_generator.dart';
+import 'scanner.dart';
+import 'generator.dart';
 
 /// Main builder that generates unified language enum and locale setup
 class UnifiedLanguageBuilder implements Builder {
@@ -69,6 +69,12 @@ class UnifiedLanguageBuilder implements Builder {
             'Found ${packages.length} slang packages with $uniqueLocaleCount unique locales',
       ),
     );
+
+    // generate ignore
+    buffer.writeln(
+      '// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages',
+    );
+    buffer.writeln();
 
     // Generate all imports first
     buffer.writeln("import 'package:flutter/material.dart';");
