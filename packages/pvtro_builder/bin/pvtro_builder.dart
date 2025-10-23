@@ -1,8 +1,10 @@
 #!/usr/bin/env dart
 
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:args/args.dart';
-import 'package:pvtro_builder/src/translation_scanner_builder.dart';
+import 'package:pvtro_builder/src/main.dart';
 import 'package:build/build.dart';
 
 void main(List<String> arguments) async {
