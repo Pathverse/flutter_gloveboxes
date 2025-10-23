@@ -1,3 +1,6 @@
+## 0.1.0
+- codebase refactor and better file generation
+
 ## 0.0.2
 - added auto provider generation to builder
 
