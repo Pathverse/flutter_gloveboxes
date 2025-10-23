@@ -20,7 +20,7 @@ dependencies:
     path: ../../packages/pvtro_conver
 
   shadcn_ui: ^0.37.1
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.0.0
   slang: ^4.9.0
   slang_flutter: ^4.9.0
   pvtrl: any
